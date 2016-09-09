@@ -6,22 +6,26 @@
 * Introduction
 
 *MathematicaStan* is a package to ease the interaction with [[http://mc-stan.org/interfaces/cmdstan][CmdStan]]
-from Mathematica. It is tested under Linux with Mathematica version >=8.0.
+from Mathematica. It is tested under *Linux* with *Mathematica version >=8.0*.
 
 *Author & contact:* picaud.vincent at gmail.com
 
-*Disclaimer*, this is the first *alpha* version,
- - [X] Refactoring of *StanExtractVariable* & *StanSummary*, scalars and vectors are ok, matrices and multidimensional arrays are still unpacked (see k-means output example).
- - [ ] Update doc TODO (detailed descriptions...)
- - [ ] Add more functions to extract data from *output.csv*
- - [ ] test under *Windows* todo
- - [ ] More examples
+*Disclaimer*: this is the first *beta* version, not yet tested under Windows.
 
 * Getting started
 
 ** Installation
 
-*** CmdStan installation
+*** Creation of the CmdStan.m file (*not required*)
+
+You can skip this step, a [[https://github.com/vincent-picaud/MathematicaStan/blob/master/CmdStan.m][CmdStan.m]] file is already present in this directory.
+
+You just have to know that the [[https://github.com/vincent-picaud/MathematicaStan/blob/master/CmdStan.m][CmdStan.m]] file is automatically created
+from the [[https://github.com/vincent-picaud/MathematicaStan/blob/master/CmdStan.org][CmdStan.org]] file.  However for your convenience, you do not
+have to create a fresh *CmdStan.m*, I have directly included its last
+version.
+
+*** CmdStan installation 
 
 First you must install [[http://mc-stan.org/interfaces/cmdstan][CmdStan]]. Once this is done you get a directory containing stuff like:
 
@@ -66,302 +70,39 @@ stanDir="~/GitHub/cmdstan";
 #+END_EXAMPLE
   according to your configuration.
 
-** Complete example from start to end
 
-We use the *Examples/Bernoulli/bernoulli.stan* example:
+** Complete examples
 
-#+BEGIN_SRC stan
-data { 
-  int<lower=0> N; 
-  int<lower=0,upper=1> y[N];
-} 
-parameters {
-  real<lower=0,upper=1> theta;
-} 
-model {
-  theta ~ beta(1,1);
-  for (n in 1:N) 
-    y[n] ~ bernoulli(theta);
-}
-#+END_SRC
+** Bernoulli.stan 
+
+We use the Examples/Bernoulli/bernoulli.stan example. You can find the
+Mathematica notebook [[https://github.com/vincent-picaud/MathematicaStan/blob/master/Examples/Bernoulli/bernoulli.nb][benoulli.nb]] or directly view the associated
+[[https://github.com/vincent-picaud/MathematicaStan/blob/master/Examples/Bernoulli/bernoulli.pdf][bernoulli.pdf]] file.
+
+** soft-k-means.stan example
+
+This use case is based on the [[https://github.com/stan-dev/example-models/blob/master/misc/cluster/soft-k-means/soft-k-means.stan][soft-k-means]] example. 
+
+You can find the Mathematica notebook [[https://github.com/vincent-picaud/MathematicaStan/blob/master/Examples/Cluster/soft-k-means.nb][soft-k-means.nb]] or directly view
+the associated [[https://github.com/vincent-picaud/MathematicaStan/blob/master/Examples/Cluster/soft-k-means.pdf][soft-k-means.pdf]] file.
 
 
-Under Mathematica:
+** horseShoePrior.stan example
 
-#+BEGIN_SRC mathematica :exports code
-(* Load the package and go to the *Bernoulli* directory *)
-Needs["CmdStan`"];
-SetDirectory["~/GitHub/MathematicaStan/Examples/Bernoulli"];
+This example is a partial reproduction of the blog post [[https://ariddell.org/horseshoe-prior-with-stan.html][Epistemology
+of the corral: regression and variable selection with Stan and the
+Horseshoe prior]]. Also see [[http://andrewgelman.com/2015/02/17/bayesian-survival-analysis-horseshoe-priors/#comment-211738][Bayesian survival analysis with horseshoe priors—in Stan!]]
 
-(* Compile your code. Caveat: this can take some time *)
-StanCompile["bernoulli"];
+You can find the Mathematica notebook [[https://github.com/vincent-picaud/MathematicaStan/blob/master/Examples/HorseShoePrior/horseShoePrior.nb][horseShoePrior.nb]] or directly view
+the associated [[https://github.com/vincent-picaud/MathematicaStan/blob/master/Examples/HorseShoePrior/horseShoePrior.pdf][horseShoePrior.pdf]] file.
 
-(* -> Here? Congratulation, you just have compiled bernoulli.stan Stan program *)
-
-(* Now you must define a data file.
-
-   This data file must contains:
-   - N the size of the y array
-   - y an array containing the sample
- *)
-n=1000;
-y=Table[Random[BernoulliDistribution[0.2016]],{i,1,n}];
-
-(* Now we create the data file.
-
-   The format is Rdump format (see CmdStan doc, Appendix C)
-*)
-RDumpExport["bernoulli",{{"N",n},{"y",y}}];
-
-(* -> You just created the bernoulli.data.R file! *)
-
-(* Now we want to run stan for this example
-
-   We chose variational inference
- *)
-StanRun["bernoulli",StanOptionVariational];
-
-(* -> You just created the output.csv file *)
-
-(* Now import Stan result 
-*)
-result=StanImport["output.csv"];
-
-(* -> You just parsed the csv stan output file *)
-
-(* Now you can compute θ mean or median *)
-StanVariableSampleMap["theta",result,Mean];
-StanVariableSampleMap["theta",result,Median];
-#+END_SRC
-
-#+RESULTS:
-
-
-** Another usage example
-
-You can generate and use the [[https://github.com/stan-dev/example-models/blob/master/misc/cluster/soft-k-means/soft-k-means.stan][soft-k-means]] example:
-
-#+BEGIN_SRC stan
-data {
-  int<lower=0> N;  // number of data points
-  int<lower=1> D;  // number of dimensions
-  int<lower=1> K;  // number of clusters
-  vector[D] y[N];  // observations
-}
-transformed data {
-  real<upper=0> neg_log_K;
-  neg_log_K <- -log(K);
-}
-parameters {
-  vector[D] mu[K]; // cluster means
-}
-transformed parameters {
-  real<upper=0> soft_z[N,K]; // log unnormalized cluster assigns
-  for (n in 1:N)
-    for (k in 1:K)
-      soft_z[n,k] <- neg_log_K - 0.5 * dot_self(mu[k] - y[n]);
-}
-model {
-  for (k in 1:K)
-    mu[k] ~ normal(0,1);  // prior
-  for (n in 1:N)
-    increment_log_prob(log_sum_exp(soft_z[n])); // likelihood
-}
-#+END_SRC
-
-To compile the example and generate the *output.csv* file, do:
-
-#+BEGIN_SRC mathematica :exports code
-SetDirectory["~/GitHub/MathematicaStan/Examples/Cluster/"]
-Needs["CmdStan`"]
-StanCompile["soft-k-means.stan"]
-StanRun["soft-k-means",StanOptionSample]
-#+END_SRC
-
-you get something like:
-
-#+BEGIN_EXAMPLE
-GitHub/MathematicaStan/Examples/Cluster
-
-make: 'GitHub/MathematicaStan/Examples/Cluster/soft-k-means' is up to date.
-
-method = sample (Default)
-  sample
-    num_samples = 1000 (Default)
-    num_warmup = 1000 (Default)
-    save_warmup = 0 (Default)
-    thin = 1 (Default)
-    adapt
-      engaged = 1 (Default)
-      gamma = 0.050000000000000003 (Default)
-      delta = 0.80000000000000004 (Default)
-      kappa = 0.75 (Default)
-      t0 = 10 (Default)
-      init_buffer = 75 (Default)
-      term_buffer = 50 (Default)
-      window = 25 (Default)
-    algorithm = hmc (Default)
-      hmc
-        engine = nuts (Default)
-          nuts
-            max_depth = 10 (Default)
-        metric = diag_e (Default)
-        stepsize = 1 (Default)
-        stepsize_jitter = 0 (Default)
-id = 0 (Default)
-data
-  file = GitHub/MathematicaStan/Examples/Cluster/soft-k-means.data.R
-init = 2 (Default)
-random
-  seed = 3708593396
-output
-  file = GitHub/MathematicaStan/Examples/Cluster/output.csv
-  diagnostic_file =  (Default)
-  refresh = 100 (Default)
-
-
-Gradient evaluation took 0.000284 seconds
-1000 transitions using 10 leapfrog steps per transition would take 2.84 seconds.
-Adjust your expectations accordingly!
-
-
-Iteration:    1 / 2000 [  0%]  (Warmup)
-Iteration:  100 / 2000 [  5%]  (Warmup)
-Iteration:  200 / 2000 [ 10%]  (Warmup)
-Iteration:  300 / 2000 [ 15%]  (Warmup)
-Iteration:  400 / 2000 [ 20%]  (Warmup)
-Iteration:  500 / 2000 [ 25%]  (Warmup)
-Iteration:  600 / 2000 [ 30%]  (Warmup)
-Iteration:  700 / 2000 [ 35%]  (Warmup)
-Iteration:  800 / 2000 [ 40%]  (Warmup)
-Iteration:  900 / 2000 [ 45%]  (Warmup)
-Iteration: 1000 / 2000 [ 50%]  (Warmup)
-Iteration: 1001 / 2000 [ 50%]  (Sampling)
-Iteration: 1100 / 2000 [ 55%]  (Sampling)
-Iteration: 1200 / 2000 [ 60%]  (Sampling)
-Iteration: 1300 / 2000 [ 65%]  (Sampling)
-Iteration: 1400 / 2000 [ 70%]  (Sampling)
-Iteration: 1500 / 2000 [ 75%]  (Sampling)
-Iteration: 1600 / 2000 [ 80%]  (Sampling)
-Iteration: 1700 / 2000 [ 85%]  (Sampling)
-Iteration: 1800 / 2000 [ 90%]  (Sampling)
-Iteration: 1900 / 2000 [ 95%]  (Sampling)
-Iteration: 2000 / 2000 [100%]  (Sampling)
-
- Elapsed Time: 2.61066 seconds (Warm-up)
-               2.90382 seconds (Sampling)
-               5.51448 seconds (Total)
-#+END_EXAMPLE
-
-To read the *output.csv* file and print the first 10 variables names:
-
-#+BEGIN_SRC mathematica :exports code
-output=StanImport["output.csv"];
-Take[output[[1]],10]
-#+END_SRC
-
-#+BEGIN_EXAMPLE
-{{1,lp__},{2,accept_stat__},{3,stepsize__},{4,treedepth__},{5,n_leapfrog__},
- {6,divergent__},{7,energy__},{8,mu.1.1},{9,mu.2.1},{10,mu.3.1}}
-#+END_EXAMPLE
-
-To retrieve column indices associated to a given *variableName* (of the *output* matrix):
-
-#+BEGIN_SRC mathematica :exports code
-StanFindVariableColumn["mu",output]
-StanFindVariableColumn["mu.4.3",output]
-StanFindVariableColumn["mu.4",output]
-StanFindVariableColumn["energy__",output]
-StanFindVariableColumn["foo",output]
-#+END_SRC
-
-#+BEGIN_EXAMPLE
-{8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,
- 27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47}
-
-{21}
-
-{11,16,21,26,31,36,41,46}
-
-{7}
-
-$Failed
-#+END_EXAMPLE
-
-To retrieve variable indices (only makes sense for multidimensional arrays):
-#+BEGIN_SRC mathematica :exports code
-StanFindVariableIndex["mu",output]
-StanFindVariableIndex["mu.4.3",output]
-StanFindVariableIndex["mu.4",output]
-StanFindVariableIndex["energy__",output]
-StanFindVariableIndex["foo",output]
-#+END_SRC
-
-#+BEGIN_EXAMPLE
-{{1,1},{2,1},{3,1},{4,1},{5,1},{1,2},{2,2},{3,2},{4,2},{5,2},
- {1,3},{2,3},{3,3},{4,3},{5,3},{1,4},{2,4},{3,4},{4,4},{5,4},
- {1,5},{2,5},{3,5},{4,5},{5,5},{1,6},{2,6},{3,6},{4,6},{5,6},
- {1,7},{2,7},{3,7},{4,7},{5,7},{1,8},{2,8},{3,8},{4,8},{5,8}}
-
-{{4,3}}
-
-{{4,1},{4,2},{4,3},{4,4},{4,5},{4,6},{4,7},{4,8}}
-
-{{}}
-
-$Failed
-#+END_EXAMPLE
-
-To retrieve the value of the following variable and sample number=100:
-#+BEGIN_SRC mathematica :exports code
-StanVariableSample["mu",output,100]
-StanVariableSample["mu.4.3",output,100]
-StanVariableSample["energy__",output,100]
-StanVariableSample["foo",output,100]
-#+END_SRC
-
-#+BEGIN_EXAMPLE
-{{0.238387,0.121642,-0.252879,-0.107148,-0.850591,-2.6643,0.635537,-0.0902871},
- {1.72809,1.39013,0.643718,0.317346,-0.715163,-1.40391,-0.0438348,0.218568},
- {-0.5935,0.528246,0.591305,0.0861167,1.05032,-0.213989,0.43551,0.776073},
- {1.36049,0.177183,0.667124,1.14472,1.81634,0.208383,0.8395,0.231673},
- {-0.79129,-0.0975879,2.02025,-1.62512,0.0191674,-0.16778,-0.242335,0.704823}}
-
-0.667124
-
-741.4
-
-$Failed
-#+END_EXAMPLE
-
-To compute means of given variables:
-
-#+BEGIN_SRC mathematica :exports code
-StanVariableSampleMap["mu",output,Mean]
-StanVariableSampleMap["mu.4.3",output,Mean]
-StanVariableSampleMap["energy__",output,Mean]
-StanVariableSampleMap["foo",output,Mean]
-#+END_SRC
-
-#+BEGIN_EXAMPLE
-{{-0.0177242,0.0130613,-0.412794,0.223315,-0.662491,-2.48342,0.65316,-0.041095},
- {1.32295,1.69275,0.937819,0.689655,-0.558599,-1.26572,-0.236472,0.300967},
- {-0.613308,0.513378,0.586498,-0.406528,1.33131,-0.114751,0.214065,0.482836},
- {1.22062,0.0993623,0.531468,0.90476,1.76958,0.239617,0.894989,0.0741385},
- {-0.590446,0.00477912,2.10406,-1.48118,-0.167456,-0.405749,-0.114607,0.638598}}
-
-0.531468
-
-740.388
-
-$Failed
-#+END_EXAMPLE
 
 * Package documentation
 
 ** Complete list of commands
 
 The complete list of commands is:
+
 #+BEGIN_SRC mathematica :exports both
 Needs["CmdStan`"];
 ?CmdStan`*
@@ -369,253 +110,56 @@ Needs["CmdStan`"];
 
 #+RESULTS:
 #+begin_example
-CmdStanError
 RDumpExport
 StanCompile
 StanDirectory
-StanFindOption
 StanFindVariableColumn
 StanFindVariableIndex
+StanGetOptionOptimize
+StanGetOptionSample
+StanGetOptionVariational
 StanImport
-StanImportQ
-StanIndexedHeaderElementQ
-StanIndexedHeaderQ
-StanOptionListQ
+StanImportComment
+StanImportData
+StanImportHeader
+StanImportReplaceData
 StanOptionOptimize
-StanOptionQ
 StanOptionSample
 StanOptionVariational
-StanRun
+StanRemoveOptionOptimize
+StanRemoveOptionSample
+StanRemoveOptionVariational
+StanResetOptionOptimize
+StanResetOptionSample
+StanResetOptionVariational
+StanRunOptimize
+StanRunSample
+StanRunVariational
 StanSetDirectory
-StanSetOption
+StanSetOptionOptimize
+StanSetOptionSample
+StanSetOptionVariational
 StanVariable
-StanVariableSample
-StanVariableSampleMap
+StanVariableColumn
+StanVariableFunc
+StanVariableToImport
 #+end_example
 
-** Command detailed descriptions
+To get extra information you can use the inline package documentation, for intance:
 
-*** RDumpExport
-
-#+BEGIN_SRC mathematica :exports results
+#+BEGIN_SRC mathematica :exports both
 Needs["CmdStan`"];
 ?RDumpExport
 #+END_SRC
 
 #+RESULTS:
-: RDumpExport[fileName,data] creates and dumps data into fileName.data.R.
-: fileName: file name to create, the ".data.R" extension is added if not initially present.
-: data: is defined by {{"Name1",Value1},{"Name2",Value2,...}}, where
-:   NameX is a String,
-:   ValueX is a Number, a Vector or a Matrix.
-: Return: the actual file name.
-
-
-Usage example:
-#+BEGIN_SRC mathematica
-v=Table[Random[],{i,1,3}];
-M=Table[Random[],{i,1,2},{j,1,4}];
-
-ExportRDump[{"test.data.R",{{"sigma",1},{"v",v},{"M",M}}}];
-#+END_SRC
-
-will create the ASCII file *test.data.R*:
-
-#+BEGIN_EXAMPLE
-sigma <- 1 
-v <- c(0.8914424568109295, 0.16369644806632871,
-0.8224818003409107) 
-M <- structure(c(0.1953095908232137,
-0.5654916252654406, 0.9973146784469278, 0.3912859635579676,
-0.11095601398483428, 0.15813096143059435, 0.3588746131035059,
-0.15208129825920863), .Dim = c(2, 4))
-#+END_EXAMPLE
-
-*** StanCompile
-
-#+BEGIN_SRC mathematica :exports results
-Needs["CmdStan`"];
-?StanCompile
-#+END_SRC
-
-#+RESULTS:
-: StanCompile[stanCodeFileName] compiles the stanCodeFileName Stan source code.
-: stanCodeFileName: the Stan source code file, if not initially present the ".stan" extension is added
-: Returns a String containing the CmdStan shell command output.
-
-*** StanDirectory
-
-#+BEGIN_SRC mathematica :exports results
-Needs["CmdStan`"];
-?StanDirectory
-#+END_SRC
-
-#+RESULTS:
-: StanDirectory[] returns the current location of cmdstan.
-: See StanSetDirectory[installDir].
-
-*** StanFindOption
-
-#+BEGIN_SRC mathematica :exports results
-Needs["CmdStan`"];
-?StanFindOption
-#+END_SRC
-
-#+RESULTS:
-: StanFindOption[name,option] finds "name" in the "option" list.
-: Returns option value if present, empty set if not defined.
-
-See StanOptionOptimize for further usage examples.
-
-*** StanImport
-
-#+BEGIN_SRC mathematica :exports results
-Needs["CmdStan`"];
-?StanImport
-#+END_SRC
-
-#+RESULTS:
-: StanImport[outputCSV] imports a Stan output.csv file.
-: Returns {indexedHeader,dataMatrix,parameters}.
-:   indexedHeader is a list of {column number,column name}.
-:   dataMatrix is a Matrix containing the CSV data.
-:   parameters is a String containing the unparsed CSV comments.
-
-Usage example:
-#+BEGIN_SRC mathematica :exports code
-Needs["CmdStan`"];
-SetDirectory["~/GitHub/MathematicaStan/Examples/Bernoulli"];
-result=StanImport["output.csv"];
-Print[result[[1]]]
-#+END_SRC
-
-you get:
-#+BEGIN_EXAMPLE
-{{1, lp__}, {2, theta}}
-#+END_EXAMPLE
-
-*** StanOptionOptimize
-
-#+BEGIN_SRC mathematica :exports results
-Needs["CmdStan`"];
-?StanOptionOptimize
-#+END_SRC
-
-#+RESULTS:
-: Default option for "optimize" method.
-
-Initial option list only contains the method:
-#+BEGIN_SRC mathematica :exports code
-StanOptionOptimize
-#+END_SRC
-
-#+BEGIN_EXAMPLE
-{{method, optimize}}
-#+END_EXAMPLE
-
-You can modify option list using the function *StanFindOption* and *StanSetOption*.
-
-Usage example:
-
-#+BEGIN_SRC mathematica :exports code
-StanOptionOptimize
-
-StanFindOption["iter", StanOptionOptimize]
-
-myOptionOprimize = StanSetOption[{{"iter", 1000}, {"output file", "myOutput.csv"}},StanOptionOptimize]
-
-StanFindOption["iter", myOptionOprimize]
-#+END_SRC
-
-Prints:
-#+BEGIN_EXAMPLE
-{{"method", "optimize"}}
-
-$Failed
-
-{{"iter", 1000}, {"method", "optimize"}, {"output file", "myNewOutput.csv"}}
-
-1000
-#+END_EXAMPLE
-
-The first *StanFindOption["iter", StanOptionOptimize]* returned
-*$Failed* because the option "iter" was not present.
-
-*** StanOptionSample
-
-#+BEGIN_SRC mathematica :exports results
-Needs["CmdStan`"];
-?StanOptionSample
-#+END_SRC
-
-#+RESULTS:
-: Default option for "sample" method.
-
-Usage example: see StanOptionOptimize.
-
-*** StanOptionVariational
-
-#+BEGIN_SRC mathematica :exports results
-Needs["CmdStan`"];
-?StanOptionVariational
-#+END_SRC
-
-#+RESULTS:
-: Default option for "variational" method.
-
-Usage example: see StanOptionOptimize.
-
-*** StanRun
-
-#+BEGIN_SRC mathematica :exports results
-Needs["CmdStan`"];
-?StanRun
-#+END_SRC
-
-#+RESULTS:
-: StanRun[stanExeFileName,option] executes the stanExeFileName with the given option.
-: Example: StanRun["bernoulli.exe",StanOptionSample]
+: RDumpExport[fileNameDataR_?StringQ,listOfNameValue_]
+: 
+: Creates a file and dump data in RDump format.
+: 
 : Note:
-:    1/ the .exe extension is added if absent
-:    2/ if "output file" option is not defined, "output.csv" is used.
-: Return: a String containing the shell command output
-
-
-*** StanSetDirectory
-
-#+BEGIN_SRC mathematica :exports results
-Needs["CmdStan`"];
-?StanSetDirectory
-#+END_SRC
-
-#+RESULTS:
-: StanSetDirectory[installDir] defines where cmdstan is installed, usually something like XXX/cmdstan/.
-: See StanDirectory[].
-
-*** StanSetOption
-
-#+BEGIN_SRC mathematica :exports results
-Needs["CmdStan`"];
-?StanSetOption
-#+END_SRC
-
-#+RESULTS:
-: StanSetOption[optionListToAdd,optionList] merge "optionListToAdd" to the initial "optionList".
-: If an option was already defined in "optionList" its value is overridden.
-: Output: returns the completed option list.
-
-See StanOptionOptimize for usage example.
-
-*** StanVariable
-
-#+BEGIN_SRC mathematica :exports results
-Needs["CmdStan`"];
-?StanVariable
-#+END_SRC
-
-#+RESULTS:
-: StanVariable[variableName,stanImport] extracts sample associated to variableName.
-: Note: also see "StanImport[outputCSV]" function.
-
+:  - input data "listOfNameValue" is of the form 
+:    {{"MatrixName",{{...}}},{"ScalarName",5.6},{"VectorName",{..}},...}
+:  - if "fileName" has no extension, ".data.R" is automatically added.
 
 

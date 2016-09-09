@@ -1,22 +1,75 @@
-(*****************************************************************
- * CmdStan Package
- * A Mathematica package to interact with CmdStan
- * https://github.com/vincent-picaud/MathematicaStan
- * Author: Picaud Vincent, picaud.vincent at gmail.com
- *
- * AUTOMATICALLY GENERATED from cmdStan.org 
- ******************************************************************)
+#+OPTIONS: toc:nil num:nil todo:nil pri:nil tags:nil 
 
-BeginPackage["CmdStan`"];
+#+OPTIONS: ^:nil 
+#+OPTIONS: tex:t
 
-Unprotect @@ Names["CmdStan`*"];
-ClearAll @@ Names["CmdStan`*"];
+#+CATEGORY: Stan, Mathematica
+#+TAGS:
+#+DESCRIPTION:
+#+TITLE: CmdStan.m package source
+#+AUTHOR: Picaud vincent
 
-Begin["`Private`"];
+Defines in a __literate programming way__, a package to interact with
+Stan from Mathematica.
+
+To generate the *CmdStan.m* file from this [[http://orgmode.org/][org-mode]] file open it with
+ [[https://www.gnu.org/software/emacs/][Emacs]] and type *C-c C-v t*.
+
+* Data RDump export
+
+#+NAME: cmdStan_rdump.m
+#+BEGIN_SRC mathematica
+
+RDumpToStringHelper[V_?VectorQ]:=
+(* CAVEAT: use CForm to use scientific notation *)
+"c("<>StringTake[ToString[Map[CForm,V]],{2,-2}]<>")";
+(*
+ *)
+RDumpToString[{MatName_,M_}/;StringQ[MatName]&&MatrixQ[M]]:=
+(* CAVEAT: needs to transpose the matrix to get the right ordering *)
+	MatName<>" <- structure("<>RDumpToStringHelper[Flatten[Transpose[M]]] <>
+		", .Dim = "<>RDumpToStringHelper[Dimensions[M]]<>")\n";
+(*
+ *)
+RDumpToString[{VectName_,V_}/;StringQ[VectName]&&VectorQ[V]]:=
+	VectName<>" <- "<>RDumpToStringHelper[V]<>"\n";
+(*
+ *)
+RDumpToString[{VarName_,Var_}/;StringQ[VarName]&&NumberQ[Var]]:=
+	VarName<>" <- " <>ToString[Var]<>"\n";
+
+CmdStan`RDumpExport::usage =
+"RDumpExport[fileNameDataR_?StringQ,listOfNameValue_]"<>
+"\n\nCreates a file and dump data in RDump format."<>
+"\n\nNote:"<>
+"\n - input data \"listOfNameValue\" is of the form "<>
+"\n   {{\"MatrixName\",{{...}}},{\"ScalarName\",5.6},{\"VectorName\",{..}},...}"<>
+"\n - if \"fileName\" has no extension, \".data.R\" is automatically added.";
+(*
+ *)
+RDumpExport[fileNameDataR_?StringQ,listOfNameValue_]:=
+	Module[{str,fileNameDataRExt},
+	       (* Add .data.R extension if required *)
+	       fileNameDataRExt=fileNameDataR;
+	       If[FileExtension[fileNameDataRExt]=="",fileNameDataRExt=fileNameDataRExt<>".data.R"];
+	       (* Opean file and save data *)
+	       str=OpenWrite[fileNameDataRExt];
+	       If[str===$Failed,Return[$Failed]];
+	       WriteString[str,StringJoin[Map[RDumpToString,listOfNameValue]]];
+	       Close[str];
+	       Return[fileNameDataRExt];
+	];
+#+END_SRC
 
 
+* CmdStan commands
+
+** CmdStan path
+
+#+NAME: cmdStan_path.m
+#+BEGIN_SRC mathematica
 (* Error messages
-*)
+,*)
 StanDirectory::notFound="CmdStan install directory \"`1`\" not found.";
 StanDirectory::undefined="CmdStan install directory is undefined.";
 
@@ -28,14 +81,14 @@ StanCheckDirectory[dir_]:=
 	];
 
 (*
-* YOU CAN MODIFY ME (initial configuration)
-*)
+,* YOU CAN MODIFY ME (initial configuration)
+,*)
 stanDir="~/GitHub/cmdstan"; 
 
 CmdStan`StanSetDirectory::usage=
 "StanSetDirectory[directory_?StringQ] modifies CmdStan command path. Also see StanDirectory[]";
 (*
-*)
+,*)
 StanSetDirectory[dir_?StringQ]:=
 If[StringQ[StanCheckDirectory[dir]],
 stanDir=dir; Return[dir],
@@ -45,9 +98,14 @@ Return[$Failed];
 CmdStan`StanDirectory::usage=
 "StanDirectory[] returns current CmdStan path.";
 (*
-*)
+,*)
 StanDirectory[]:=stanDir;
+#+END_SRC
 
+** The compile command
+
+#+NAME: cmdStan_compile.m
+#+BEGIN_SRC mathematica
 (*
  * Private
  *)
@@ -95,19 +153,26 @@ StanCompile[stanCodeFileName_?StringQ]:=
 	       Return[output];
 	];
 
+#+END_SRC
 
+** The run command
+
+*** Option management
+
+#+NAME: cmdStan_run_option.m
+#+BEGIN_SRC mathematica
 
 
 (*
- * Default option values
- *)
+ ,* Default option values
+ ,*)
 immutableStanOptionVariational={{"method","variational"}};
 immutableStanOptionSample={{"method","sample"}};
 immutableStanOptionOptimize={{"method","optimize"}};
 
 (*
- * Current option values
- *)
+ ,* Current option values
+ ,*)
 currentStanOptionVariational={};
 currentStanOptionSample={};
 currentStanOptionOptimize={};
@@ -122,10 +187,10 @@ StanOptionQ[any_]:=
 StanOptionListQ[any_]:=VectorQ[any,StanOptionQ];
 
 (* Find option position, $Failed if not found 
-*)
+,*)
 StanGetOptionPosition::multipleOccurrences="option \"`1`\" has mutliple occurences \"`2`\"";
 (*
- *)
+ ,*)
 StanGetOptionPosition[name_?StringQ,option_?StanOptionListQ]:=
 	Module[{position},
 
@@ -188,8 +253,8 @@ StanOptionListToString[option_?StanOptionListQ]:=
 	Fold[(#1 <> " " <> #2[[1]] <> "=" <> ToString[#2[[2]]]) &, "", option];
 
 (*
-* User interface
-*)
+,* User interface
+,*)
 
 CmdStan`StanGetOptionVariational::usage=
 "StanGetOptionVariational[name_?StringQ] returns option associated value for the Variational method, $Failed if not found";
@@ -266,6 +331,12 @@ CmdStan`StanResetOptionOptimize::usage=
 StanResetOptionOptimize[]:=currentStanOptionOptimize={};
 
 (*~~~~~~~~~~~~~~~~*)
+#+END_SRC
+
+*** StanRun function
+
+#+NAME: cmdStan_run.m
+#+BEGIN_SRC mathematica
 (*
  * Private 
  *)
@@ -293,8 +364,8 @@ StanRun[stanExeFileName_?StringQ,option_?MatrixQ]:=
 		  ];
 
 	       (* Check if there is a data file in option, 
-		* if not, try to create one from scratch 
-		*)
+		,* if not, try to create one from scratch 
+		,*)
 	       mutableOption=option;
                
 	       dataFile=StanGetOption["data file",mutableOption];
@@ -322,7 +393,7 @@ StanRun[stanExeFileName_?StringQ,option_?MatrixQ]:=
 	       ];
 	       
 	       (* Extract options and compute!
-		*)
+		,*)
 	       command=pathExeFileName<>StanOptionListToString[mutableOption];
 	       (*Print["DEBUG ",command];*)
 	       output=Import["!"<>command<>" 2>&1","Text"];
@@ -353,48 +424,12 @@ StanRunOptimize[stanExeFileName_?StringQ]:=
 
 
 
+#+END_SRC 
 
+* Reading output file
 
-RDumpToStringHelper[V_?VectorQ]:=
-(* CAVEAT: use CForm to use scientific notation *)
-"c("<>StringTake[ToString[Map[CForm,V]],{2,-2}]<>")";
-(*
- *)
-RDumpToString[{MatName_,M_}/;StringQ[MatName]&&MatrixQ[M]]:=
-(* CAVEAT: needs to transpose the matrix to get the right ordering *)
-	MatName<>" <- structure("<>RDumpToStringHelper[Flatten[Transpose[M]]] <>
-		", .Dim = "<>RDumpToStringHelper[Dimensions[M]]<>")\n";
-(*
- *)
-RDumpToString[{VectName_,V_}/;StringQ[VectName]&&VectorQ[V]]:=
-	VectName<>" <- "<>RDumpToStringHelper[V]<>"\n";
-(*
- *)
-RDumpToString[{VarName_,Var_}/;StringQ[VarName]&&NumberQ[Var]]:=
-	VarName<>" <- " <>ToString[Var]<>"\n";
-
-CmdStan`RDumpExport::usage =
-"RDumpExport[fileNameDataR_?StringQ,listOfNameValue_]"<>
-"\n\nCreates a file and dump data in RDump format."<>
-"\n\nNote:"<>
-"\n - input data \"listOfNameValue\" is of the form "<>
-"\n   {{\"MatrixName\",{{...}}},{\"ScalarName\",5.6},{\"VectorName\",{..}},...}"<>
-"\n - if \"fileName\" has no extension, \".data.R\" is automatically added.";
-(*
- *)
-RDumpExport[fileNameDataR_?StringQ,listOfNameValue_]:=
-	Module[{str,fileNameDataRExt},
-	       (* Add .data.R extension if required *)
-	       fileNameDataRExt=fileNameDataR;
-	       If[FileExtension[fileNameDataRExt]=="",fileNameDataRExt=fileNameDataRExt<>".data.R"];
-	       (* Opean file and save data *)
-	       str=OpenWrite[fileNameDataRExt];
-	       If[str===$Failed,Return[$Failed]];
-	       WriteString[str,StringJoin[Map[RDumpToString,listOfNameValue]]];
-	       Close[str];
-	       Return[fileNameDataRExt];
-	];
-
+#+NAME: cmdStan_import.m
+#+BEGIN_SRC mathematica
 CmdStan`StanImport::usage = 
 "StanImport[outputCSV_?StringQ]" <>
 "\n\nRead Stan output CSV file." <>
@@ -403,11 +438,11 @@ CmdStan`StanImport::usage =
 "\n  dataMatrix is a Matrix containing the CSV data." <>
 "\n  parameters is a String containing the unparsed CSV comments.";
 (*
-*)
+,*)
 StanImport::CSVFileNotFound="CSV output file \"`1`\" not found.";
 StanImport::CSVFileNotWellFormed="CSV output file \"`1`\" is not well formed.";
 (*
-*)
+,*)
 StanImport[outputCSV_?StringQ]:=
         Module[{parameters,header,data,raw},
                If[!FileExistsQ[outputCSV],Message[StanImport::CSVFileNotFound,outputCSV];Return[$Failed];];
@@ -425,17 +460,17 @@ StanImport[outputCSV_?StringQ]:=
                header=Table[{header[[i]],i},{i,1,Length[header]}];
 
                (*
-		* Each column is a variable, this is the right convention with Mathematica
-		* as Mean[Array] or Standardize[Array] directly operate on columns
-                *)
+		,* Each column is a variable, this is the right convention with Mathematica
+		,* as Mean[Array] or Standardize[Array] directly operate on columns
+                ,*)
                data=N[Drop[data,1]];
 
                Return[{header,data,parameters}]
         ];
 
 (*
- * Patterns
- *)
+ ,* Patterns
+ ,*)
 StanImportHeaderElementQ[any_] :=
         (Length[any] == 2) && StringQ[any[[1]]] && IntegerQ[any[[2]]];
 
@@ -449,30 +484,37 @@ StanImportQ[any_] :=
         StringQ[any[[3]]];
 
 (*
- * Portable access to structure members
- *)
+ ,* Portable access to structure members
+ ,*)
 StanImportHeaderElementQ[any_] :=
         (Length[any] == 2) && StringQ[any[[1]]] && IntegerQ[any[[2]]];
 
 CmdStan`StanImportHeader::usage = 
 "StanImportHeader[stanImport_?StanImportQ] portable access to header.";
 (*
-*)
+,*)
 StanImportHeader[stanImport_?StanImportQ] := stanImport[[1]];
 
 CmdStan`StanImportData::usage = 
 "StanImportData[stanImport_?StanImportQ] portable access to sample data.";
 (*
-*)
+,*)
 StanImportData[stanImport_?StanImportQ] := stanImport[[2]];
 
 CmdStan`StanImportComment::usage = 
 "StanImportComment[stanImport_?StanImportQ] portable access to (unparsed) csv file comments.";
 (*
-*)
+,*)
 StanImportComment[stanImport_?StanImportQ] := stanImport[[3]];
 
+#+END_SRC
 
+* Accessing variables from StanImport structure
+
+We can access a variable directly from its name
+
+#+NAME: cmdStan_variable.m
+#+BEGIN_SRC mathematica :exports both
 
 CmdStan`StanFindVariableColumn::usage = 
 "StanFindVariableColumn[variableName_?StringQ, indexedHeader_?StanImportHeaderQ]" <>
@@ -486,10 +528,10 @@ CmdStan`StanFindVariableColumn::usage =
 "\n\nExtension:" <>
 "\nStanFindVariableColumn[variableName_?StringQ,stanImport_?StanImportQ]";
 (*
-*)
+,*)
 StanFindVariableColumn::variableNotFound="variable \"`1`\" not found.";
 (*
-*)
+,*)
 StanFindVariableColumn[variableName_?StringQ, indexedHeader_?StanImportHeaderQ] := 
         Module[{column},
                column = 
@@ -505,7 +547,7 @@ StanFindVariableColumn[variableName_?StringQ, indexedHeader_?StanImportHeaderQ] 
                Return[$Failed];
         ];
 (*
- *)
+ ,*)
 StanFindVariableColumn[variableName_?StringQ,stanImport_?StanImportQ] :=
         StanFindVariableColumn[variableName,StanImportHeader[stanImport]]; 
 
@@ -518,7 +560,7 @@ CmdStan`StanFindVariableIndex::usage=
 "\nIn[] : StanFindVariableIndex[StanFindVariableColumn[\"mu\",stanImport]" <>
 "\nOut[]: {{1,1},{2,1},{3,1},{4,1},{5,1},{1,2},{2,2},{3,2},{4,2},{5,2},{1,3},...}";
 (*
-*)
+,*)
 StanFindVariableIndex[variableName_?StringQ, indexedHeader_?StanImportHeaderQ] := 
                 Module[{extractedColumn,localIndex},
                            extractedColumn=StanFindVariableColumn[variableName,indexedHeader];
@@ -532,7 +574,7 @@ StanFindVariableIndex[variableName_?StringQ, indexedHeader_?StanImportHeaderQ] :
                            Return[localIndex];
                 ];
 (*
- *)
+ ,*)
 StanFindVariableIndex[variableName_?StringQ,stanImport_?StanImportQ] :=
         StanFindVariableIndex[variableName,StanImportHeader[stanImport]]; 
 
@@ -543,7 +585,7 @@ CmdStan`StanVariableColumn::usage=
 "\nStanVariableColumn[variableName_?StringQ,stanImport_?StanImportQ]" <>
 "\n\nReturn the data list associated to \"variableName\"";
 (*
- *)
+ ,*)
 StanVariableColumn[variableName_?StringQ,indexedHeader_?StanImportHeaderQ,data_?ListQ] := 
         Module[{column},
                column=StanFindVariableColumn[variableName,indexedHeader];
@@ -553,7 +595,7 @@ StanVariableColumn[variableName_?StringQ,indexedHeader_?StanImportHeaderQ,data_?
                Return[data[[All,column]]];
         ];
 (*
- *)           
+ ,*)           
 StanVariableColumn[variableName_?StringQ,stanImport_?StanImportQ] :=
         StanVariableColumn[variableName,StanImportHeader[stanImport],StanImportData[stanImport]];
 
@@ -563,7 +605,7 @@ CmdStan`StanVariableToImport::usage =
 "StanVariableToImport[variableName_,stanImport_?StanImportQ] returns a StanImport structure containing only the \"variableName\" variable" <>
 "\n\nReturn: the restricted StanImport structure.";
 (*
-*)
+,*)
 StanVariableToImport[variableName_,stanImport_?StanImportQ] :=
 		Module[{selected,newHeader,newData},
 
@@ -584,7 +626,7 @@ CmdStan`StanVariable::usage=
 "StanVariable[variableName_?StringQ,indexedHeader_?StanImportHeaderQ,data_?VectorQ]"<>
 "\n\nReturns the data associated to \"variableName\"";
 (*
- *)
+ ,*)
 StanVariable[variableName_?StringQ,indexedHeader_?StanImportHeaderQ,data_?VectorQ] := 
         Module[{column,variableIndex,createArray},
                column=StanFindVariableColumn[variableName,indexedHeader];
@@ -594,9 +636,9 @@ StanVariable[variableName_?StringQ,indexedHeader_?StanImportHeaderQ,data_?Vector
 			   (* Scalar ?*)
 			   If[Length[column]==1,Return[Flatten[data[[column]]]]];
 			   (*
-				* The variable to return is an array
-				* => Use SpareArray, then Normal, SLOW but always works 
-				*)
+				,* The variable to return is an array
+				,* => Use SpareArray, then Normal, SLOW but always works 
+				,*)
 			   variableIndex = StanFindVariableIndex[variableName, indexedHeader];
 
 			   Return[Normal[SparseArray[Thread [variableIndex ->data[[column]]]]]];
@@ -606,10 +648,15 @@ CmdStan`StanVariable::usage=
 "StanVariable[variableName_?StringQ,stanImport_?StanImportQ,sampleIdx_?IntegerQ]"
 "\n\nReturns the data associated to \"variableName\" from the \"sampleIdx\" row of the matrix data";
 (*
- *)           
+ ,*)           
 StanVariable[variableName_?StringQ,stanImport_?StanImportQ,sampleIdx_?IntegerQ] :=
         StanVariable[variableName,StanImportHeader[stanImport],StanImportData[stanImport][[sampleIdx,All]]];
+#+END_SRC
 
+* Convenience subroutines
+
+#+NAME: cmdStan_convenience.m
+#+BEGIN_SRC mathematica :exports code
 CmdStan`StanVariableFunc::usage=
 "StanVariableFunc[variableName_?StringQ,stanImport_?StanImportQ,func_] applies the function \"func\" to variable columns and return the result"<>
 "\n\nUsage example:"<>
@@ -626,9 +673,49 @@ StanVariableFunc[variableName_?StringQ,stanImport_?StanImportQ,func_] :=
 								   result];
 			   Return[result];
 		];
+#+END_SRC
+
+# ****************************************************************
+
+#+BEGIN_SRC txt :exports both :tangle yes :tangle CmdStan.m :noweb yes :exports none
+
+(*****************************************************************
+ * CmdStan Package
+ * A Mathematica package to interact with CmdStan
+ * https://github.com/vincent-picaud/MathematicaStan
+ * Author: Picaud Vincent, picaud.vincent at gmail.com
+ *
+ * AUTOMATICALLY GENERATED from cmdStan.org 
+ ******************************************************************)
+
+BeginPackage["CmdStan`"];
+
+Unprotect @@ Names["CmdStan`*"];
+ClearAll @@ Names["CmdStan`*"];
+
+Begin["`Private`"];
+
+
+<<cmdStan_path.m>>
+
+<<cmdStan_compile.m>>
+
+<<cmdStan_run_option.m>>
+<<cmdStan_run.m>>
+
+<<cmdStan_rdump.m>>
+
+<<cmdStan_import.m>>
+
+<<cmdStan_variable.m>>
+
+<<cmdStan_convenience.m>>
 
 End[];
 
 Protect @@ Names["CmdStan`*"];
 
 EndPackage[];
+#+END_SRC
+
+

@@ -4,3 +4,12 @@
 /Examples/Bernoulli/output.csv
 /README.html
 /README.html~
+/Examples/Bernoulli/output_optimize.csv
+/Examples/HorseShoePrior/horseShoePrior
+/Examples/HorseShoePrior/horseShoePrior.data.R
+/Examples/HorseShoePrior/horseShoePrior.hpp
+/Examples/HorseShoePrior/horseShoePrior.stan
+/Examples/HorseShoePrior/output.csv
+/Examples/Cluster/output.csv
+/Examples/Cluster/soft-k-means
+/Examples/Cluster/soft-k-means.hpp

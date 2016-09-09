@@ -1,0 +1,521 @@
+(* Content-type: application/vnd.wolfram.mathematica *)
+
+(*** Wolfram Notebook File ***)
+(* http://www.wolfram.com/nb *)
+
+(* CreatedBy='Mathematica 10.0' *)
+
+(*CacheID: 234*)
+(* Internal cache information:
+NotebookFileLineBreakTest
+NotebookFileLineBreakTest
+NotebookDataPosition[       158,          7]
+NotebookDataLength[     19672,        512]
+NotebookOptionsPosition[     17997,        446]
+NotebookOutlinePosition[     18334,        461]
+CellTagsIndexPosition[     18291,        458]
+WindowFrame->Normal*)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+
+Cell[CellGroupData[{
+Cell["Soft-k-means example", "Section",
+ CellChangeTimes->{{3.682442440403594*^9, 3.682442442244916*^9}, {
+  3.682442490988194*^9, 3.6824425001943073`*^9}}],
+
+Cell[CellGroupData[{
+
+Cell["Compiles Stan code", "Subsection",
+ CellChangeTimes->{{3.6824426843719482`*^9, 3.6824426931373*^9}, 
+   3.682442726638249*^9}],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{
+  "SetDirectory", "[", "\"\<~/GitHub/MathematicaStan/Examples/Cluster/\>\"", 
+   "]"}], ";"}], "\n", 
+ RowBox[{
+  RowBox[{"Needs", "[", "\"\<CmdStan`\>\"", "]"}], ";"}], "\n", 
+ RowBox[{
+  RowBox[{"StanCompile", "[", "\"\<soft-k-means.stan\>\"", "]"}], " ", 
+  RowBox[{"(*", " ", 
+   RowBox[{"CAVEAT", ":", " ", 
+    RowBox[{"takes", " ", "some", " ", "time"}]}], " ", "*)"}]}]}], "Code",
+ CellChangeTimes->{{3.682442482137542*^9, 3.682442482138791*^9}, 
+   3.682442512631974*^9, {3.6824425785072317`*^9, 3.682442589673208*^9}, {
+   3.682442625874312*^9, 3.682442628193616*^9}}],
+
+Cell[BoxData["\<\"make: \
+'/home/pix/GitHub/MathematicaStan/Examples/Cluster/soft-k-means' is \
+up to date.\"\>"], "Output",
+ CellChangeTimes->{
+  3.682442517557611*^9, 3.682442633307104*^9, {3.6825096942608833`*^9, 
+   3.682509699442164*^9}, {3.682509857641494*^9, 3.682509862467749*^9}, {
+   3.682511421649941*^9, 3.682511426591748*^9}, {3.682562267318758*^9, 
+   3.682562272510997*^9}, {3.682562825068144*^9, 3.682562825883889*^9}, 
+   3.682563368922123*^9, 3.68256345148026*^9, {3.682563576827057*^9, 
+   3.6825635820485*^9}, {3.6825637143915358`*^9, 3.6825637198534813`*^9}, 
+   3.682564111873702*^9, 3.6825653299923353`*^9, 3.682565420802109*^9, {
+   3.682678236847966*^9, 3.682678243731388*^9}}]
+}, Open  ]]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Runs generated executable", "Subsection",
+ CellChangeTimes->{{3.6824427157104473`*^9, 3.682442741637167*^9}}],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"StanRunVariational", "[", "\"\<soft-k-means\>\"", "]"}]], "Code",
+ CellChangeTimes->{{3.6824427459731283`*^9, 3.6824427895739326`*^9}}],
+
+Cell[BoxData["\<\"method = variational\\n  variational\\n    algorithm = \
+meanfield (Default)\\n      meanfield\\n    iter = 10000 (Default)\\n    \
+grad_samples = 1 (Default)\\n    elbo_samples = 100 (Default)\\n    eta = 1 \
+(Default)\\n    adapt\\n      engaged = 1 (Default)\\n      iter = 50 \
+(Default)\\n    tol_rel_obj = 0.01 (Default)\\n    eval_elbo = 100 \
+(Default)\\n    output_samples = 1000 (Default)\\nid = 0 (Default)\\ndata\\n  \
+file = /home/pix/GitHub/MathematicaStan/Examples/Cluster/soft-k-\
+means.data.R\\ninit = 2 (Default)\\nrandom\\n  seed = 635825645\\noutput\\n  \
+file = /home/pix/GitHub/MathematicaStan/Examples/Cluster/output.csv\\\
+n  diagnostic_file =  (Default)\\n  refresh = 100 (Default)\\n\\n\\nThis is \
+Automatic Differentiation Variational Inference.\\n\\n(EXPERIMENTAL \
+ALGORITHM: expect frequent updates to the procedure.)\\n\\nGradient \
+evaluation took 0.000253 seconds\\n1000 iterations under these settings \
+should take 0.253 seconds.\\nAdjust your expectations accordingly!\\n\\nBegin \
+eta adaptation.\\nIteration:   1 / 250 [  0%]  (Adaptation)\\nIteration:  50 \
+/ 250 [ 20%]  (Adaptation)\\nIteration: 100 / 250 [ 40%]  \
+(Adaptation)\\nIteration: 150 / 250 [ 60%]  (Adaptation)\\nIteration: 200 / \
+250 [ 80%]  (Adaptation)\\nSuccess! Found best value [eta = 1] earlier than \
+expected.\\n\\nBegin stochastic gradient ascent.\\n  iter       ELBO   \
+delta_ELBO_mean   delta_ELBO_med   notes \\n   100     -8e+02             \
+1.000            1.000\\n   200     -8e+02             0.502            1.000\
+\\n   300     -8e+02             0.335            0.004   MEDIAN ELBO \
+CONVERGED\\n\\nDrawing a sample of size 1000 from the approximate \
+posterior... \\nCOMPLETED.\"\>"], "Output",
+ CellChangeTimes->{{3.682442777794083*^9, 3.6824427911443233`*^9}, {
+   3.682509695422474*^9, 3.682509700394713*^9}, {3.682509858611561*^9, 
+   3.682509863400312*^9}, 3.6825114227029467`*^9, {3.6825622684438066`*^9, 
+   3.6825622734622097`*^9}, {3.682562825216365*^9, 3.68256282679465*^9}, 
+   3.682563369943344*^9, 3.682563452638694*^9, {3.68256357788384*^9, 
+   3.68256358316212*^9}, {3.682563715490355*^9, 3.6825637208112392`*^9}, 
+   3.682564112917906*^9, 3.68256533111027*^9, 3.6825654218689623`*^9, {
+   3.682678238947051*^9, 3.682678245095029*^9}}]
+}, Open  ]]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Imports data and variable manipulations", "Subsection",
+ CellChangeTimes->{{3.682442699821391*^9, 3.682442722849662*^9}, {
+  3.682442802034801*^9, 3.682442802951371*^9}, {3.682565493914021*^9, 
+  3.682565509873543*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"output", "=", 
+   RowBox[{"StanImport", "[", "\"\<output.csv\>\"", "]"}]}], ";"}]], "Code",
+ CellChangeTimes->{{3.682442664384704*^9, 3.682442664385499*^9}, {
+  3.6824428337506447`*^9, 3.682442836401003*^9}}],
+
+Cell[CellGroupData[{
+
+Cell["Prints header data (20 first variables)", "Subsubsection",
+ CellChangeTimes->{{3.682442455109765*^9, 3.682442458081766*^9}, {
+  3.6824428440665817`*^9, 3.6824428582466707`*^9}, {3.682442898966017*^9, 
+  3.682442906011579*^9}}],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"Take", "[", 
+  RowBox[{
+   RowBox[{"StanImportHeader", "[", "output", "]"}], ",", "20"}], 
+  "]"}]], "Code",
+ CellChangeTimes->{{3.682442863268291*^9, 3.6824429140312157`*^9}}],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{
+   RowBox[{"{", 
+    RowBox[{"\<\"lp__\"\>", ",", "1"}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"\<\"mu.1.1\"\>", ",", "2"}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"\<\"mu.2.1\"\>", ",", "3"}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"\<\"mu.3.1\"\>", ",", "4"}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"\<\"mu.4.1\"\>", ",", "5"}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"\<\"mu.5.1\"\>", ",", "6"}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"\<\"mu.1.2\"\>", ",", "7"}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"\<\"mu.2.2\"\>", ",", "8"}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"\<\"mu.3.2\"\>", ",", "9"}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"\<\"mu.4.2\"\>", ",", "10"}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"\<\"mu.5.2\"\>", ",", "11"}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"\<\"mu.1.3\"\>", ",", "12"}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"\<\"mu.2.3\"\>", ",", "13"}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"\<\"mu.3.3\"\>", ",", "14"}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"\<\"mu.4.3\"\>", ",", "15"}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"\<\"mu.5.3\"\>", ",", "16"}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"\<\"mu.1.4\"\>", ",", "17"}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"\<\"mu.2.4\"\>", ",", "18"}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"\<\"mu.3.4\"\>", ",", "19"}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"\<\"mu.4.4\"\>", ",", "20"}], "}"}]}], "}"}]], "Output",
+ CellChangeTimes->{{3.682442886195838*^9, 3.682442915343299*^9}, {
+   3.68250969918266*^9, 3.682509704271359*^9}, {3.682509862264533*^9, 
+   3.6825098677750607`*^9}, 3.682511426394949*^9, {3.682562272260882*^9, 
+   3.68256227695958*^9}, {3.682562825563315*^9, 3.682562830390048*^9}, 
+   3.682563375967609*^9, 3.682563456659128*^9, {3.682563581616935*^9, 
+   3.682563586902102*^9}, {3.6825637195527067`*^9, 3.682563724366905*^9}, {
+   3.682564117242919*^9, 3.682564121263158*^9}, 3.682565335009736*^9, 
+   3.682565425424664*^9, {3.682678243491105*^9, 3.6826782479309053`*^9}}]
+}, Open  ]]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Extract mu for sample 6", "Subsubsection",
+ CellChangeTimes->{{3.682442936093069*^9, 3.682442944845327*^9}, {
+   3.682443060172535*^9, 3.682443107978216*^9}, 3.6824433766827393`*^9}],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"StanVariable", "[", 
+   RowBox[{"\"\<mu\>\"", ",", "output", ",", "6"}], "]"}], " ", "//", " ", 
+  "MatrixForm"}]], "Input",
+ CellChangeTimes->{{3.682443088626348*^9, 3.682443119475926*^9}, {
+  3.682443379189047*^9, 3.682443380611197*^9}}],
+
+Cell[BoxData[
+ TagBox[
+  RowBox[{"(", "\[NoBreak]", GridBox[{
+     {"0.229876`", 
+      RowBox[{"-", "0.319952`"}], 
+      RowBox[{"-", "0.342192`"}], 
+      RowBox[{"-", "0.20772`"}], 
+      RowBox[{"-", "0.432373`"}], 
+      RowBox[{"-", "2.66269`"}], "0.823331`", 
+      RowBox[{"-", "0.18624`"}]},
+     {"1.15016`", 
+      RowBox[{"-", "0.199826`"}], "0.65275`", "0.93393`", "1.83303`", 
+      "0.0179777`", "1.13992`", "0.058709`"},
+     {
+      RowBox[{"-", "0.730597`"}], "0.280598`", "1.27422`", 
+      RowBox[{"-", "0.524396`"}], "1.66405`", "0.075491`", "0.0758345`", 
+      "0.24539`"},
+     {"1.2511`", "1.6941`", "1.21554`", "1.46439`", 
+      RowBox[{"-", "0.470623`"}], 
+      RowBox[{"-", "1.24124`"}], 
+      RowBox[{"-", "0.280543`"}], "0.483635`"},
+     {
+      RowBox[{"-", "0.353924`"}], "0.0704483`", "2.29614`", 
+      RowBox[{"-", "1.14478`"}], 
+      RowBox[{"-", "0.00308209`"}], 
+      RowBox[{"-", "0.481008`"}], 
+      RowBox[{"-", "0.299382`"}], "1.23815`"}
+    },
+    GridBoxAlignment->{
+     "Columns" -> {{Center}}, "ColumnsIndexed" -> {}, "Rows" -> {{Baseline}}, 
+      "RowsIndexed" -> {}},
+    GridBoxSpacings->{"Columns" -> {
+        Offset[0.27999999999999997`], {
+         Offset[0.7]}, 
+        Offset[0.27999999999999997`]}, "ColumnsIndexed" -> {}, "Rows" -> {
+        Offset[0.2], {
+         Offset[0.4]}, 
+        Offset[0.2]}, "RowsIndexed" -> {}}], "\[NoBreak]", ")"}],
+  Function[BoxForm`e$, 
+   MatrixForm[BoxForm`e$]]]], "Output",
+ CellChangeTimes->{3.6824430894400043`*^9, 3.682443120317175*^9, 
+  3.6824433813071012`*^9, 3.682443524369726*^9, 3.682509704368301*^9, 
+  3.6825098679151897`*^9, 3.682562277142066*^9, 3.682562830476132*^9, 
+  3.682563376133309*^9, 3.682563587038701*^9, 3.682563724554165*^9, 
+  3.6825641213577414`*^9, 3.682678248049725*^9}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"StanVariable", "[", 
+  RowBox[{"\"\<mu.2.3\>\"", ",", "output", ",", "6"}], "]"}]], "Code",
+ CellChangeTimes->{{3.682442952478788*^9, 3.68244300152911*^9}, {
+  3.6824431757365837`*^9, 3.68244317615267*^9}, {3.682443384891094*^9, 
+  3.682443386203364*^9}}],
+
+Cell[BoxData[
+ RowBox[{"{", "0.65275`", "}"}]], "Output",
+ CellChangeTimes->{{3.682442977910983*^9, 3.682443002261252*^9}, 
+   3.682443176690843*^9, 3.682443386727243*^9, 3.682443525791505*^9, {
+   3.68250969929384*^9, 3.6825097044747257`*^9}, {3.68250986232341*^9, 
+   3.682509868355912*^9}, 3.6825114264589987`*^9, {3.682562272347883*^9, 
+   3.68256227724546*^9}, {3.68256282557146*^9, 3.682562830571555*^9}, 
+   3.682563376277423*^9, 3.6825634567491426`*^9, {3.68256358172676*^9, 
+   3.682563587109152*^9}, {3.682563719667931*^9, 3.682563724725175*^9}, {
+   3.682564117338601*^9, 3.682564121442049*^9}, 3.68256533514264*^9, 
+   3.682565425494026*^9, {3.6826782436039143`*^9, 3.682678248142837*^9}}]
+}, Open  ]]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["\<\
+Extracts the whole column of sample for mu.2.3 (only prints the first 10)\
+\>", "Subsubsection",
+ CellChangeTimes->{{3.6824431996912317`*^9, 3.6824432197402277`*^9}, {
+   3.682443281320071*^9, 3.682443305077283*^9}, 3.682443633593693*^9}],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"Take", "[", 
+   RowBox[{
+    RowBox[{"StanVariableColumn", "[", 
+     RowBox[{"\"\<mu.2.3\>\"", ",", "output"}], "]"}], ",", "10"}], "]"}], 
+  " ", "//", " ", "MatrixForm"}]], "Input",
+ CellChangeTimes->{{3.6824430303482122`*^9, 3.682443030522477*^9}, {
+  3.682443225677682*^9, 3.682443250021028*^9}, {3.682443290918076*^9, 
+  3.6824432968937902`*^9}, {3.6824433342137403`*^9, 3.682443342915195*^9}}],
+
+Cell[BoxData[
+ TagBox[
+  RowBox[{"(", "\[NoBreak]", GridBox[{
+     {"0.626577`"},
+     {"0.642296`"},
+     {"0.613605`"},
+     {"0.566757`"},
+     {"0.361053`"},
+     {"0.65275`"},
+     {"0.137155`"},
+     {"0.497903`"},
+     {"0.528791`"},
+     {"0.729885`"}
+    },
+    GridBoxAlignment->{
+     "Columns" -> {{Center}}, "ColumnsIndexed" -> {}, "Rows" -> {{Baseline}}, 
+      "RowsIndexed" -> {}},
+    GridBoxSpacings->{"Columns" -> {
+        Offset[0.27999999999999997`], {
+         Offset[0.7]}, 
+        Offset[0.27999999999999997`]}, "ColumnsIndexed" -> {}, "Rows" -> {
+        Offset[0.2], {
+         Offset[0.4]}, 
+        Offset[0.2]}, "RowsIndexed" -> {}}], "\[NoBreak]", ")"}],
+  Function[BoxForm`e$, 
+   MatrixForm[BoxForm`e$]]]], "Output",
+ CellChangeTimes->{
+  3.6824430311193733`*^9, 3.6824432508919163`*^9, 3.6824432978629847`*^9, 
+   3.682443343491427*^9, 3.682443452673903*^9, 3.682509709890153*^9, {
+   3.682509870416943*^9, 3.682509878472084*^9}, 3.682562277319248*^9, 
+   3.682562830696473*^9, 3.682563376410853*^9, 3.682563587185665*^9, 
+   3.682563724853096*^9, 3.68256412152881*^9, 3.682678248251292*^9}]
+}, Open  ]]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Computes mean and standard deviation for all variables", "Subsubsection",
+ CellChangeTimes->{{3.682443614685093*^9, 3.682443659159754*^9}, {
+  3.68250988169326*^9, 3.682509883016678*^9}}],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"StanVariableFunc", "[", 
+   RowBox[{"\"\<mu\>\"", ",", "output", ",", "Mean"}], "]"}], " ", "//", " ", 
+  "MatrixForm"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"StanVariableFunc", "[", 
+   RowBox[{"\"\<mu\>\"", ",", "output", ",", "StandardDeviation"}], "]"}], 
+  " ", "//", " ", "MatrixForm"}]}], "Input",
+ CellChangeTimes->{{3.68256388811285*^9, 3.682563897239542*^9}, {
+  3.682565317575288*^9, 3.6825653243871603`*^9}, {3.682565435547988*^9, 
+  3.682565458472562*^9}}],
+
+Cell[BoxData[
+ TagBox[
+  RowBox[{"(", "\[NoBreak]", GridBox[{
+     {"0.06604122357972024`", 
+      RowBox[{"-", "0.03106034264945054`"}], 
+      RowBox[{"-", "0.36540443442557385`"}], "0.1554621384925074`", 
+      RowBox[{"-", "0.7398347043956044`"}], 
+      RowBox[{"-", "2.597774205794204`"}], "0.757784696303697`", 
+      "0.02152788394505493`"},
+     {"1.3008329320679328`", "0.15198950755644344`", "0.6368151178821176`", 
+      "0.8217401844855144`", "1.699526923076925`", "0.2003786881605393`", 
+      "1.0036495654345663`", "0.1824250929537463`"},
+     {
+      RowBox[{"-", "0.531262663656344`"}], "0.46470810796203804`", 
+      "0.3736332464915085`", 
+      RowBox[{"-", "0.42572200344655375`"}], "1.5669814785214813`", 
+      RowBox[{"-", "0.08900718745954045`"}], "0.1729221249020978`", 
+      "0.32711276401198863`"},
+     {"1.3831373196803216`", "1.7240278881118882`", "0.9146091918081927`", 
+      "0.7584892011088911`", 
+      RowBox[{"-", "0.5749671908791214`"}], 
+      RowBox[{"-", "1.4268934505494506`"}], 
+      RowBox[{"-", "0.31606115064335655`"}], "0.1976211525974026`"},
+     {
+      RowBox[{"-", "0.6585754595404593`"}], "0.11858625852897121`", 
+      "2.06253027972028`", 
+      RowBox[{"-", "1.371085483516483`"}], 
+      RowBox[{"-", "0.17019821491208767`"}], 
+      RowBox[{"-", "0.38173884530469604`"}], 
+      RowBox[{"-", "0.21106430632867107`"}], "0.7300861608391616`"}
+    },
+    GridBoxAlignment->{
+     "Columns" -> {{Center}}, "ColumnsIndexed" -> {}, "Rows" -> {{Baseline}}, 
+      "RowsIndexed" -> {}},
+    GridBoxSpacings->{"Columns" -> {
+        Offset[0.27999999999999997`], {
+         Offset[0.7]}, 
+        Offset[0.27999999999999997`]}, "ColumnsIndexed" -> {}, "Rows" -> {
+        Offset[0.2], {
+         Offset[0.4]}, 
+        Offset[0.2]}, "RowsIndexed" -> {}}], "\[NoBreak]", ")"}],
+  Function[BoxForm`e$, 
+   MatrixForm[BoxForm`e$]]]], "Output",
+ CellChangeTimes->{
+  3.682563897996437*^9, 3.682563943337834*^9, {3.682564121903235*^9, 
+   3.682564137799102*^9}, 3.682565339765092*^9, {3.682565425607337*^9, 
+   3.682565460176116*^9}, 3.68267824832915*^9}],
+
+Cell[BoxData[
+ TagBox[
+  RowBox[{"(", "\[NoBreak]", GridBox[{
+     {"0.20402756285391885`", "0.1829209176097577`", "0.174297844353213`", 
+      "0.20264348418539968`", "0.21529213495463753`", "0.20042968887366364`", 
+      "0.19962594274035547`", "0.17901699026593074`"},
+     {"0.23390936771957077`", "0.2255348028305969`", "0.21527862007564003`", 
+      "0.2894872991416788`", "0.18164257629950933`", "0.2124749085234202`", 
+      "0.2111303773694964`", "0.21963250684998886`"},
+     {"0.3181476813292948`", "0.20675089791293563`", "0.27006440569406176`", 
+      "0.28994371533690916`", "0.3382432185224824`", "0.22069258190314975`", 
+      "0.30345019883219587`", "0.22363997300075036`"},
+     {"0.30876449278826684`", "0.2636551250234508`", "0.31406547114621947`", 
+      "0.3429257952590764`", "0.2718456993171148`", "0.2821105675111512`", 
+      "0.2582197736354359`", "0.3192086931056577`"},
+     {"0.15338872621923233`", "0.20054241734011938`", "0.1932836222682141`", 
+      "0.19181201293567612`", "0.17913361809847891`", "0.17171729745601916`", 
+      "0.18513952459052951`", "0.17669067611513378`"}
+    },
+    GridBoxAlignment->{
+     "Columns" -> {{Center}}, "ColumnsIndexed" -> {}, "Rows" -> {{Baseline}}, 
+      "RowsIndexed" -> {}},
+    GridBoxSpacings->{"Columns" -> {
+        Offset[0.27999999999999997`], {
+         Offset[0.7]}, 
+        Offset[0.27999999999999997`]}, "ColumnsIndexed" -> {}, "Rows" -> {
+        Offset[0.2], {
+         Offset[0.4]}, 
+        Offset[0.2]}, "RowsIndexed" -> {}}], "\[NoBreak]", ")"}],
+  Function[BoxForm`e$, 
+   MatrixForm[BoxForm`e$]]]], "Output",
+ CellChangeTimes->{
+  3.682563897996437*^9, 3.682563943337834*^9, {3.682564121903235*^9, 
+   3.682564137799102*^9}, 3.682565339765092*^9, {3.682565425607337*^9, 
+   3.682565460176116*^9}, 3.682678248419463*^9}]
+}, Open  ]]
+}, Open  ]]
+}, Open  ]]
+}, Open  ]]
+},
+WindowSize->{1680, 1015},
+WindowMargins->{{0, Automatic}, {Automatic, 3}},
+FrontEndVersion->"8.0 for Linux x86 (64-bit) (February 23, 2011)",
+StyleDefinitions->"Default.nb"
+]
+(* End of Notebook Content *)
+
+(* Internal cache information *)
+(*CellTagsOutline
+CellTagsIndex->{}
+*)
+(*CellTagsIndex
+CellTagsIndex->{}
+*)
+(*NotebookFileOutline
+Notebook[{
+Cell[CellGroupData[{
+Cell[580, 22, 156, 2, 74, "Section"],
+Cell[CellGroupData[{
+Cell[761, 28, 132, 2, 39, "Subsection"],
+Cell[CellGroupData[{
+Cell[918, 34, 614, 14, 85, "Code"],
+Cell[1535, 50, 711, 11, 30, "Output"]
+}, Open  ]]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[2295, 67, 115, 1, 39, "Subsection"],
+Cell[CellGroupData[{
+Cell[2435, 72, 159, 2, 46, "Code"],
+Cell[2597, 76, 2317, 31, 962, "Output"]
+}, Open  ]]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[4963, 113, 225, 3, 39, "Subsection"],
+Cell[5191, 118, 243, 5, 46, "Code"],
+Cell[CellGroupData[{
+Cell[5459, 127, 232, 3, 28, "Subsubsection"],
+Cell[CellGroupData[{
+Cell[5716, 134, 200, 5, 46, "Code"],
+Cell[5919, 141, 2078, 50, 50, "Output"]
+}, Open  ]]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[8046, 197, 188, 2, 28, "Subsubsection"],
+Cell[CellGroupData[{
+Cell[8259, 203, 274, 6, 30, "Input"],
+Cell[8536, 211, 1804, 44, 100, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[10377, 260, 279, 5, 46, "Code"],
+Cell[10659, 267, 701, 10, 30, "Output"]
+}, Open  ]]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[11409, 283, 248, 4, 28, "Subsubsection"],
+Cell[CellGroupData[{
+Cell[11682, 291, 435, 9, 30, "Input"],
+Cell[12120, 302, 1126, 31, 175, "Output"]
+}, Open  ]]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[13295, 339, 193, 2, 28, "Subsubsection"],
+Cell[CellGroupData[{
+Cell[13513, 345, 513, 11, 50, "Input"],
+Cell[14029, 358, 2102, 46, 100, "Output"],
+Cell[16134, 406, 1811, 34, 100, "Output"]
+}, Open  ]]
+}, Open  ]]
+}, Open  ]]
+}, Open  ]]
+}
+]
+*)
+
+(* End of internal cache information *)
