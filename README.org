@@ -73,10 +73,16 @@ stanDir="~/GitHub/cmdstan";
 
 ** Complete examples
 
+For the moment use cases are illustrated by 3 examples. For these
+examples the *Mathematica notebook* and the associated *pdf* are
+available.  Note that *pdf* are better viewed with an external
+software as evince, okular... for a reason I ignore, the GitHub
+version is not good.
+
 ** Bernoulli.stan 
 
 We use the Examples/Bernoulli/bernoulli.stan example. You can find the
-Mathematica notebook [[https://github.com/vincent-picaud/MathematicaStan/blob/master/Examples/Bernoulli/bernoulli.nb][benoulli.nb]] or directly view the associated
+Mathematica notebook [[https://github.com/vincent-picaud/MathematicaStan/blob/master/Examples/Bernoulli/bernoulli.nb][bernoulli.nb]] or directly view the associated
 [[https://github.com/vincent-picaud/MathematicaStan/blob/master/Examples/Bernoulli/bernoulli.pdf][bernoulli.pdf]] file.
 
 ** soft-k-means.stan example
@@ -145,7 +151,7 @@ StanVariableFunc
 StanVariableToImport
 #+end_example
 
-To get extra information you can use the inline package documentation, for intance:
+To get extra information you can use the inline package documentation, for instance:
 
 #+BEGIN_SRC mathematica :exports both
 Needs["CmdStan`"];
