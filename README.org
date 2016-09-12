@@ -18,12 +18,12 @@ from Mathematica. It is tested under *Linux* with *Mathematica version >=8.0*.
 
 *** Creation of the CmdStan.m file (*not required*)
 
-You can skip this step, a [[https://github.com/vincent-picaud/MathematicaStan/blob/master/CmdStan.m][CmdStan.m]] file is already present in this directory.
+*You can skip this step, a [[https://github.com/vincent-picaud/MathematicaStan/blob/master/CmdStan.m][CmdStan.m]] file is already present in this directory.*
 
-You just have to know that the [[https://github.com/vincent-picaud/MathematicaStan/blob/master/CmdStan.m][CmdStan.m]] file is automatically created
-from the [[https://github.com/vincent-picaud/MathematicaStan/blob/master/CmdStan.org][CmdStan.org]] file.  However for your convenience, you do not
-have to create a fresh *CmdStan.m*, I have directly included its last
-version.
+Otherwise you have to known that the [[https://github.com/vincent-picaud/MathematicaStan/blob/master/CmdStan.m][CmdStan.m]] file is automatically
+created from the [[https://github.com/vincent-picaud/MathematicaStan/blob/master/CmdStan.org][CmdStan.org]] file using Emacs + [[http://orgmode.org/][org-mode]]. To generate
+the *CmdStan.m*, open the *CmdStan.org* file with Emacs and type *c-c
+c-v t* to create the *CmdStan.m* file.
 
 *** CmdStan installation 
 
@@ -74,24 +74,17 @@ stanDir="~/GitHub/cmdstan";
 ** Complete examples
 
 For the moment use cases are illustrated by 3 examples. For these
-examples the *Mathematica notebook* and the associated *pdf* are
-available.  Note that *pdf* are better viewed with an external
-software as evince, okular... for a reason I ignore, the GitHub
-version is not good.
+examples the *Mathematica notebooks* and the associated *pdf* files
+are available. Note that the *pdf* file are better viewed with an
+external software like evince or okular... for a reason I ignore, the
+GitHub version is not good (type "download" to open the pdf with your
+external pdf viewer).
 
 ** Bernoulli.stan 
 
 We use the Examples/Bernoulli/bernoulli.stan example. You can find the
 Mathematica notebook [[https://github.com/vincent-picaud/MathematicaStan/blob/master/Examples/Bernoulli/bernoulli.nb][bernoulli.nb]] or directly view the associated
 [[https://github.com/vincent-picaud/MathematicaStan/blob/master/Examples/Bernoulli/bernoulli.pdf][bernoulli.pdf]] file.
-
-** soft-k-means.stan example
-
-This use case is based on the [[https://github.com/stan-dev/example-models/blob/master/misc/cluster/soft-k-means/soft-k-means.stan][soft-k-means]] example. 
-
-You can find the Mathematica notebook [[https://github.com/vincent-picaud/MathematicaStan/blob/master/Examples/Cluster/soft-k-means.nb][soft-k-means.nb]] or directly view
-the associated [[https://github.com/vincent-picaud/MathematicaStan/blob/master/Examples/Cluster/soft-k-means.pdf][soft-k-means.pdf]] file.
-
 
 ** horseShoePrior.stan example
 
@@ -102,6 +95,12 @@ Horseshoe prior]]. Also see [[http://andrewgelman.com/2015/02/17/bayesian-surviv
 You can find the Mathematica notebook [[https://github.com/vincent-picaud/MathematicaStan/blob/master/Examples/HorseShoePrior/horseShoePrior.nb][horseShoePrior.nb]] or directly view
 the associated [[https://github.com/vincent-picaud/MathematicaStan/blob/master/Examples/HorseShoePrior/horseShoePrior.pdf][horseShoePrior.pdf]] file.
 
+** soft-k-means.stan example
+
+This use case is based on the [[https://github.com/stan-dev/example-models/blob/master/misc/cluster/soft-k-means/soft-k-means.stan][soft-k-means]] example. 
+
+You can find the Mathematica notebook [[https://github.com/vincent-picaud/MathematicaStan/blob/master/Examples/Cluster/soft-k-means.nb][soft-k-means.nb]] or directly view
+the associated [[https://github.com/vincent-picaud/MathematicaStan/blob/master/Examples/Cluster/soft-k-means.pdf][soft-k-means.pdf]] file.
 
 * Package documentation
 
