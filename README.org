@@ -116,6 +116,7 @@ Needs["CmdStan`"];
 #+RESULTS:
 #+begin_example
 RDumpExport
+StanCodeExport
 StanCompile
 StanDirectory
 StanFindVariableColumn
@@ -127,7 +128,6 @@ StanImport
 StanImportComment
 StanImportData
 StanImportHeader
-StanImportReplaceData
 StanOptionOptimize
 StanOptionSample
 StanOptionVariational

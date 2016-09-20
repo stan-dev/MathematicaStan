@@ -47,7 +47,33 @@ CmdStan`StanDirectory::usage=
 (*
 *)
 StanDirectory[]:=stanDir;
+CmdStan`StanCodeExport::usage=
+"StanCodeExport[stanCodeFileName_?StringQ, stanCode_?StringQ] exports Stan code into an \"stanCodeFileName.stan\" file, if the output file is identical to \"stanCode\" does nothing (this prevents from useless recompilations)";
+(*
+ *)
+StanCodeExport[stanCodeFileName_?StringQ, stanCode_?StringQ]:=
+  Module[{codeFileNameWithExt,oldCode},
 
+  If[FileExtension[stanCodeFileName]=="stan",
+    codeFileNameWithExt=stanCodeFileName,
+    codeFileNameWithExt=stanCodeFileName<>".stan"
+    ];
+
+  (* If file content == stanCode -> do nothing 
+   *)
+  If[FileExistsQ[codeFileNameWithExt],
+   oldCode=Import[codeFileNameWithExt,"String"];
+   If[oldCode==stanCode,
+     Return[codeFileNameWithExt];
+     ];
+  ];
+
+  Export[codeFileNameWithExt,stanCode,"Text"];
+
+  Return[codeFileNameWithExt];
+];
+  
+  
 (*
  * Private
  *)

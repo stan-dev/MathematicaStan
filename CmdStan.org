@@ -102,6 +102,50 @@ CmdStan`StanDirectory::usage=
 StanDirectory[]:=stanDir;
 #+END_SRC
 
+** The StanCodeExport command
+
+Basically this command is equivalent to 
+
+#+BEGIN_SRC mathematica :exports code
+Export["horseShoePrior.stan",stanCode,"Text"]
+#+END_SRC
+
+the difference is that before overwriting the .stan file it checks if
+it is different from the *stanCode* variable. If no difference is
+detected the file is untouched, this *prevents useless
+recompilations*.
+
+#+NAME: cmdStan_stanCodeExport.m
+#+BEGIN_SRC mathematica
+CmdStan`StanCodeExport::usage=
+"StanCodeExport[stanCodeFileName_?StringQ, stanCode_?StringQ] exports Stan code into an \"stanCodeFileName.stan\" file, if the output file is identical to \"stanCode\" does nothing (this prevents from useless recompilations)";
+(*
+ ,*)
+StanCodeExport[stanCodeFileName_?StringQ, stanCode_?StringQ]:=
+  Module[{codeFileNameWithExt,oldCode},
+
+  If[FileExtension[stanCodeFileName]=="stan",
+    codeFileNameWithExt=stanCodeFileName,
+    codeFileNameWithExt=stanCodeFileName<>".stan"
+    ];
+
+  (* If file content == stanCode -> do nothing 
+   ,*)
+  If[FileExistsQ[codeFileNameWithExt],
+   oldCode=Import[codeFileNameWithExt,"String"];
+   If[oldCode==stanCode,
+     Return[codeFileNameWithExt];
+     ];
+  ];
+
+  Export[codeFileNameWithExt,stanCode,"Text"];
+
+  Return[codeFileNameWithExt];
+];
+  
+  
+#+END_SRC 
+
 ** The compile command
 
 #+NAME: cmdStan_compile.m
@@ -697,7 +741,7 @@ Begin["`Private`"];
 
 
 <<cmdStan_path.m>>
-
+<<cmdStan_stanCodeExport.m>>
 <<cmdStan_compile.m>>
 
 <<cmdStan_run_option.m>>
