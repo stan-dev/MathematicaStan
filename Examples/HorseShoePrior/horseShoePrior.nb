@@ -10,10 +10,10 @@
 NotebookFileLineBreakTest
 NotebookFileLineBreakTest
 NotebookDataPosition[       157,          7]
-NotebookDataLength[    201958,       4779]
-NotebookOptionsPosition[    199865,       4700]
-NotebookOutlinePosition[    200225,       4716]
-CellTagsIndexPosition[    200182,       4713]
+NotebookDataLength[    201916,       4776]
+NotebookOptionsPosition[    199823,       4697]
+NotebookOutlinePosition[    200183,       4713]
+CellTagsIndexPosition[    200140,       4710]
 WindowFrame->Normal*)
 
 (* Beginning of Notebook Content *)
@@ -48,8 +48,8 @@ Cell[BoxData[{
   3.6824176683558273`*^9, 3.682417678474187*^9}, {3.682417715120927*^9, 
   3.682417715955593*^9}, {3.682429998596367*^9, 3.682430006310978*^9}}],
 
-Cell[BoxData["\<\"/home/pix/GitHub/MathematicaStan/Examples/\
-HorseShoePrior\"\>"], "Output",
+Cell[BoxData["\<\"/home/pix/GitHub/MathematicaStan/Examples/HorseShoePrior\"\>\
+"], "Output",
  CellChangeTimes->{{3.6824174774167967`*^9, 3.6824174850587606`*^9}, 
    3.682417719228777*^9, 3.682417840476893*^9, 3.68241789730019*^9, 
    3.6824197943814363`*^9, 3.682419857480072*^9, 3.682430009994194*^9, 
@@ -80,14 +80,13 @@ cauchy(0, 1);\n  tau ~ cauchy(0, 1);\n  for (i in 1:p)\n    beta[i] ~ \
 normal(0, lambda[i] * tau);\n  y ~ normal(X * beta, sigma);\n}\>\""}], 
   ";"}], "\n", 
  RowBox[{
-  RowBox[{"Export", "[", 
-   RowBox[{
-   "\"\<horseShoePrior.stan\>\"", ",", "stanCode", ",", "\"\<Text\>\""}], 
-   "]"}], "\n"}], "\n", 
- RowBox[{"StanCompile", "[", "\"\<horseShoePrior.stan\>\"", "]"}]}], "Code",
+  RowBox[{"StanCodeExport", "[", 
+   RowBox[{"\"\<horseShoePrior\>\"", ",", "stanCode"}], "]"}], "\n"}], "\n", 
+ RowBox[{"StanCompile", "[", "\"\<horseShoePrior\>\"", "]"}]}], "Code",
  CellChangeTimes->{{3.682392916632563*^9, 3.682392920156272*^9}, {
    3.682392975574563*^9, 3.6823929794461517`*^9}, {3.682402537941684*^9, 
-   3.6824025407205133`*^9}, 3.682430132303488*^9, 3.682432233113285*^9}],
+   3.6824025407205133`*^9}, 3.682430132303488*^9, 3.682432233113285*^9, {
+   3.683438917947082*^9, 3.683438934781807*^9}, 3.6834390693911333`*^9}],
 
 Cell[BoxData["\<\"horseShoePrior.stan\"\>"], "Output",
  CellChangeTimes->{3.682430884447179*^9, 3.682432223477009*^9, 
@@ -95,23 +94,21 @@ Cell[BoxData["\<\"horseShoePrior.stan\"\>"], "Output",
   3.682677002537262*^9, 3.682677080011916*^9}],
 
 Cell[BoxData["\<\"\\n--- Translating Stan model to C++ code ---\\nbin/stanc \
-/home/pix/GitHub/MathematicaStan/Examples/HorseShoePrior/\
-horseShoePrior.stan \
---o=/home/pix/GitHub/MathematicaStan/Examples/HorseShoePrior/\
-horseShoePrior.hpp\\nModel name=horseShoePrior_model\\nInput \
-file=/home/pix/GitHub/MathematicaStan/Examples/HorseShoePrior/\
-horseShoePrior.stan\\nOutput \
-file=/home/pix/GitHub/MathematicaStan/Examples/HorseShoePrior/\
-horseShoePrior.hpp\\n\\n--- Linking C++ model ---\\ng++ -I src -I stan/src \
--isystem stan/lib/stan_math/ -isystem stan/lib/stan_math/lib/eigen_3.2.8 \
--isystem stan/lib/stan_math/lib/boost_1.60.0 -isystem \
+/home/pix/GitHub/MathematicaStan/Examples/HorseShoePrior/horseShoePrior.stan \
+--o=/home/pix/GitHub/MathematicaStan/Examples/HorseShoePrior/horseShoePrior.\
+hpp\\nModel name=horseShoePrior_model\\nInput \
+file=/home/pix/GitHub/MathematicaStan/Examples/HorseShoePrior/horseShoePrior.\
+stan\\nOutput \
+file=/home/pix/GitHub/MathematicaStan/Examples/HorseShoePrior/horseShoePrior.\
+hpp\\n\\n--- Linking C++ model ---\\ng++ -I src -I stan/src -isystem \
+stan/lib/stan_math/ -isystem stan/lib/stan_math/lib/eigen_3.2.8 -isystem \
+stan/lib/stan_math/lib/boost_1.60.0 -isystem \
 stan/lib/stan_math/lib/cvodes_2.8.2/include -Wall -DEIGEN_NO_DEBUG  \
 -DBOOST_RESULT_OF_USE_TR1 -DBOOST_NO_DECLTYPE -DBOOST_DISABLE_ASSERTS \
 -DFUSION_MAX_VECTOR_SIZE=12 -DNO_FPRINTF_OUTPUT -pipe   -lpthread  -O3 -o \
-/home/pix/GitHub/MathematicaStan/Examples/HorseShoePrior/\
-horseShoePrior src/cmdstan/main.cpp -include \
-/home/pix/GitHub/MathematicaStan/Examples/HorseShoePrior/\
-horseShoePrior.hpp \
+/home/pix/GitHub/MathematicaStan/Examples/HorseShoePrior/horseShoePrior \
+src/cmdstan/main.cpp -include \
+/home/pix/GitHub/MathematicaStan/Examples/HorseShoePrior/horseShoePrior.hpp \
 stan/lib/stan_math/lib/cvodes_2.8.2/lib/libsundials_nvecserial.a \
 stan/lib/stan_math/lib/cvodes_2.8.2/lib/libsundials_cvodes.a \"\>"], "Output",\
 
@@ -287,28 +284,28 @@ Cell[BoxData["\<\"method = sample (Default)\\n  sample\\n    num_samples = \
 max_depth = 10 (Default)\\n        metric = diag_e (Default)\\n        \
 stepsize = 1 (Default)\\n        stepsize_jitter = 0 (Default)\\nid = 0 \
 (Default)\\ndata\\n  file = \
-/home/pix/GitHub/MathematicaStan/Examples/HorseShoePrior/\
-horseShoePrior.data.R\\ninit = 2 (Default)\\nrandom\\n  seed = 5\\noutput\\n  \
-file = /home/pix/GitHub/MathematicaStan/Examples/HorseShoePrior/\
-output.csv\\n  diagnostic_file =  (Default)\\n  refresh = 100 (Default)\\n\\n\
-\\nGradient evaluation took 0.000134 seconds\\n1000 transitions using 10 \
-leapfrog steps per transition would take 1.34 seconds.\\nAdjust your \
-expectations accordingly!\\n\\n\\nIteration:    1 / 2000 [  0%]  \
-(Warmup)\\nIteration:  100 / 2000 [  5%]  (Warmup)\\nIteration:  200 / 2000 [ \
-10%]  (Warmup)\\nIteration:  300 / 2000 [ 15%]  (Warmup)\\nIteration:  400 / \
-2000 [ 20%]  (Warmup)\\nIteration:  500 / 2000 [ 25%]  (Warmup)\\nIteration:  \
-600 / 2000 [ 30%]  (Warmup)\\nIteration:  700 / 2000 [ 35%]  \
-(Warmup)\\nIteration:  800 / 2000 [ 40%]  (Warmup)\\nIteration:  900 / 2000 [ \
-45%]  (Warmup)\\nIteration: 1000 / 2000 [ 50%]  (Warmup)\\nIteration: 1001 / \
-2000 [ 50%]  (Sampling)\\nIteration: 1100 / 2000 [ 55%]  \
-(Sampling)\\nIteration: 1200 / 2000 [ 60%]  (Sampling)\\nIteration: 1300 / \
-2000 [ 65%]  (Sampling)\\nIteration: 1400 / 2000 [ 70%]  \
-(Sampling)\\nIteration: 1500 / 2000 [ 75%]  (Sampling)\\nIteration: 1600 / \
-2000 [ 80%]  (Sampling)\\nIteration: 1700 / 2000 [ 85%]  \
-(Sampling)\\nIteration: 1800 / 2000 [ 90%]  (Sampling)\\nIteration: 1900 / \
-2000 [ 95%]  (Sampling)\\nIteration: 2000 / 2000 [100%]  (Sampling)\\n\\n \
-Elapsed Time: 88.1214 seconds (Warm-up)\\n               28.9074 seconds \
-(Sampling)\\n               117.029 seconds (Total)\\n\"\>"], "Output",
+/home/pix/GitHub/MathematicaStan/Examples/HorseShoePrior/horseShoePrior.data.\
+R\\ninit = 2 (Default)\\nrandom\\n  seed = 5\\noutput\\n  file = \
+/home/pix/GitHub/MathematicaStan/Examples/HorseShoePrior/output.csv\\n  \
+diagnostic_file =  (Default)\\n  refresh = 100 (Default)\\n\\n\\nGradient \
+evaluation took 0.000134 seconds\\n1000 transitions using 10 leapfrog steps \
+per transition would take 1.34 seconds.\\nAdjust your expectations \
+accordingly!\\n\\n\\nIteration:    1 / 2000 [  0%]  (Warmup)\\nIteration:  \
+100 / 2000 [  5%]  (Warmup)\\nIteration:  200 / 2000 [ 10%]  \
+(Warmup)\\nIteration:  300 / 2000 [ 15%]  (Warmup)\\nIteration:  400 / 2000 [ \
+20%]  (Warmup)\\nIteration:  500 / 2000 [ 25%]  (Warmup)\\nIteration:  600 / \
+2000 [ 30%]  (Warmup)\\nIteration:  700 / 2000 [ 35%]  (Warmup)\\nIteration:  \
+800 / 2000 [ 40%]  (Warmup)\\nIteration:  900 / 2000 [ 45%]  \
+(Warmup)\\nIteration: 1000 / 2000 [ 50%]  (Warmup)\\nIteration: 1001 / 2000 [ \
+50%]  (Sampling)\\nIteration: 1100 / 2000 [ 55%]  (Sampling)\\nIteration: \
+1200 / 2000 [ 60%]  (Sampling)\\nIteration: 1300 / 2000 [ 65%]  \
+(Sampling)\\nIteration: 1400 / 2000 [ 70%]  (Sampling)\\nIteration: 1500 / \
+2000 [ 75%]  (Sampling)\\nIteration: 1600 / 2000 [ 80%]  \
+(Sampling)\\nIteration: 1700 / 2000 [ 85%]  (Sampling)\\nIteration: 1800 / \
+2000 [ 90%]  (Sampling)\\nIteration: 1900 / 2000 [ 95%]  \
+(Sampling)\\nIteration: 2000 / 2000 [100%]  (Sampling)\\n\\n Elapsed Time: \
+88.1214 seconds (Warm-up)\\n               28.9074 seconds (Sampling)\\n      \
+         117.029 seconds (Total)\\n\"\>"], "Output",
  CellChangeTimes->{
   3.682402818386652*^9, {3.682403500787146*^9, 3.682403552663217*^9}, 
    3.68240400641917*^9, 3.68240420711764*^9, 3.682430885314118*^9, 
@@ -4723,59 +4720,59 @@ Cell[CellGroupData[{
 Cell[939, 36, 190, 2, 39, "Subsection"],
 Cell[CellGroupData[{
 Cell[1154, 42, 393, 6, 66, "Code"],
-Cell[1550, 50, 476, 7, 30, "Output"]
+Cell[1550, 50, 467, 7, 30, "Output"]
 }, Open  ]]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[2075, 63, 340, 4, 39, "Subsection"],
+Cell[2066, 63, 340, 4, 39, "Subsection"],
 Cell[CellGroupData[{
-Cell[2440, 71, 883, 18, 446, "Code"],
-Cell[3326, 91, 238, 3, 30, "Output"],
-Cell[3567, 96, 1441, 23, 259, "Output"]
+Cell[2431, 71, 926, 17, 446, "Code"],
+Cell[3360, 90, 238, 3, 30, "Output"],
+Cell[3601, 95, 1383, 21, 259, "Output"]
 }, Open  ]]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[5057, 125, 181, 2, 39, "Subsection"],
+Cell[5033, 122, 181, 2, 39, "Subsection"],
 Cell[CellGroupData[{
-Cell[5263, 131, 3624, 93, 392, "Input"],
-Cell[8890, 226, 208, 3, 30, "Output"],
-Cell[9101, 231, 206, 3, 30, "Output"]
+Cell[5239, 128, 3624, 93, 392, "Input"],
+Cell[8866, 223, 208, 3, 30, "Output"],
+Cell[9077, 228, 206, 3, 30, "Output"]
 }, Open  ]]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[9356, 240, 115, 1, 39, "Subsection"],
+Cell[9332, 237, 115, 1, 39, "Subsection"],
 Cell[CellGroupData[{
-Cell[9496, 245, 468, 10, 66, "Code"],
-Cell[9967, 257, 371, 7, 30, "Output"]
+Cell[9472, 242, 468, 10, 66, "Code"],
+Cell[9943, 254, 371, 7, 30, "Output"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[10375, 269, 357, 7, 66, "Code"],
-Cell[10735, 278, 2658, 37, 1285, "Output"]
+Cell[10351, 266, 357, 7, 66, "Code"],
+Cell[10711, 275, 2640, 37, 1285, "Output"]
 }, Open  ]]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[13442, 321, 104, 1, 39, "Subsection"],
-Cell[13549, 324, 192, 4, 46, "Code"],
-Cell[13744, 330, 130, 1, 30, "Text"],
-Cell[13877, 333, 278, 7, 46, "Code"],
+Cell[13400, 318, 104, 1, 39, "Subsection"],
+Cell[13507, 321, 192, 4, 46, "Code"],
+Cell[13702, 327, 130, 1, 30, "Text"],
+Cell[13835, 330, 278, 7, 46, "Code"],
 Cell[CellGroupData[{
-Cell[14180, 344, 612, 15, 46, "Code"],
-Cell[14795, 361, 151623, 3474, 521, "Output"]
+Cell[14138, 341, 612, 15, 46, "Code"],
+Cell[14753, 358, 151623, 3474, 521, "Output"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[166455, 3840, 148, 2, 28, "Subsubsection"],
+Cell[166413, 3837, 148, 2, 28, "Subsubsection"],
 Cell[CellGroupData[{
-Cell[166628, 3846, 1612, 44, 185, "Code"],
-Cell[168243, 3892, 1219, 21, 43, "Print"],
-Cell[169465, 3915, 28860, 728, 483, "Output"]
+Cell[166586, 3843, 1612, 44, 185, "Code"],
+Cell[168201, 3889, 1219, 21, 43, "Print"],
+Cell[169423, 3912, 28860, 728, 483, "Output"]
 }, Open  ]]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[198374, 4649, 215, 5, 28, "Subsubsection"],
+Cell[198332, 4646, 215, 5, 28, "Subsubsection"],
 Cell[CellGroupData[{
-Cell[198614, 4658, 859, 27, 85, "Code"],
-Cell[199476, 4687, 161, 2, 30, "Output"],
-Cell[199640, 4691, 161, 2, 30, "Output"]
+Cell[198572, 4655, 859, 27, 85, "Code"],
+Cell[199434, 4684, 161, 2, 30, "Output"],
+Cell[199598, 4688, 161, 2, 30, "Output"]
 }, Open  ]]
 }, Open  ]]
 }, Open  ]]
@@ -4786,4 +4783,3 @@ Cell[199640, 4691, 161, 2, 30, "Output"]
 *)
 
 (* End of internal cache information *)
-

@@ -10,16 +10,21 @@
 NotebookFileLineBreakTest
 NotebookFileLineBreakTest
 NotebookDataPosition[       157,          7]
-NotebookDataLength[     44185,       1124]
-NotebookOptionsPosition[     41625,       1028]
-NotebookOutlinePosition[     41986,       1044]
-CellTagsIndexPosition[     41943,       1041]
+NotebookDataLength[     44312,       1133]
+NotebookOptionsPosition[     41685,       1034]
+NotebookOutlinePosition[     42045,       1050]
+CellTagsIndexPosition[     42002,       1047]
 WindowFrame->Normal*)
 
 (* Beginning of Notebook Content *)
 Notebook[{
 
 Cell[CellGroupData[{
+Cell["Bernoulli example", "Title",
+ CellChangeTimes->{{3.683438689680354*^9, 3.6834386998904676`*^9}}],
+
+Cell[CellGroupData[{
+
 Cell["Defines the working directory and loads CmdStan.m", "Subsection",
  CellChangeTimes->{{3.682417683952396*^9, 3.6824177009258537`*^9}, {
   3.682418364173077*^9, 3.6824183771051903`*^9}}],
@@ -34,8 +39,8 @@ Cell[BoxData[{
   3.6824176683558273`*^9, 3.682417678474187*^9}, {3.682417715120927*^9, 
   3.682417715955593*^9}}],
 
-Cell[BoxData["\<\"/home/pix/GitHub/MathematicaStan/Examples/\
-Bernoulli\"\>"], "Output",
+Cell[BoxData["\<\"/home/pix/GitHub/MathematicaStan/Examples/Bernoulli\"\>"], \
+"Output",
  CellChangeTimes->{{3.6824174774167967`*^9, 3.6824174850587606`*^9}, 
    3.682417719228777*^9, 3.682417840476893*^9, 3.68241789730019*^9, 
    3.6824197943814363`*^9, 3.682419857480072*^9, 3.6826767253863487`*^9, 
@@ -61,19 +66,20 @@ parameters {\n  real<lower=0,upper=1> theta;\n} \nmodel {\n  theta ~ \
 beta(1,1);\n  for (n in 1:N) \n    y[n] ~ bernoulli(theta);\n}\>\""}], 
   ";"}], "\n", 
  RowBox[{
-  RowBox[{"Export", "[", 
-   RowBox[{"\"\<bernoulli.stan\>\"", ",", "stanCode", ",", "\"\<Text\>\""}], 
-   "]"}], "\n", "\n", 
+  RowBox[{"StanCodeExport", "[", 
+   RowBox[{"\"\<bernoulli\>\"", ",", "stanCode"}], "]"}], 
+  "\[IndentingNewLine]", "\n", 
   RowBox[{"(*", " ", 
    RowBox[{"Compile", " ", "your", " ", 
     RowBox[{"code", "."}], "\n", " ", "*", " ", 
     RowBox[{"Caveat", ":", " ", 
      RowBox[{"this", " ", "can", " ", "take", " ", "some", " ", "time"}]}]}], 
-   "\n", " ", "*)"}]}], "\[IndentingNewLine]", 
+   "\n", " ", "*)"}]}], "\n", 
  RowBox[{"StanCompile", "[", "\"\<bernoulli\>\"", "]"}]}], "Code",
  CellChangeTimes->{{3.682417531384315*^9, 3.682417560066251*^9}, {
    3.682417750149807*^9, 3.6824177507294483`*^9}, {3.682417791402915*^9, 
-   3.682417824763042*^9}, 3.682418240691452*^9}],
+   3.682417824763042*^9}, 3.682418240691452*^9, {3.683438716584861*^9, 
+   3.683438734003086*^9}}],
 
 Cell[BoxData["\<\"bernoulli.stan\"\>"], "Output",
  CellChangeTimes->{3.6824178079681273`*^9, 3.6824178408587*^9, 
@@ -81,11 +87,10 @@ Cell[BoxData["\<\"bernoulli.stan\"\>"], "Output",
 
 Cell[BoxData["\<\"\\n--- Translating Stan model to C++ code ---\\nbin/stanc \
 /home/pix/GitHub/MathematicaStan/Examples/Bernoulli/bernoulli.stan \
---o=/home/pix/GitHub/MathematicaStan/Examples/Bernoulli/bernoulli.\
-hpp\\nModel name=bernoulli_model\\nInput \
-file=/home/pix/GitHub/MathematicaStan/Examples/Bernoulli/bernoulli.\
-stan\\nOutput \
-file=/home/pix/GitHub/MathematicaStan/Examples/Bernoulli/bernoulli.\
+--o=/home/pix/GitHub/MathematicaStan/Examples/Bernoulli/bernoulli.hpp\\nModel \
+name=bernoulli_model\\nInput \
+file=/home/pix/GitHub/MathematicaStan/Examples/Bernoulli/bernoulli.stan\\\
+nOutput file=/home/pix/GitHub/MathematicaStan/Examples/Bernoulli/bernoulli.\
 hpp\\n\\n--- Linking C++ model ---\\ng++ -I src -I stan/src -isystem \
 stan/lib/stan_math/ -isystem stan/lib/stan_math/lib/eigen_3.2.8 -isystem \
 stan/lib/stan_math/lib/boost_1.60.0 -isystem \
@@ -120,7 +125,7 @@ Cell[BoxData[{
        RowBox[{"BernoulliDistribution", "[", "0.2016", "]"}], "]"}], ",", 
       RowBox[{"{", 
        RowBox[{"i", ",", "1", ",", "n"}], "}"}]}], "]"}]}], ";"}], 
-  "\[IndentingNewLine]"}], "\n", 
+  "\n"}], "\[IndentingNewLine]", 
  RowBox[{
   RowBox[{"RDumpExport", "[", 
    RowBox[{"\"\<bernoulli\>\"", ",", 
@@ -164,8 +169,8 @@ Cell[BoxData["\<\"method = sample (Default)\\n  sample\\n    num_samples = \
 max_depth = 10 (Default)\\n        metric = diag_e (Default)\\n        \
 stepsize = 1 (Default)\\n        stepsize_jitter = 0 (Default)\\nid = 0 \
 (Default)\\ndata\\n  file = \
-/home/pix/GitHub/MathematicaStan/Examples/Bernoulli/bernoulli.data.R\
-\\ninit = 2 (Default)\\nrandom\\n  seed = 634367074\\noutput\\n  file = \
+/home/pix/GitHub/MathematicaStan/Examples/Bernoulli/bernoulli.data.R\\ninit = \
+2 (Default)\\nrandom\\n  seed = 634367074\\noutput\\n  file = \
 /home/pix/GitHub/MathematicaStan/Examples/Bernoulli/output.csv\\n  \
 diagnostic_file =  (Default)\\n  refresh = 100 (Default)\\n\\n\\nGradient \
 evaluation took 0.000134 seconds\\n1000 transitions using 10 leapfrog steps \
@@ -886,8 +891,8 @@ tol_obj = 9.9999999999999998e-13 (Default)\\n        tol_rel_obj = 10000 \
 10000000 (Default)\\n        tol_param = 1e-08 (Default)\\n        \
 history_size = 5 (Default)\\n    iter = 2000 (Default)\\n    save_iterations \
 = 0 (Default)\\nid = 0 (Default)\\ndata\\n  file = \
-/home/pix/GitHub/MathematicaStan/Examples/Bernoulli/bernoulli.data.R\
-\\ninit = 2 (Default)\\nrandom\\n  seed = 634368129\\noutput\\n  file = \
+/home/pix/GitHub/MathematicaStan/Examples/Bernoulli/bernoulli.data.R\\ninit = \
+2 (Default)\\nrandom\\n  seed = 634368129\\noutput\\n  file = \
 /home/pix/GitHub/MathematicaStan/Examples/Bernoulli/output.csv\\n  \
 diagnostic_file =  (Default)\\n  refresh = 100 (Default)\\n\\ninitial log \
 joint probability = -556.075\\n    Iter      log prob        ||dx||      \
@@ -968,8 +973,8 @@ tol_obj = 9.9999999999999998e-13 (Default)\\n        tol_rel_obj = 10000 \
 10000000 (Default)\\n        tol_param = 1e-08 (Default)\\n        \
 history_size = 5 (Default)\\n    iter = 100\\n    save_iterations = 0 \
 (Default)\\nid = 0 (Default)\\ndata\\n  file = \
-/home/pix/GitHub/MathematicaStan/Examples/Bernoulli/bernoulli.data.R\
-\\ninit = 2 (Default)\\nrandom\\n  seed = 634368239\\noutput\\n  file = \
+/home/pix/GitHub/MathematicaStan/Examples/Bernoulli/bernoulli.data.R\\ninit = \
+2 (Default)\\nrandom\\n  seed = 634368239\\noutput\\n  file = \
 output_optimize.csv\\n  diagnostic_file =  (Default)\\n  refresh = 100 \
 (Default)\\n\\ninitial log joint probability = -622.393\\n    Iter      log \
 prob        ||dx||      ||grad||       alpha      alpha0  # evals  Notes \\n  \
@@ -1025,9 +1030,10 @@ Cell[BoxData[
 }, Open  ]]
 }, Open  ]]
 }, Open  ]]
+}, Open  ]]
 },
-WindowSize->{740, 867},
-WindowMargins->{{467, Automatic}, {Automatic, 62}},
+WindowSize->{1680, 1015},
+WindowMargins->{{0, Automatic}, {Automatic, 3}},
 WindowFrame->"Normal",
 FrontEndVersion->"8.0 for Linux x86 (64-bit) (February 23, 2011)",
 StyleDefinitions->"Default.nb"
@@ -1044,85 +1050,88 @@ CellTagsIndex->{}
 (*NotebookFileOutline
 Notebook[{
 Cell[CellGroupData[{
-Cell[579, 22, 190, 2, 39, "Subsection"],
+Cell[579, 22, 102, 1, 88, "Title"],
 Cell[CellGroupData[{
-Cell[794, 28, 342, 6, 66, "Code"],
-Cell[1139, 36, 336, 5, 30, "Output"]
+Cell[706, 27, 190, 2, 39, "Subsection"],
+Cell[CellGroupData[{
+Cell[921, 33, 342, 6, 66, "Code"],
+Cell[1266, 41, 327, 5, 30, "Output"]
 }, Open  ]]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[1524, 47, 284, 3, 39, "Subsection"],
+Cell[1642, 52, 284, 3, 39, "Subsection"],
 Cell[CellGroupData[{
-Cell[1833, 54, 953, 21, 370, "Code"],
-Cell[2789, 77, 182, 2, 30, "Output"],
-Cell[2974, 81, 1323, 20, 544, "Output"]
+Cell[1951, 59, 984, 22, 370, "Code"],
+Cell[2938, 83, 182, 2, 30, "Output"],
+Cell[3123, 87, 1267, 19, 240, "Output"]
 }, Open  ]]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[4346, 107, 137, 1, 39, "Subsection"],
-Cell[4486, 110, 862, 25, 104, "Code"]
+Cell[4439, 112, 137, 1, 39, "Subsection"],
+Cell[4579, 115, 862, 25, 104, "Code"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[5385, 140, 115, 1, 39, "Subsection"],
+Cell[5478, 145, 115, 1, 39, "Subsection"],
 Cell[CellGroupData[{
-Cell[5525, 145, 392, 8, 85, "Code"],
-Cell[5920, 155, 2488, 34, 1361, "Output"]
+Cell[5618, 150, 392, 8, 85, "Code"],
+Cell[6013, 160, 2470, 34, 1285, "Output"]
 }, Open  ]]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[8457, 195, 104, 1, 39, "Subsection"],
+Cell[8532, 200, 104, 1, 39, "Subsection"],
 Cell[CellGroupData[{
-Cell[8586, 200, 102, 1, 28, "Subsubsection"],
+Cell[8661, 205, 102, 1, 28, "Subsubsection"],
 Cell[CellGroupData[{
-Cell[8713, 205, 138, 2, 46, "Code"],
-Cell[8854, 209, 823, 21, 50, "Output"]
+Cell[8788, 210, 138, 2, 46, "Code"],
+Cell[8929, 214, 823, 21, 30, "Output"]
 }, Open  ]]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[9726, 236, 110, 1, 28, "Subsubsection"],
+Cell[9801, 241, 110, 1, 28, "Subsubsection"],
 Cell[CellGroupData[{
-Cell[9861, 241, 289, 7, 66, "Code"],
-Cell[10153, 250, 192, 4, 30, "Output"],
-Cell[10348, 256, 739, 17, 69, "Output"]
+Cell[9936, 246, 289, 7, 66, "Code"],
+Cell[10228, 255, 192, 4, 30, "Output"],
+Cell[10423, 261, 739, 17, 30, "Output"]
 }, Open  ]]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[11136, 279, 126, 1, 28, "Subsubsection"],
+Cell[11211, 284, 126, 1, 28, "Subsubsection"],
 Cell[CellGroupData[{
-Cell[11287, 284, 601, 14, 50, "Input"],
-Cell[11891, 300, 10890, 184, 251, "Output"],
-Cell[22784, 486, 12462, 379, 254, "Output"]
+Cell[11362, 289, 601, 14, 50, "Input"],
+Cell[11966, 305, 10890, 184, 251, "Output"],
+Cell[22859, 491, 12462, 379, 254, "Output"]
 }, Open  ]]
 }, Open  ]]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[35307, 872, 133, 1, 39, "Subsection"],
+Cell[35382, 877, 133, 1, 39, "Subsection"],
 Cell[CellGroupData[{
-Cell[35465, 877, 149, 2, 46, "Code"],
-Cell[35617, 881, 1244, 17, 658, "Output"]
+Cell[35540, 882, 149, 2, 46, "Code"],
+Cell[35692, 886, 1226, 17, 563, "Output"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[36898, 903, 112, 1, 28, "Subsubsection"],
+Cell[36955, 908, 112, 1, 70, "Subsubsection"],
 Cell[CellGroupData[{
-Cell[37035, 908, 914, 22, 104, "Code"],
-Cell[37952, 932, 261, 4, 30, "Output"],
-Cell[38216, 938, 447, 10, 30, "Output"]
+Cell[37092, 913, 914, 22, 70, "Code"],
+Cell[38009, 937, 261, 4, 70, "Output"],
+Cell[38273, 943, 447, 10, 70, "Output"]
 }, Open  ]]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[38712, 954, 121, 1, 28, "Subsubsection"],
+Cell[38769, 959, 121, 1, 70, "Subsubsection"],
 Cell[CellGroupData[{
-Cell[38858, 959, 125, 2, 46, "Code"],
-Cell[38986, 963, 1199, 16, 639, "Output"]
+Cell[38915, 964, 125, 2, 70, "Code"],
+Cell[39043, 968, 1190, 16, 70, "Output"]
 }, Open  ]]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[40234, 985, 126, 1, 28, "Subsubsection"],
+Cell[40282, 990, 126, 1, 70, "Subsubsection"],
 Cell[CellGroupData[{
-Cell[40385, 990, 327, 6, 85, "Code"],
-Cell[40715, 998, 351, 9, 30, "Output"],
-Cell[41069, 1009, 350, 9, 30, "Output"],
-Cell[41422, 1020, 163, 3, 30, "Output"]
+Cell[40433, 995, 327, 6, 70, "Code"],
+Cell[40763, 1003, 351, 9, 70, "Output"],
+Cell[41117, 1014, 350, 9, 70, "Output"],
+Cell[41470, 1025, 163, 3, 70, "Output"]
+}, Open  ]]
 }, Open  ]]
 }, Open  ]]
 }, Open  ]]
@@ -1131,4 +1140,3 @@ Cell[41422, 1020, 163, 3, 30, "Output"]
 *)
 
 (* End of internal cache information *)
-
