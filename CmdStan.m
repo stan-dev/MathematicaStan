@@ -1,7 +1,8 @@
 (*****************************************************************
  * CmdStan Package
+ *
  * A Mathematica package to interact with CmdStan
- * https://github.com/vincent-picaud/MathematicaStan
+ *
  * Author: Picaud Vincent, picaud.vincent at gmail.com
  *
  * AUTOMATICALLY GENERATED from cmdStan.org 
@@ -15,8 +16,6 @@ ClearAll @@ Names["CmdStan`*"];
 Begin["`Private`"];
 
 
-(* Error messages
-*)
 StanDirectory::notFound="CmdStan install directory \"`1`\" not found.";
 StanDirectory::undefined="CmdStan install directory is undefined.";
 
@@ -27,9 +26,10 @@ StanCheckDirectory[dir_]:=
 		True,             Return[dir]
 	];
 
-(*
-* YOU CAN MODIFY ME (initial configuration)
-*)
+(* !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+ * !! YOU CAN MODIFY ME (initial configuration)                  !!
+ * !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+ *)
 stanDir="~/GitHub/cmdstan"; 
 
 CmdStan`StanSetDirectory::usage=
@@ -74,11 +74,8 @@ StanCodeExport[stanCodeFileName_?StringQ, stanCode_?StringQ]:=
 ];
   
   
-(*
- * Private
- *)
+(* Private *)
 StanRemoveFileNameExt[fileName_?StringQ]:=FileNameJoin[{FileNameDrop[fileName,-1],FileBaseName[fileName]}];
-
 
 CmdStan`StanCompile::usage=
 "StanCompile[stanCodeFileName_?StringQ]"<>
@@ -91,7 +88,7 @@ StanCompile::stanCodeNotFound="Stan code \"`1`\" not found.";
 StanCompile[stanCodeFileName_?StringQ]:=
 	Module[{currentDir=Directory[],codeFileNameWithExt,pathCodeFileName,command,output},
 
-	       (* Find stan code: code.stan and create path/code.exe (no .stan extension) *)
+	       (* Find Stan code: code.stan and create path/code.exe (no .stan extension) *)
 	       
 	       If[FileExtension[stanCodeFileName]=="stan",
 		  codeFileNameWithExt=stanCodeFileName,
@@ -106,7 +103,7 @@ StanCompile[stanCodeFileName_?StringQ]:=
 
 	       If[$OperatingSystem=="Windows",pathCodeFileName=pathCodeFileName<>".exe"];
 	       
-	       (* Check stan directory *)
+	       (* Check Stan directory *)
 
 	       If[StanCheckDirectory[stanDir]===$Failed,Return[$Failed]];
 
@@ -114,14 +111,12 @@ StanCompile[stanCodeFileName_?StringQ]:=
 
 	       SetDirectory[StanDirectory[]];
 	       command="make "<>pathCodeFileName;
-               (*Print[StanDirectory[]];     *)
+
                output=Import["!"<>command<>" 2>&1","Text"];
 	       SetDirectory[currentDir];
 
 	       Return[output];
 	];
-
-
 
 
 (*
@@ -290,8 +285,6 @@ StanOptionOptimize[]:=currentStanOptionOptimize;
 CmdStan`StanResetOptionOptimize::usage=
 "StanResetOptionOptimize[] resets to default and returns complete list of default options for the Optimize method";
 StanResetOptionOptimize[]:=currentStanOptionOptimize={};
-
-(*~~~~~~~~~~~~~~~~*)
 (*
  * Private 
  *)
@@ -365,7 +358,7 @@ CmdStan`StanRunVariational::usage="StanRunVariational[stanExeFileName_?StringQ]"
 StanRunVariational[stanExeFileName_?StringQ]:=
 	StanRun[stanExeFileName,Join[immutableStanOptionVariational,StanOptionVariational[]]];
 
-CmdStan`StanRunSample::usage="StanRunSample[stanExeFileName_?StringQ]"
+CmdStan`StanRunSample::usage="StanRunSample[stanExeFileName_?StringQ] \n\n   TODO: parallel sampling";
 (*
  *)
 StanRunSample[stanExeFileName_?StringQ]:=
@@ -382,7 +375,7 @@ StanRunOptimize[stanExeFileName_?StringQ]:=
 
 
 RDumpToStringHelper[V_?VectorQ]:=
-(* CAVEAT: use CForm to use scientific notation *)
+(* CAVEAT: use CForm to force scientific notation *)
 "c("<>StringTake[ToString[Map[CForm,V]],{2,-2}]<>")";
 (*
  *)
