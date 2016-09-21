@@ -18,10 +18,10 @@ from Mathematica. It is tested under *Linux* with *Mathematica version >=8.0*.
 
 *** Creation of the CmdStan.m file (*not required*)
 
-*You can skip this step, a [[https://github.com/vincent-picaud/MathematicaStan/blob/master/CmdStan.m][CmdStan.m]] file is already present in this directory.*
+*You can skip this step, a [[CmdStan.m][CmdStan.m]] file is already present in this directory.*
 
-Otherwise you have to known that the [[https://github.com/vincent-picaud/MathematicaStan/blob/master/CmdStan.m][CmdStan.m]] file is automatically
-created from the [[https://github.com/vincent-picaud/MathematicaStan/blob/master/CmdStan.org][CmdStan.org]] file using Emacs + [[http://orgmode.org/][org-mode]]. To generate
+Otherwise you have to known that the [[CmdStan.m][CmdStan.m]] file is automatically
+created from the [[CmdStan.org][CmdStan.org]] file using Emacs + [[http://orgmode.org/][org-mode]]. To generate
 the *CmdStan.m*, open the *CmdStan.org* file with Emacs and type *c-c
 c-v t* to create the *CmdStan.m* file.
 

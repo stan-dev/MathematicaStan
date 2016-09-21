@@ -725,8 +725,9 @@ StanVariableFunc[variableName_?StringQ,stanImport_?StanImportQ,func_] :=
 
 (*****************************************************************
  * CmdStan Package
+ *
  * A Mathematica package to interact with CmdStan
- * https://github.com/vincent-picaud/MathematicaStan
+ *
  * Author: Picaud Vincent, picaud.vincent at gmail.com
  *
  * AUTOMATICALLY GENERATED from cmdStan.org 
