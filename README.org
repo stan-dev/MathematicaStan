@@ -145,6 +145,7 @@ StanSetOptionOptimize
 StanSetOptionSample
 StanSetOptionVariational
 StanVariable
+StanVariableBoxPlot
 StanVariableColumn
 StanVariableFunc
 StanVariableToImport

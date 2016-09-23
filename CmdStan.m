@@ -646,6 +646,27 @@ StanVariableFunc[variableName_?StringQ,stanImport_?StanImportQ,func_] :=
 			   Return[result];
 		];
 
+CmdStan`StanVariableBoxPlot::usage=
+"StanVariableBoxPlot[variableName_?StringQ,stanImport_?StanImportQ] box plot of the given variable";
+(*
+*)
+StanVariableBoxPlot[variableName_?StringQ,stanImport_?StanImportQ] := 
+    Module[{variableOutput, variableIndex, plot},
+    
+        variableOutput = StanVariableToImport[variableName, stanImport];
+
+        If[variableOutput===$Failed,Return[$Failed]];
+
+        variableIndex = Map[ToString,
+                            Flatten[StanFindVariableIndex[variableName, variableOutput]]];
+
+        plot = BoxWhiskerChart[Transpose[StanVariableColumn[variableName, variableOutput]],
+                                ChartLabels->variableIndex,
+                                PlotLabel->variableName];
+
+        Return[plot];
+]
+
 End[];
 
 Protect @@ Names["CmdStan`*"];
