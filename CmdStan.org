@@ -1,7 +1,4 @@
-#+OPTIONS: toc:nil num:nil todo:nil pri:nil tags:nil 
-
-#+OPTIONS: ^:nil 
-#+OPTIONS: tex:t
+#+OPTIONS: toc:nil num:nil todo:nil pri:nil tags:nil ^:nil tex:t
 
 #+CATEGORY: Stan, Mathematica
 #+TAGS:
@@ -176,7 +173,8 @@ StanCompile[stanCodeFileName_?StringQ]:=
 
 	       pathCodeFileName=StanRemoveFileNameExt[pathCodeFileName];
 
-	       If[$OperatingSystem=="Windows",pathCodeFileName=pathCodeFileName<>".exe"];
+	       (* Jeff Patterson Windows fix *)
+	       If[$OperatingSystem=="Windows",pathCodeFileName=StringReplace[pathCodeFileName,"\\"->"/"]<>".exe"];
 	       
 	       (* Check Stan directory *)
 
@@ -735,6 +733,7 @@ StanVariableBoxPlot[variableName_?StringQ,stanImport_?StanImportQ] :=
 # ****************************************************************
 
 #+BEGIN_SRC txt :exports both :tangle yes :tangle CmdStan.m :noweb yes :exports none
+(* ::Package:: *)
 
 (*****************************************************************
  * CmdStan Package

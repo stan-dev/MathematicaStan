@@ -1,3 +1,5 @@
+(* ::Package:: *)
+
 (*****************************************************************
  * CmdStan Package
  *
@@ -101,7 +103,8 @@ StanCompile[stanCodeFileName_?StringQ]:=
 
 	       pathCodeFileName=StanRemoveFileNameExt[pathCodeFileName];
 
-	       If[$OperatingSystem=="Windows",pathCodeFileName=pathCodeFileName<>".exe"];
+	       (* Jeff Patterson Windows fix *)
+	       If[$OperatingSystem=="Windows",pathCodeFileName=StringReplace[pathCodeFileName,"\\"->"/"]<>".exe"];
 	       
 	       (* Check Stan directory *)
 
