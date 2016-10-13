@@ -20,6 +20,8 @@ StanSetDirectory["C:\\Users\\USER_NAME\\Documents\\R\\cmdstan-2.12.0";
 
 *Author & contact:* picaud.vincent at gmail.com
 
+*Windows version:* many thanks to Jeff Patterson for his valuable contribution.
+
 * Getting started
 
 ** Installation
