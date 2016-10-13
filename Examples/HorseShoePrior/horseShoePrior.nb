@@ -10,10 +10,10 @@
 NotebookFileLineBreakTest
 NotebookFileLineBreakTest
 NotebookDataPosition[       157,          7]
-NotebookDataLength[    201916,       4776]
-NotebookOptionsPosition[    199823,       4697]
-NotebookOutlinePosition[    200183,       4713]
-CellTagsIndexPosition[    200140,       4710]
+NotebookDataLength[    202566,       4789]
+NotebookOptionsPosition[    200469,       4710]
+NotebookOutlinePosition[    200827,       4726]
+CellTagsIndexPosition[    200784,       4723]
 WindowFrame->Normal*)
 
 (* Beginning of Notebook Content *)
@@ -40,13 +40,26 @@ Cell["Defines the working directory and loads CmdStan.m", "Subsection",
 
 Cell[CellGroupData[{
 
-Cell[BoxData[{
- RowBox[{"SetDirectory", "[", 
-  "\"\<~/GitHub/MathematicaStan/Examples/HorseShoePrior\>\"", "]"}], "\n", 
- RowBox[{"Needs", "[", "\"\<CmdStan`\>\"", "]"}]}], "Code",
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"(*", " ", "Linux", " ", "*)"}], "\n", 
+  RowBox[{
+   RowBox[{
+   "SetDirectory", "[", 
+    "\"\<~/GitHub/MathematicaStan/Examples/HorseShoePrior\>\"", "]"}], "\n", 
+   "\n", 
+   RowBox[{"(*", " ", "Windows", " ", "*)"}], "\n", 
+   RowBox[{"(*", " ", 
+    RowBox[{
+     RowBox[{
+     "SetDirectory", "[", 
+      "\"\<C:\\\\Users\\\\USER_NAME\\\\Documents\\\\Mathematica\\\\STAN\\\\\
+Examples\\\\HorseShoePrior\>\"", "]"}], ";"}], " ", "*)"}], "\n", "\n", 
+   RowBox[{"Needs", "[", "\"\<CmdStan`\>\"", "]"}]}]}]], "Code",
  CellChangeTimes->{{3.682417433722479*^9, 3.682417484762342*^9}, {
   3.6824176683558273`*^9, 3.682417678474187*^9}, {3.682417715120927*^9, 
-  3.682417715955593*^9}, {3.682429998596367*^9, 3.682430006310978*^9}}],
+  3.682417715955593*^9}, {3.682429998596367*^9, 3.682430006310978*^9}, {
+  3.6853797935124702`*^9, 3.685379820219493*^9}}],
 
 Cell[BoxData["\<\"/home/pix/GitHub/MathematicaStan/Examples/HorseShoePrior\"\>\
 "], "Output",
@@ -147,7 +160,11 @@ Cell[BoxData[{
    RowBox[{"XTrain", "=", " ", 
     RowBox[{"Import", "[", 
      RowBox[{"\"\<./X-train.dat\>\"", ",", "\"\<Table\>\""}], "]"}]}], ";"}], 
-  "\[IndentingNewLine]"}], "\[IndentingNewLine]", 
+  "\[IndentingNewLine]", "\[IndentingNewLine]", 
+  RowBox[{"(*", " ", 
+   RowBox[{
+   "betaLabel", " ", "is", " ", "only", " ", "used", " ", "for", " ", "plot", 
+    " ", "legends"}], " ", "*)"}]}], "\[IndentingNewLine]", 
  RowBox[{
   RowBox[{
    RowBox[{"betaLabel", "=", 
@@ -162,15 +179,33 @@ ldl:hdl ldl:tch ldl:ltg ldl:glu hdl:tch hdl:ltg hdl:glu tch:ltg tch:glu \
 ltg:glu\>\"", ",", "\"\< \>\""}], "]"}]}], ";"}], "\[IndentingNewLine]", 
   "\[IndentingNewLine]", 
   RowBox[{"(*", " ", 
+   RowBox[{"Export", " ", "data"}], " ", "*)"}]}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"RDumpExport", "[", 
+    RowBox[{"\"\<horseShoePrior\>\"", ",", 
+     RowBox[{"{", 
+      RowBox[{
+       RowBox[{"{", 
+        RowBox[{"\"\<n\>\"", ",", 
+         RowBox[{
+          RowBox[{"Dimensions", "[", "XTrain", "]"}], "[", 
+          RowBox[{"[", "1", "]"}], "]"}]}], "}"}], ",", 
+       RowBox[{"{", 
+        RowBox[{"\"\<p\>\"", ",", 
+         RowBox[{
+          RowBox[{"Dimensions", "[", "XTrain", "]"}], "[", 
+          RowBox[{"[", "2", "]"}], "]"}]}], "}"}], ",", 
+       RowBox[{"{", 
+        RowBox[{"\"\<X\>\"", ",", "XTrain"}], "}"}], ",", 
+       RowBox[{"{", 
+        RowBox[{"\"\<y\>\"", ",", "yTrain"}], "}"}]}], "}"}]}], "]"}], ";"}], 
+  "\[IndentingNewLine]", "\[IndentingNewLine]", 
+  RowBox[{"(*", " ", 
    RowBox[{
-    RowBox[{
-    "Here", " ", "we", " ", "just", " ", "perform", " ", "a", " ", "Ordinary",
-      " ", "Least", " ", "Squares"}], ",", "\[IndentingNewLine]", 
-    RowBox[{
-    "*", " ", "to", " ", "check", " ", "that", " ", "we", " ", "find", " ", 
-     "the", " ", "same", " ", "values", " ", "as", " ", "the", " ", "blog", 
-     " ", "post"}]}], "\[IndentingNewLine]", 
-   "*)"}]}], "\[IndentingNewLine]", 
+   "Here", " ", "we", " ", "just", " ", "perform", " ", "an", " ", "Ordinary",
+     " ", "Least", " ", "Squares", " ", "to", " ", "get", " ", "the", " ", 
+    "residue", " ", "value"}], " ", "*)"}]}], "\[IndentingNewLine]", 
  RowBox[{
   RowBox[{"betaOLS", "=", 
    RowBox[{"LeastSquares", "[", 
@@ -185,41 +220,19 @@ ltg:glu\>\"", ",", "\"\< \>\""}], "]"}]}], ";"}], "\[IndentingNewLine]",
   RowBox[{"Length", "[", "yTest", "]"}]}], "\[IndentingNewLine]", 
  RowBox[{
   RowBox[{
-   RowBox[{
-    RowBox[{"Norm", "[", 
-     RowBox[{
-      RowBox[{"Mean", "[", "yTrain", "]"}], "-", "yTest"}], "]"}], "^", "2"}],
-    "/", 
-   RowBox[{"Length", "[", "yTest", "]"}]}], "\[IndentingNewLine]", 
-  "\[IndentingNewLine]", 
-  RowBox[{"(*", " ", 
-   RowBox[{"Export", " ", "data"}], " ", "*)"}]}], "\[IndentingNewLine]", 
- RowBox[{
-  RowBox[{"RDumpExport", "[", 
-   RowBox[{"\"\<horseShoePrior\>\"", ",", 
-    RowBox[{"{", 
-     RowBox[{
-      RowBox[{"{", 
-       RowBox[{"\"\<n\>\"", ",", 
-        RowBox[{
-         RowBox[{"Dimensions", "[", "XTrain", "]"}], "[", 
-         RowBox[{"[", "1", "]"}], "]"}]}], "}"}], ",", 
-      RowBox[{"{", 
-       RowBox[{"\"\<p\>\"", ",", 
-        RowBox[{
-         RowBox[{"Dimensions", "[", "XTrain", "]"}], "[", 
-         RowBox[{"[", "2", "]"}], "]"}]}], "}"}], ",", 
-      RowBox[{"{", 
-       RowBox[{"\"\<X\>\"", ",", "XTrain"}], "}"}], ",", 
-      RowBox[{"{", 
-       RowBox[{"\"\<y\>\"", ",", "yTrain"}], "}"}]}], "}"}]}], "]"}], 
-  ";"}]}], "Input",
+   RowBox[{"Norm", "[", 
+    RowBox[{
+     RowBox[{"Mean", "[", "yTrain", "]"}], "-", "yTest"}], "]"}], "^", "2"}], 
+  "/", 
+  RowBox[{"Length", "[", "yTest", "]"}]}]}], "Input",
  CellChangeTimes->{{3.682392049061212*^9, 3.6823921590818777`*^9}, {
-  3.682392292477347*^9, 3.682392305595126*^9}, {3.6823923658936853`*^9, 
-  3.68239237651742*^9}, {3.682392458114094*^9, 3.68239246441954*^9}, {
-  3.682399915441827*^9, 3.682399918697309*^9}, {3.682430219514997*^9, 
-  3.6824303591253023`*^9}, {3.682432306883952*^9, 3.6824323181687803`*^9}, {
-  3.682433719652063*^9, 3.682433721442733*^9}}],
+   3.682392292477347*^9, 3.682392305595126*^9}, {3.6823923658936853`*^9, 
+   3.68239237651742*^9}, {3.682392458114094*^9, 3.68239246441954*^9}, {
+   3.682399915441827*^9, 3.682399918697309*^9}, {3.682430219514997*^9, 
+   3.6824303591253023`*^9}, {3.682432306883952*^9, 3.6824323181687803`*^9}, {
+   3.682433719652063*^9, 3.682433721442733*^9}, 3.685379871049395*^9, {
+   3.685379908177278*^9, 3.685380109943791*^9}, {3.6853801487916527`*^9, 
+   3.685380159329886*^9}, {3.6853802044018297`*^9, 3.68538022943475*^9}}],
 
 Cell[BoxData["0.6707489170594124`"], "Output",
  CellChangeTimes->{3.682430365570553*^9, 3.682430884837616*^9, 
@@ -3835,9 +3848,9 @@ Cell[BoxData[
 
 Cell[CellGroupData[{
 
-Cell["Now selects beta /. |beta|>0.01", "Subsubsection",
+Cell["Now selects all beta such that |beta|>0.01", "Subsubsection",
  CellChangeTimes->{{3.682433788048975*^9, 3.682433804638111*^9}, 
-   3.682437572703683*^9}],
+   3.682437572703683*^9, {3.685380296285965*^9, 3.685380301742865*^9}}],
 
 Cell[CellGroupData[{
 
@@ -3934,8 +3947,8 @@ Cell[BoxData[
             1.4545454545454546`, -0.02284785116939999}, "RoundingRadius" -> 
             0]},
           
-          ImageSizeCache->{{28.64190299496422, 61.060932944606414`}, {
-           125.94939419718553`, 148.63555469348853`}}],
+          ImageSizeCache->{{27.644447389345345`, 60.088921282798836`}, {
+           124.64283411690248`, 147.34655662737444`}}],
          StatusArea[#, -0.02284785116939999]& ,
          TagBoxNote->"-0.02284785116939999"],
         StyleBox[
@@ -3960,8 +3973,8 @@ Cell[BoxData[
            RectangleBox[{1.5454545454545454`, 0.}, {2.4545454545454546`, 
             0.37191431600000024`}, "RoundingRadius" -> 0]},
           
-          ImageSizeCache->{{63.20283593957063, 
-           95.62186588921283}, {-227.05507383133062`, 126.94939419718554`}}],
+          ImageSizeCache->{{62.23336867214418, 
+           94.67784256559767}, {-228.64750606820314`, 125.64283411690246`}}],
          StatusArea[#, 0.37191431600000024`]& ,
          TagBoxNote->"0.37191431600000024"],
         StyleBox["0.37191431600000024`", {
@@ -3985,8 +3998,8 @@ Cell[BoxData[
            RectangleBox[{2.5454545454545454`, 0.}, {3.4545454545454546`, 
             0.1791656466800004}, "RoundingRadius" -> 0]},
           
-          ImageSizeCache->{{97.76376888417704, 
-           130.18279883381925`}, {-44.10664041713834, 126.94939419718553`}}],
+          ImageSizeCache->{{96.82228995494303, 
+           129.2667638483965}, {-45.55091627656647, 125.64283411690248`}}],
          StatusArea[#, 0.1791656466800004]& ,
          TagBoxNote->"0.1791656466800004"],
         StyleBox["0.1791656466800004`", {
@@ -4011,8 +4024,8 @@ Cell[BoxData[
             4.454545454545454, -0.08174688504799955}, "RoundingRadius" -> 0]},
           
           
-          ImageSizeCache->{{132.32470182878345`, 164.74373177842563`}, {
-           125.94939419718553`, 204.53988864149545`}}],
+          ImageSizeCache->{{131.41121123774187`, 163.85568513119532`}, {
+           124.64283411690248`, 203.2961633522322}}],
          StatusArea[#, -0.08174688504799955]& ,
          TagBoxNote->"-0.08174688504799955"],
         StyleBox[
@@ -4037,8 +4050,8 @@ Cell[BoxData[
            RectangleBox[{4.545454545454545, 0.}, {5.454545454545454, 
             0.03267368433909799}, "RoundingRadius" -> 0]},
           
-          ImageSizeCache->{{166.88563477338985`, 199.30466472303206`}, {
-           94.93699144080726, 126.94939419718553`}}],
+          ImageSizeCache->{{166.00013252054066`, 198.44460641399417`}, {
+           93.60531671394057, 125.64283411690248`}}],
          StatusArea[#, 0.03267368433909799]& ,
          TagBoxNote->"0.03267368433909799"],
         StyleBox["0.03267368433909799`", {
@@ -4062,8 +4075,8 @@ Cell[BoxData[
            RectangleBox[{5.545454545454545, 0.}, {6.454545454545454, 
             0.21848333400000067`}, "RoundingRadius" -> 0]},
           
-          ImageSizeCache->{{201.44656771799626`, 
-           233.86559766763847`}, {-81.42523424214242, 126.94939419718553`}}],
+          ImageSizeCache->{{200.5890538033395, 
+           233.033527696793}, {-82.8997316649327, 125.64283411690248`}}],
          StatusArea[#, 0.21848333400000067`]& ,
          TagBoxNote->"0.21848333400000067"],
         StyleBox["0.21848333400000067`", {
@@ -4087,8 +4100,8 @@ Cell[BoxData[
            RectangleBox[{6.545454545454545, 0.}, {7.454545454545454, 
             0.01049937130299998}, "RoundingRadius" -> 0]},
           
-          ImageSizeCache->{{236.00750066260267`, 268.4265306122449}, {
-           115.9838596049399, 126.94939419718553`}}],
+          ImageSizeCache->{{235.17797508613833`, 267.6224489795918}, {
+           114.66922917676192`, 125.64283411690248`}}],
          StatusArea[#, 0.01049937130299998]& ,
          TagBoxNote->"0.01049937130299998"],
         StyleBox["0.01049937130299998`", {
@@ -4113,8 +4126,8 @@ Cell[BoxData[
             8.454545454545453, -0.018297718673420022`}, "RoundingRadius" -> 
             0]},
           
-          ImageSizeCache->{{270.5684336072091, 302.98746355685125`}, {
-           125.94939419718553`, 144.3167720274223}}],
+          ImageSizeCache->{{269.7668963689372, 302.21137026239063`}, {
+           124.64283411690248`, 143.02427649930303`}}],
          StatusArea[#, -0.018297718673420022`]& ,
          TagBoxNote->"-0.018297718673420022"],
         StyleBox[
@@ -4139,8 +4152,8 @@ Cell[BoxData[
            RectangleBox[{8.545454545454545, 0.}, {9.454545454545453, 
             0.09642497118217978}, "RoundingRadius" -> 0]},
           
-          ImageSizeCache->{{305.1293665518155, 337.54839650145766`}, {
-           34.42711556344142, 126.94939419718553`}}],
+          ImageSizeCache->{{304.355817651736, 336.80029154518945`}, {
+           33.04643837264379, 125.64283411690248`}}],
          StatusArea[#, 0.09642497118217978]& ,
          TagBoxNote->"0.09642497118217978"],
         StyleBox["0.09642497118217978`", {
@@ -4164,8 +4177,8 @@ Cell[BoxData[
            RectangleBox[{9.545454545454545, 0.}, {10.454545454545453`, 
             0.02030400555469994}, "RoundingRadius" -> 0]},
           
-          ImageSizeCache->{{339.6902994964219, 372.10932944606407`}, {
-           106.67773841159624`, 126.94939419718553`}}],
+          ImageSizeCache->{{338.9447389345348, 371.38921282798833`}, {
+           105.3555716455643, 125.64283411690248`}}],
          StatusArea[#, 0.02030400555469994]& ,
          TagBoxNote->"0.02030400555469994"],
         StyleBox["0.02030400555469994`", {
@@ -4189,8 +4202,8 @@ Cell[BoxData[
            RectangleBox[{10.545454545454545`, 0.}, {11.454545454545453`, 
             0.010094663887699988`}, "RoundingRadius" -> 0]},
           
-          ImageSizeCache->{{374.2512324410283, 406.6702623906705}, {
-           116.36798981907548`, 126.94939419718553`}}],
+          ImageSizeCache->{{373.5336602173337, 405.97813411078715`}, {
+           115.05367046948906`, 125.64283411690248`}}],
          StatusArea[#, 0.010094663887699988`]& ,
          TagBoxNote->"0.010094663887699988"],
         StyleBox["0.010094663887699988`", {
@@ -4214,8 +4227,8 @@ Cell[BoxData[
            RectangleBox[{11.545454545454545`, 0.}, {12.454545454545453`, 
             0.011982335316990035`}, "RoundingRadius" -> 0]},
           
-          ImageSizeCache->{{408.8121653856347, 441.23119533527694`}, {
-           114.57629635624798`, 126.94939419718553`}}],
+          ImageSizeCache->{{408.1225815001325, 440.567055393586}, {
+           113.26052604691301`, 125.64283411690248`}}],
          StatusArea[#, 0.011982335316990035`]& ,
          TagBoxNote->"0.011982335316990035"],
         StyleBox["0.011982335316990035`", {
@@ -4239,8 +4252,8 @@ Cell[BoxData[
            RectangleBox[{12.545454545454545`, 0.}, {13.454545454545453`, 
             0.06640690025535999}, "RoundingRadius" -> 0]},
           
-          ImageSizeCache->{{443.37309833024113`, 475.79212827988334`}, {
-           62.918928604497594`, 126.94939419718553`}}],
+          ImageSizeCache->{{442.71150278293135`, 475.1559766763848}, {
+           61.56132482148054, 125.64283411690248`}}],
          StatusArea[#, 0.06640690025535999]& ,
          TagBoxNote->"0.06640690025535999"],
         StyleBox["0.06640690025535999`", {
@@ -4264,8 +4277,8 @@ Cell[BoxData[
            RectangleBox[{13.545454545454545`, 0.}, {14.454545454545453`, 
             0.03649536757439998}, "RoundingRadius" -> 0]},
           
-          ImageSizeCache->{{477.9340312748476, 510.35306122448975`}, {
-           91.30962029801083, 126.94939419718553`}}],
+          ImageSizeCache->{{477.30042406573017`, 509.7448979591837}, {
+           89.97500803208935, 125.64283411690248`}}],
          StatusArea[#, 0.03649536757439998]& ,
          TagBoxNote->"0.03649536757439998"],
         StyleBox["0.03649536757439998`", {
@@ -4289,8 +4302,8 @@ Cell[BoxData[
            RectangleBox[{14.545454545454545`, 0.}, {15.454545454545453`, 
             0.05726627665429998}, "RoundingRadius" -> 0]},
           
-          ImageSizeCache->{{512.494964219454, 544.9139941690961}, {
-           71.59480052694622, 126.94939419718553`}}],
+          ImageSizeCache->{{511.8893453485291, 544.3338192419825}, {
+           70.24422268960802, 125.64283411690248`}}],
          StatusArea[#, 0.05726627665429998]& ,
          TagBoxNote->"0.05726627665429998"],
         StyleBox["0.05726627665429998`", {
@@ -4314,8 +4327,8 @@ Cell[BoxData[
            RectangleBox[{15.545454545454545`, 0.}, {16.454545454545453`, 
             0.029876905187999927`}, "RoundingRadius" -> 0]},
           
-          ImageSizeCache->{{547.0558971640604, 579.4749271137026}, {
-           97.59156937436177, 126.94939419718553`}}],
+          ImageSizeCache->{{546.4782666313279, 578.9227405247814}, {
+           96.26204439342587, 125.64283411690248`}}],
          StatusArea[#, 0.029876905187999927`]& ,
          TagBoxNote->"0.029876905187999927"],
         StyleBox["0.029876905187999927`", {
@@ -4339,8 +4352,8 @@ Cell[BoxData[
            RectangleBox[{16.545454545454543`, 0.}, {17.454545454545453`, 
             0.047257349789099956`}, "RoundingRadius" -> 0]},
           
-          ImageSizeCache->{{581.6168301086667, 614.035860058309}, {
-           81.0948271502458, 126.94939419718553`}}],
+          ImageSizeCache->{{581.0671879141266, 613.5116618075801}, {
+           79.75194268039849, 125.64283411690248`}}],
          StatusArea[#, 0.047257349789099956`]& ,
          TagBoxNote->"0.047257349789099956"],
         StyleBox["0.047257349789099956`", {
@@ -4364,8 +4377,8 @@ Cell[BoxData[
            RectangleBox[{17.545454545454543`, 0.}, {18.454545454545453`, 
             0.03172341640620008}, "RoundingRadius" -> 0]},
           
-          ImageSizeCache->{{616.1777630532732, 648.5967930029154}, {
-           95.838943346679, 126.94939419718553`}}],
+          ImageSizeCache->{{615.6561091969255, 648.100583090379}, {
+           94.50799904381489, 125.64283411690248`}}],
          StatusArea[#, 0.03172341640620008]& ,
          TagBoxNote->"0.03172341640620008"],
         StyleBox["0.03172341640620008`", {
@@ -4389,8 +4402,8 @@ Cell[BoxData[
            RectangleBox[{18.545454545454543`, 0.}, {19.454545454545453`, 
             0.07245811037038984}, "RoundingRadius" -> 0]},
           
-          ImageSizeCache->{{650.7386959978796, 683.1577259475218}, {
-           57.17539006433317, 126.94939419718553`}}],
+          ImageSizeCache->{{650.2450304797243, 682.6895043731778}, {
+           55.81313501512082, 125.64283411690248`}}],
          StatusArea[#, 0.07245811037038984]& ,
          TagBoxNote->"0.07245811037038984"],
         StyleBox["0.07245811037038984`", {
@@ -4415,8 +4428,8 @@ Cell[BoxData[
             20.454545454545453`, -0.10067054528537918`}, "RoundingRadius" -> 
             0]},
           
-          ImageSizeCache->{{685.299628942486, 717.7186588921282}, {
-           125.94939419718553`, 222.50138226479703`}}],
+          ImageSizeCache->{{684.8339517625232, 717.2784256559767}, {
+           124.64283411690248`, 221.27220265804698`}}],
          StatusArea[#, -0.10067054528537918`]& ,
          TagBoxNote->"-0.10067054528537918"],
         StyleBox[
@@ -4442,8 +4455,8 @@ Cell[BoxData[
             21.454545454545453`, -0.027096849023700038`}, "RoundingRadius" -> 
             0]},
           
-          ImageSizeCache->{{719.8605618870924, 752.2795918367347}, {
-           125.94939419718553`, 152.66851379907857`}}],
+          ImageSizeCache->{{719.422873045322, 751.8673469387755}, {
+           124.64283411690248`, 151.38278172765115`}}],
          StatusArea[#, -0.027096849023700038`]& ,
          TagBoxNote->"-0.027096849023700038"],
         StyleBox[
@@ -4695,10 +4708,10 @@ Cell[BoxData["0.5037397549858857`"], "Output",
 }, Open  ]]
 }, Open  ]]
 },
-WindowSize->{1680, 1015},
-WindowMargins->{{0, Automatic}, {Automatic, 3}},
+WindowSize->{1600, 836},
+WindowMargins->{{-1, Automatic}, {Automatic, -1}},
 WindowFrame->"Normal",
-FrontEndVersion->"8.0 for Linux x86 (64-bit) (February 23, 2011)",
+FrontEndVersion->"10.0 for Linux x86 (64-bit) (June 27, 2014)",
 StyleDefinitions->"Default.nb"
 ]
 (* End of Notebook Content *)
@@ -4713,66 +4726,66 @@ CellTagsIndex->{}
 (*NotebookFileOutline
 Notebook[{
 Cell[CellGroupData[{
-Cell[579, 22, 107, 1, 88, "Title"],
+Cell[579, 22, 107, 1, 93, "Title"],
 Cell[CellGroupData[{
-Cell[711, 27, 203, 5, 65, "Section"],
+Cell[711, 27, 203, 5, 46, "Section"],
 Cell[CellGroupData[{
-Cell[939, 36, 190, 2, 39, "Subsection"],
+Cell[939, 36, 190, 2, 45, "Subsection"],
 Cell[CellGroupData[{
-Cell[1154, 42, 393, 6, 66, "Code"],
-Cell[1550, 50, 467, 7, 30, "Output"]
+Cell[1154, 42, 817, 19, 167, "Code"],
+Cell[1974, 63, 467, 7, 32, "Output"]
 }, Open  ]]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[2066, 63, 340, 4, 39, "Subsection"],
+Cell[2490, 76, 340, 4, 45, "Subsection"],
 Cell[CellGroupData[{
-Cell[2431, 71, 926, 17, 446, "Code"],
-Cell[3360, 90, 238, 3, 30, "Output"],
-Cell[3601, 95, 1383, 21, 259, "Output"]
+Cell[2855, 84, 926, 17, 451, "Code"],
+Cell[3784, 103, 238, 3, 32, "Output"],
+Cell[4025, 108, 1383, 21, 319, "Output"]
 }, Open  ]]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[5033, 122, 181, 2, 39, "Subsection"],
+Cell[5457, 135, 181, 2, 45, "Subsection"],
 Cell[CellGroupData[{
-Cell[5239, 128, 3624, 93, 392, "Input"],
-Cell[8866, 223, 208, 3, 30, "Output"],
-Cell[9077, 228, 206, 3, 30, "Output"]
+Cell[5663, 141, 3797, 93, 451, "Input"],
+Cell[9463, 236, 208, 3, 32, "Output"],
+Cell[9674, 241, 206, 3, 32, "Output"]
 }, Open  ]]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[9332, 237, 115, 1, 39, "Subsection"],
+Cell[9929, 250, 115, 1, 45, "Subsection"],
 Cell[CellGroupData[{
-Cell[9472, 242, 468, 10, 66, "Code"],
-Cell[9943, 254, 371, 7, 30, "Output"]
+Cell[10069, 255, 468, 10, 71, "Code"],
+Cell[10540, 267, 371, 7, 32, "Output"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[10351, 266, 357, 7, 66, "Code"],
-Cell[10711, 275, 2640, 37, 1285, "Output"]
+Cell[10948, 279, 357, 7, 71, "Code"],
+Cell[11308, 288, 2640, 37, 1485, "Output"]
 }, Open  ]]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[13400, 318, 104, 1, 39, "Subsection"],
-Cell[13507, 321, 192, 4, 46, "Code"],
-Cell[13702, 327, 130, 1, 30, "Text"],
-Cell[13835, 330, 278, 7, 46, "Code"],
+Cell[13997, 331, 104, 1, 44, "Subsection"],
+Cell[14104, 334, 192, 4, 51, "Code"],
+Cell[14299, 340, 130, 1, 33, "Text"],
+Cell[14432, 343, 278, 7, 51, "Code"],
 Cell[CellGroupData[{
-Cell[14138, 341, 612, 15, 46, "Code"],
-Cell[14753, 358, 151623, 3474, 521, "Output"]
+Cell[14735, 354, 612, 15, 51, "Code"],
+Cell[15350, 371, 151623, 3474, 522, "Output"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[166413, 3837, 148, 2, 28, "Subsubsection"],
+Cell[167010, 3850, 205, 2, 35, "Subsubsection"],
 Cell[CellGroupData[{
-Cell[166586, 3843, 1612, 44, 185, "Code"],
-Cell[168201, 3889, 1219, 21, 43, "Print"],
-Cell[169423, 3912, 28860, 728, 483, "Output"]
+Cell[167240, 3856, 1612, 44, 185, "Code"],
+Cell[168855, 3902, 1219, 21, 43, "Print"],
+Cell[170077, 3925, 28852, 728, 485, "Output"]
 }, Open  ]]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[198332, 4646, 215, 5, 28, "Subsubsection"],
+Cell[198978, 4659, 215, 5, 27, "Subsubsection"],
 Cell[CellGroupData[{
-Cell[198572, 4655, 859, 27, 85, "Code"],
-Cell[199434, 4684, 161, 2, 30, "Output"],
-Cell[199598, 4688, 161, 2, 30, "Output"]
+Cell[199218, 4668, 859, 27, 90, "Code"],
+Cell[200080, 4697, 161, 2, 32, "Output"],
+Cell[200244, 4701, 161, 2, 32, "Output"]
 }, Open  ]]
 }, Open  ]]
 }, Open  ]]

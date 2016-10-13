@@ -10,10 +10,10 @@
 NotebookFileLineBreakTest
 NotebookFileLineBreakTest
 NotebookDataPosition[       158,          7]
-NotebookDataLength[     19672,        512]
-NotebookOptionsPosition[     17997,        446]
-NotebookOutlinePosition[     18334,        461]
-CellTagsIndexPosition[     18291,        458]
+NotebookDataLength[     20130,        525]
+NotebookOptionsPosition[     18457,        459]
+NotebookOutlinePosition[     18792,        474]
+CellTagsIndexPosition[     18749,        471]
 WindowFrame->Normal*)
 
 (* Beginning of Notebook Content *)
@@ -32,25 +32,35 @@ Cell["Compiles Stan code", "Subsection",
 
 Cell[CellGroupData[{
 
-Cell[BoxData[{
+Cell[BoxData[
  RowBox[{
+  RowBox[{"(*", " ", "Linux", " ", "*)"}], "\n", 
   RowBox[{
-  "SetDirectory", "[", "\"\<~/GitHub/MathematicaStan/Examples/Cluster/\>\"", 
-   "]"}], ";"}], "\n", 
- RowBox[{
-  RowBox[{"Needs", "[", "\"\<CmdStan`\>\"", "]"}], ";"}], "\n", 
- RowBox[{
-  RowBox[{"StanCompile", "[", "\"\<soft-k-means.stan\>\"", "]"}], " ", 
-  RowBox[{"(*", " ", 
-   RowBox[{"CAVEAT", ":", " ", 
-    RowBox[{"takes", " ", "some", " ", "time"}]}], " ", "*)"}]}]}], "Code",
+   RowBox[{
+    RowBox[{
+    "SetDirectory", "[", "\"\<~/GitHub/MathematicaStan/Examples/Cluster/\>\"",
+      "]"}], ";"}], "\n", "\n", 
+   RowBox[{"(*", " ", "Windows", " ", "*)"}], "\n", 
+   RowBox[{"(*", " ", 
+    RowBox[{
+     RowBox[{
+     "SetDirectory", "[", 
+      "\"\<C:\\\\Users\\\\USER_NAME\\\\Documents\\\\Mathematica\\\\STAN\\\\\
+Examples\\\\Cluster\>\"", "]"}], ";"}], " ", "*)"}], "\n", "\n", 
+   RowBox[{
+    RowBox[{"Needs", "[", "\"\<CmdStan`\>\"", "]"}], ";"}], "\n", 
+   RowBox[{"StanCompile", "[", "\"\<soft-k-means.stan\>\"", "]"}], " ", 
+   RowBox[{"(*", " ", 
+    RowBox[{"CAVEAT", ":", " ", 
+     RowBox[{"takes", " ", "some", " ", "time"}]}], " ", "*)"}]}]}]], "Code",
  CellChangeTimes->{{3.682442482137542*^9, 3.682442482138791*^9}, 
    3.682442512631974*^9, {3.6824425785072317`*^9, 3.682442589673208*^9}, {
-   3.682442625874312*^9, 3.682442628193616*^9}}],
+   3.682442625874312*^9, 3.682442628193616*^9}, {3.685379583925778*^9, 
+   3.685379659842403*^9}}],
 
 Cell[BoxData["\<\"make: \
-'/home/pix/GitHub/MathematicaStan/Examples/Cluster/soft-k-means' is \
-up to date.\"\>"], "Output",
+'/home/pix/GitHub/MathematicaStan/Examples/Cluster/soft-k-means' is up to \
+date.\"\>"], "Output",
  CellChangeTimes->{
   3.682442517557611*^9, 3.682442633307104*^9, {3.6825096942608833`*^9, 
    3.682509699442164*^9}, {3.682509857641494*^9, 3.682509862467749*^9}, {
@@ -80,10 +90,10 @@ grad_samples = 1 (Default)\\n    elbo_samples = 100 (Default)\\n    eta = 1 \
 (Default)\\n    adapt\\n      engaged = 1 (Default)\\n      iter = 50 \
 (Default)\\n    tol_rel_obj = 0.01 (Default)\\n    eval_elbo = 100 \
 (Default)\\n    output_samples = 1000 (Default)\\nid = 0 (Default)\\ndata\\n  \
-file = /home/pix/GitHub/MathematicaStan/Examples/Cluster/soft-k-\
-means.data.R\\ninit = 2 (Default)\\nrandom\\n  seed = 635825645\\noutput\\n  \
-file = /home/pix/GitHub/MathematicaStan/Examples/Cluster/output.csv\\\
-n  diagnostic_file =  (Default)\\n  refresh = 100 (Default)\\n\\n\\nThis is \
+file = /home/pix/GitHub/MathematicaStan/Examples/Cluster/soft-k-means.data.R\\\
+ninit = 2 (Default)\\nrandom\\n  seed = 635825645\\noutput\\n  file = \
+/home/pix/GitHub/MathematicaStan/Examples/Cluster/output.csv\\n  \
+diagnostic_file =  (Default)\\n  refresh = 100 (Default)\\n\\n\\nThis is \
 Automatic Differentiation Variational Inference.\\n\\n(EXPERIMENTAL \
 ALGORITHM: expect frequent updates to the procedure.)\\n\\nGradient \
 evaluation took 0.000253 seconds\\n1000 iterations under these settings \
@@ -195,9 +205,10 @@ Cell[BoxData[
 
 Cell[CellGroupData[{
 
-Cell["Extract mu for sample 6", "Subsubsection",
+Cell["Extracts mu for sample 6", "Subsubsection",
  CellChangeTimes->{{3.682442936093069*^9, 3.682442944845327*^9}, {
-   3.682443060172535*^9, 3.682443107978216*^9}, 3.6824433766827393`*^9}],
+   3.682443060172535*^9, 3.682443107978216*^9}, 3.6824433766827393`*^9, 
+   3.685379700241585*^9}],
 
 Cell[CellGroupData[{
 
@@ -337,9 +348,11 @@ Cell[BoxData[
 
 Cell[CellGroupData[{
 
-Cell["Computes mean and standard deviation for all variables", "Subsubsection",
+Cell["Computes mean and standard deviation for the mu variable", \
+"Subsubsection",
  CellChangeTimes->{{3.682443614685093*^9, 3.682443659159754*^9}, {
-  3.68250988169326*^9, 3.682509883016678*^9}}],
+  3.68250988169326*^9, 3.682509883016678*^9}, {3.6853797238081007`*^9, 
+  3.68537973335955*^9}}],
 
 Cell[CellGroupData[{
 
@@ -444,9 +457,9 @@ Cell[BoxData[
 }, Open  ]]
 }, Open  ]]
 },
-WindowSize->{1680, 1015},
-WindowMargins->{{0, Automatic}, {Automatic, 3}},
-FrontEndVersion->"8.0 for Linux x86 (64-bit) (February 23, 2011)",
+WindowSize->{1600, 836},
+WindowMargins->{{-1, Automatic}, {Automatic, -1}},
+FrontEndVersion->"10.0 for Linux x86 (64-bit) (June 27, 2014)",
 StyleDefinitions->"Default.nb"
 ]
 (* End of Notebook Content *)
@@ -461,55 +474,55 @@ CellTagsIndex->{}
 (*NotebookFileOutline
 Notebook[{
 Cell[CellGroupData[{
-Cell[580, 22, 156, 2, 74, "Section"],
+Cell[580, 22, 156, 2, 65, "Section"],
 Cell[CellGroupData[{
-Cell[761, 28, 132, 2, 39, "Subsection"],
+Cell[761, 28, 132, 2, 45, "Subsection"],
 Cell[CellGroupData[{
-Cell[918, 34, 614, 14, 85, "Code"],
-Cell[1535, 50, 711, 11, 30, "Output"]
+Cell[918, 34, 1020, 24, 186, "Code"],
+Cell[1941, 60, 702, 11, 32, "Output"]
 }, Open  ]]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[2295, 67, 115, 1, 39, "Subsection"],
+Cell[2692, 77, 115, 1, 45, "Subsection"],
 Cell[CellGroupData[{
-Cell[2435, 72, 159, 2, 46, "Code"],
-Cell[2597, 76, 2317, 31, 962, "Output"]
+Cell[2832, 82, 159, 2, 51, "Code"],
+Cell[2994, 86, 2299, 31, 1111, "Output"]
 }, Open  ]]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[4963, 113, 225, 3, 39, "Subsection"],
-Cell[5191, 118, 243, 5, 46, "Code"],
+Cell[5342, 123, 225, 3, 45, "Subsection"],
+Cell[5570, 128, 243, 5, 51, "Code"],
 Cell[CellGroupData[{
-Cell[5459, 127, 232, 3, 28, "Subsubsection"],
+Cell[5838, 137, 232, 3, 35, "Subsubsection"],
 Cell[CellGroupData[{
-Cell[5716, 134, 200, 5, 46, "Code"],
-Cell[5919, 141, 2078, 50, 50, "Output"]
+Cell[6095, 144, 200, 5, 51, "Code"],
+Cell[6298, 151, 2078, 50, 55, "Output"]
 }, Open  ]]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[8046, 197, 188, 2, 28, "Subsubsection"],
+Cell[8425, 207, 215, 3, 35, "Subsubsection"],
 Cell[CellGroupData[{
-Cell[8259, 203, 274, 6, 30, "Input"],
-Cell[8536, 211, 1804, 44, 100, "Output"]
+Cell[8665, 214, 274, 6, 32, "Input"],
+Cell[8942, 222, 1804, 44, 92, "Output"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[10377, 260, 279, 5, 46, "Code"],
-Cell[10659, 267, 701, 10, 30, "Output"]
+Cell[10783, 271, 279, 5, 51, "Code"],
+Cell[11065, 278, 701, 10, 32, "Output"]
 }, Open  ]]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[11409, 283, 248, 4, 28, "Subsubsection"],
+Cell[11815, 294, 248, 4, 35, "Subsubsection"],
 Cell[CellGroupData[{
-Cell[11682, 291, 435, 9, 30, "Input"],
-Cell[12120, 302, 1126, 31, 175, "Output"]
+Cell[12088, 302, 435, 9, 32, "Input"],
+Cell[12526, 313, 1126, 31, 172, "Output"]
 }, Open  ]]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[13295, 339, 193, 2, 28, "Subsubsection"],
+Cell[13701, 350, 247, 4, 35, "Subsubsection"],
 Cell[CellGroupData[{
-Cell[13513, 345, 513, 11, 50, "Input"],
-Cell[14029, 358, 2102, 46, 100, "Output"],
-Cell[16134, 406, 1811, 34, 100, "Output"]
+Cell[13973, 358, 513, 11, 55, "Input"],
+Cell[14489, 371, 2102, 46, 92, "Output"],
+Cell[16594, 419, 1811, 34, 92, "Output"]
 }, Open  ]]
 }, Open  ]]
 }, Open  ]]
