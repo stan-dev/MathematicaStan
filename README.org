@@ -6,11 +6,19 @@
 * Introduction
 
 *MathematicaStan* is a package to ease the interaction with [[http://mc-stan.org/interfaces/cmdstan][CmdStan]]
-from Mathematica. It is tested under *Linux* with *Mathematica version >=8.0*.
+from Mathematica. It is developed under *Linux* with *Mathematica
+version >=8.0*.  It works under Windows but you have to be careful
+about the way you enter paths:
+- under Linux:
+#+BEGIN_EXAMPLE
+StanSetDirectory["YOUR_PATH/cmdstan"];
+#+END_EXAMPLE
+- under Windows:
+#+BEGIN_EXAMPLE
+StanSetDirectory["C:\\Users\\USER_NAME\\Documents\\R\\cmdstan-2.12.0"; 
+#+END_EXAMPLE
 
 *Author & contact:* picaud.vincent at gmail.com
-
-*Disclaimer*: this is the first *beta* version, not yet tested under Windows.
 
 * Getting started
 
@@ -18,9 +26,10 @@ from Mathematica. It is tested under *Linux* with *Mathematica version >=8.0*.
 
 *** Creation of the CmdStan.m file (*not required*)
 
-*You can skip this step, a [[CmdStan.m][CmdStan.m]] file is already present in this directory.*
+*You can skip this step, a [[CmdStan.m][CmdStan.m]] file is already present in this
+directory.*
 
-Otherwise you have to known that the [[CmdStan.m][CmdStan.m]] file is automatically
+Otherwise you have to know that the [[CmdStan.m][CmdStan.m]] file is automatically
 created from the [[CmdStan.org][CmdStan.org]] file using Emacs + [[http://orgmode.org/][org-mode]]. To generate
 the *CmdStan.m*, open the *CmdStan.org* file with Emacs and type *c-c
 c-v t* to create the *CmdStan.m* file.
@@ -38,6 +47,10 @@ In my case, *CmdStan* is installed there:
 ~/GitHub/cmdstan
 #+END_EXAMPLE
 
+For Windows users it is possibly something like:
+#+BEGIN_EXAMPLE
+C:\\Users\\USER_NAME\\Documents\\R\\cmdstan-2.12.0
+#+END_EXAMPLE
 
 *** CmdStan.m installation
 
@@ -52,7 +65,12 @@ There are two possibilities:
 - You define where [[http://mc-stan.org/interfaces/cmdstan][CmdStan]] is installed for each Mathematica session:
 #+BEGIN_SRC mathematica :exports code
 Needs["CmdStan`"];
-StanSetDirectory["YOUR_PATH/cmdstan"];
+
+(* Uncomment me for Linux *)
+StanSetDirectory["YOUR_PATH/cmdstan"]; 
+
+(* Uncomment me for Windows *)
+(* StanSetdirectory["C:\\Users\\USER_NAME\\Documents\\R\\cmdstan-2.12.0"]; *)
 #+END_SRC
 
 #+RESULTS:
@@ -67,6 +85,9 @@ StanSetDirectory["YOUR_PATH/cmdstan"];
 #+BEGIN_EXAMPLE
 (* You can modify me (initial configuration) *)
 stanDir="~/GitHub/cmdstan"; 
+
+(* or for Windows *)
+(* stanDir="C:\\Users\\USER_NAME\\Documents\\R\\cmdstan-2.12.0"; *)
 #+END_EXAMPLE
   according to your configuration.
 
