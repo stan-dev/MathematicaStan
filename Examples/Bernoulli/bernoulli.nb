@@ -10,10 +10,10 @@
 NotebookFileLineBreakTest
 NotebookFileLineBreakTest
 NotebookDataPosition[       157,          7]
-NotebookDataLength[     44857,       1147]
-NotebookOptionsPosition[     42224,       1048]
-NotebookOutlinePosition[     42581,       1064]
-CellTagsIndexPosition[     42538,       1061]
+NotebookDataLength[     45410,       1165]
+NotebookOptionsPosition[     42772,       1066]
+NotebookOutlinePosition[     43132,       1082]
+CellTagsIndexPosition[     43089,       1079]
 WindowFrame->Normal*)
 
 (* Beginning of Notebook Content *)
@@ -25,9 +25,12 @@ Cell["Bernoulli example", "Title",
 
 Cell[CellGroupData[{
 
-Cell["Defines the working directory and loads CmdStan.m", "Subsection",
+Cell["\<\
+Define the working directory and load CmdStan.m\
+\>", "Subsection",
  CellChangeTimes->{{3.682417683952396*^9, 3.6824177009258537`*^9}, {
-  3.682418364173077*^9, 3.6824183771051903`*^9}}],
+  3.682418364173077*^9, 3.6824183771051903`*^9}, {3.685424465142171*^9, 
+  3.68542446661866*^9}}],
 
 Cell[CellGroupData[{
 
@@ -61,10 +64,13 @@ Cell[BoxData["\<\"/home/pix/GitHub/MathematicaStan/Examples/Bernoulli\"\>"], \
 
 Cell[CellGroupData[{
 
-Cell["Generates the Bernoulli Stan code and compiles it", "Subsection",
+Cell["\<\
+Generate the Bernoulli Stan code and compile it\
+\>", "Subsection",
  CellChangeTimes->{{3.682417725394589*^9, 3.68241773993467*^9}, {
   3.682417772938354*^9, 3.682417778942779*^9}, {3.6824179590515223`*^9, 
-  3.682417959640943*^9}, {3.682418357241733*^9, 3.6824183612052097`*^9}}],
+  3.682417959640943*^9}, {3.682418357241733*^9, 3.6824183612052097`*^9}, {
+  3.685424472826462*^9, 3.68542447405484*^9}}],
 
 Cell[CellGroupData[{
 
@@ -78,13 +84,14 @@ beta(1,1);\n  for (n in 1:N) \n    y[n] ~ bernoulli(theta);\n}\>\""}],
   ";"}], "\n", 
  RowBox[{
   RowBox[{"StanCodeExport", "[", 
-   RowBox[{"\"\<bernoulli\>\"", ",", "stanCode"}], "]"}], "\n", "\n", 
+   RowBox[{"\"\<bernoulli\>\"", ",", "stanCode"}], "]"}], "\n", 
+  "\[IndentingNewLine]", 
   RowBox[{"(*", " ", 
    RowBox[{"Compile", " ", "your", " ", 
     RowBox[{"code", "."}], "\n", " ", "*", " ", 
     RowBox[{"Caveat", ":", " ", 
      RowBox[{"this", " ", "can", " ", "take", " ", "some", " ", "time"}]}]}], 
-   "\n", " ", "*)"}]}], "\[IndentingNewLine]", 
+   "\n", " ", "*)"}]}], "\n", 
  RowBox[{"StanCompile", "[", "\"\<bernoulli\>\"", "]"}]}], "Code",
  CellChangeTimes->{{3.682417531384315*^9, 3.682417560066251*^9}, {
    3.682417750149807*^9, 3.6824177507294483`*^9}, {3.682417791402915*^9, 
@@ -120,8 +127,11 @@ stan/lib/stan_math/lib/cvodes_2.8.2/lib/libsundials_cvodes.a \"\>"], "Output",\
 
 Cell[CellGroupData[{
 
-Cell["Generates some data and saves them (RDump file)", "Subsection",
- CellChangeTimes->{{3.682418543892269*^9, 3.6824185617930813`*^9}}],
+Cell["\<\
+Generate some data and save them (RDump file)\
+\>", "Subsection",
+ CellChangeTimes->{{3.682418543892269*^9, 3.6824185617930813`*^9}, {
+  3.6854244806249237`*^9, 3.685424481732832*^9}}],
 
 Cell[BoxData[{
  RowBox[{
@@ -153,8 +163,9 @@ Cell[BoxData[{
 
 Cell[CellGroupData[{
 
-Cell["Runs Stan and gets result", "Subsection",
- CellChangeTimes->{{3.6824185989000177`*^9, 3.682418625368246*^9}}],
+Cell["Run Stan and get result", "Subsection",
+ CellChangeTimes->{{3.6824185989000177`*^9, 3.682418625368246*^9}, {
+  3.685424483209653*^9, 3.6854244854841127`*^9}}],
 
 Cell[CellGroupData[{
 
@@ -208,13 +219,15 @@ accordingly!\\n\\n\\nIteration:    1 / 2000 [  0%]  (Warmup)\\nIteration:  \
 
 Cell[CellGroupData[{
 
-Cell["Uses the results", "Subsection",
- CellChangeTimes->{{3.682418761262127*^9, 3.682418780426512*^9}}],
+Cell["Use the results", "Subsection",
+ CellChangeTimes->{{3.682418761262127*^9, 3.682418780426512*^9}, 
+   3.6854244956405973`*^9}],
 
 Cell[CellGroupData[{
 
-Cell["Lists Header", "Subsubsection",
- CellChangeTimes->{{3.682418984257224*^9, 3.68241898893296*^9}}],
+Cell["List Header", "Subsubsection",
+ CellChangeTimes->{{3.682418984257224*^9, 3.68241898893296*^9}, 
+   3.685424500981132*^9}],
 
 Cell[CellGroupData[{
 
@@ -249,8 +262,9 @@ Cell[BoxData[
 
 Cell[CellGroupData[{
 
-Cell["Shows sample matrix", "Subsubsection",
- CellChangeTimes->{{3.682419004043912*^9, 3.682419007401228*^9}}],
+Cell["Show sample matrix", "Subsubsection",
+ CellChangeTimes->{{3.682419004043912*^9, 3.682419007401228*^9}, 
+   3.68542450176199*^9}],
 
 Cell[CellGroupData[{
 
@@ -292,8 +306,9 @@ Cell[BoxData[
 
 Cell[CellGroupData[{
 
-Cell["Plots \[Theta] sample and histogram", "Subsubsection",
- CellChangeTimes->{{3.682419126418578*^9, 3.682419151663189*^9}}],
+Cell["Plot \[Theta] sample and histogram", "Subsubsection",
+ CellChangeTimes->{{3.682419126418578*^9, 3.682419151663189*^9}, 
+   3.685424503719844*^9}],
 
 Cell[CellGroupData[{
 
@@ -516,8 +531,8 @@ Cell[BoxData[
             AbsoluteThickness[1.5], 
             Opacity[0.66]}], {}, {}], 
          RectangleBox[{0.15, 0.}, {0.155, 2.}, "RoundingRadius" -> 0]},
-        ImageSizeCache->{{20.5, 39.66666666666674}, {96.88582788751168, 
-         100.30747086957417`}}],
+        ImageSizeCache->{{20.499999999999886`, 39.69444444444434}, {
+         97.79757991792071, 101.22292571799859`}}],
        StatusArea[#, 2.]& ,
        TagBoxNote->"2."],
       StyleBox["2.`", {
@@ -536,8 +551,8 @@ Cell[BoxData[
             AbsoluteThickness[1.5], 
             Opacity[0.66]}], {}, {}], 
          RectangleBox[{0.155, 0.}, {0.16, 4.}, "RoundingRadius" -> 0]},
-        ImageSizeCache->{{38.66666666666674, 57.83333333333337}, {
-         94.46418490544919, 100.30747086957417`}}],
+        ImageSizeCache->{{38.69444444444434, 57.8888888888888}, {
+         95.37223411784282, 101.22292571799859`}}],
        StatusArea[#, 4.]& ,
        TagBoxNote->"4."],
       StyleBox["4.`", {
@@ -556,8 +571,8 @@ Cell[BoxData[
             AbsoluteThickness[1.5], 
             Opacity[0.66]}], {}, {}], 
          RectangleBox[{0.16, 0.}, {0.165, 4.}, "RoundingRadius" -> 0]},
-        ImageSizeCache->{{56.83333333333337, 76.}, {94.46418490544919, 
-         100.30747086957417`}}],
+        ImageSizeCache->{{56.8888888888888, 76.08333333333326}, {
+         95.37223411784282, 101.22292571799859`}}],
        StatusArea[#, 4.]& ,
        TagBoxNote->"4."],
       StyleBox["4.`", {
@@ -576,8 +591,8 @@ Cell[BoxData[
             AbsoluteThickness[1.5], 
             Opacity[0.66]}], {}, {}], 
          RectangleBox[{0.165, 0.}, {0.17, 27.}, "RoundingRadius" -> 0]},
-        ImageSizeCache->{{75., 94.16666666666674}, {66.61529061173049, 
-         100.30747086957417`}}],
+        ImageSizeCache->{{75.08333333333326, 94.27777777777771}, {
+         67.4807574169472, 101.22292571799859`}}],
        StatusArea[#, 27.]& ,
        TagBoxNote->"27."],
       StyleBox["27.`", {
@@ -596,8 +611,8 @@ Cell[BoxData[
             AbsoluteThickness[1.5], 
             Opacity[0.66]}], {}, {}], 
          RectangleBox[{0.17, 0.}, {0.175, 48.}, "RoundingRadius" -> 0]},
-        ImageSizeCache->{{93.16666666666674, 112.33333333333337`}, {
-         41.18803930007428, 100.30747086957417`}}],
+        ImageSizeCache->{{93.27777777777771, 112.47222222222206`}, {
+         42.01462651612944, 101.22292571799859`}}],
        StatusArea[#, 48.]& ,
        TagBoxNote->"48."],
       StyleBox["48.`", {
@@ -616,8 +631,8 @@ Cell[BoxData[
             AbsoluteThickness[1.5], 
             Opacity[0.66]}], {}, {}], 
          RectangleBox[{0.175, 0.}, {0.18, 84.}, "RoundingRadius" -> 0]},
-        ImageSizeCache->{{111.33333333333337`, 130.5}, {-2.4015343770506377`, 
-         100.30747086957417`}}],
+        ImageSizeCache->{{111.47222222222206`, 
+         130.66666666666652`}, {-1.641597885272418, 101.22292571799859`}}],
        StatusArea[#, 84.]& ,
        TagBoxNote->"84."],
       StyleBox["84.`", {
@@ -636,8 +651,8 @@ Cell[BoxData[
             AbsoluteThickness[1.5], 
             Opacity[0.66]}], {}, {}], 
          RectangleBox[{0.18, 0.}, {0.185, 120.}, "RoundingRadius" -> 0]},
-        ImageSizeCache->{{129.5, 148.66666666666674`}, {-45.99110805417557, 
-         100.30747086957417`}}],
+        ImageSizeCache->{{129.66666666666652`, 
+         148.86111111111097`}, {-45.297822286674304`, 101.22292571799859`}}],
        StatusArea[#, 120.]& ,
        TagBoxNote->"120."],
       StyleBox["120.`", {
@@ -656,8 +671,8 @@ Cell[BoxData[
             AbsoluteThickness[1.5], 
             Opacity[0.66]}], {}, {}], 
          RectangleBox[{0.185, 0.}, {0.19, 153.}, "RoundingRadius" -> 0]},
-        ImageSizeCache->{{147.66666666666674`, 
-         166.83333333333337`}, {-85.94821725820675, 100.30747086957417`}}],
+        ImageSizeCache->{{147.86111111111097`, 
+         167.05555555555554`}, {-85.31602798795934, 101.22292571799859`}}],
        StatusArea[#, 153.]& ,
        TagBoxNote->"153."],
       StyleBox["153.`", {
@@ -676,8 +691,8 @@ Cell[BoxData[
             AbsoluteThickness[1.5], 
             Opacity[0.66]}], {}, {}], 
          RectangleBox[{0.19, 0.}, {0.195, 150.}, "RoundingRadius" -> 0]},
-        ImageSizeCache->{{165.83333333333337`, 185.}, {-82.31575278511299, 
-         100.30747086957417`}}],
+        ImageSizeCache->{{166.05555555555554`, 185.25}, {-81.6780092878425, 
+         101.22292571799859`}}],
        StatusArea[#, 150.]& ,
        TagBoxNote->"150."],
       StyleBox["150.`", {
@@ -696,8 +711,8 @@ Cell[BoxData[
             AbsoluteThickness[1.5], 
             Opacity[0.66]}], {}, {}], 
          RectangleBox[{0.195, 0.}, {0.2, 125.}, "RoundingRadius" -> 0]},
-        ImageSizeCache->{{184., 203.16666666666674`}, {-52.04521550933181, 
-         100.30747086957417`}}],
+        ImageSizeCache->{{184.25, 203.44444444444446`}, {-51.361186786869, 
+         101.22292571799859`}}],
        StatusArea[#, 125.]& ,
        TagBoxNote->"125."],
       StyleBox["125.`", {
@@ -716,8 +731,8 @@ Cell[BoxData[
             AbsoluteThickness[1.5], 
             Opacity[0.66]}], {}, {}], 
          RectangleBox[{0.2, 0.}, {0.205, 109.}, "RoundingRadius" -> 0]},
-        ImageSizeCache->{{202.16666666666674`, 
-         221.33333333333337`}, {-32.67207165283183, 100.30747086957417`}}],
+        ImageSizeCache->{{202.44444444444446`, 
+         221.6388888888888}, {-31.958420386245947`, 101.22292571799859`}}],
        StatusArea[#, 109.]& ,
        TagBoxNote->"109."],
       StyleBox["109.`", {
@@ -736,8 +751,8 @@ Cell[BoxData[
             AbsoluteThickness[1.5], 
             Opacity[0.66]}], {}, {}], 
          RectangleBox[{0.205, 0.}, {0.21, 89.}, "RoundingRadius" -> 0]},
-        ImageSizeCache->{{220.33333333333337`, 239.5}, {-8.45564183220688, 
-         100.30747086957417`}}],
+        ImageSizeCache->{{220.6388888888888, 
+         239.83333333333326`}, {-7.704962385467127, 101.22292571799859`}}],
        StatusArea[#, 89.]& ,
        TagBoxNote->"89."],
       StyleBox["89.`", {
@@ -756,8 +771,8 @@ Cell[BoxData[
             AbsoluteThickness[1.5], 
             Opacity[0.66]}], {}, {}], 
          RectangleBox[{0.21, 0.}, {0.215, 45.}, "RoundingRadius" -> 0]},
-        ImageSizeCache->{{238.5, 257.66666666666674`}, {44.82050377316802, 
-         100.30747086957417`}}],
+        ImageSizeCache->{{238.83333333333326`, 258.0277777777777}, {
+         45.65264521624626, 101.22292571799859`}}],
        StatusArea[#, 45.]& ,
        TagBoxNote->"45."],
       StyleBox["45.`", {
@@ -776,8 +791,8 @@ Cell[BoxData[
             AbsoluteThickness[1.5], 
             Opacity[0.66]}], {}, {}], 
          RectangleBox[{0.215, 0.}, {0.22, 21.}, "RoundingRadius" -> 0]},
-        ImageSizeCache->{{256.66666666666674`, 275.83333333333337`}, {
-         73.88021955791797, 100.30747086957417`}}],
+        ImageSizeCache->{{257.0277777777777, 276.2222222222222}, {
+         74.75679481718083, 101.22292571799859`}}],
        StatusArea[#, 21.]& ,
        TagBoxNote->"21."],
       StyleBox["21.`", {
@@ -796,8 +811,8 @@ Cell[BoxData[
             AbsoluteThickness[1.5], 
             Opacity[0.66]}], {}, {}], 
          RectangleBox[{0.22, 0.}, {0.225, 12.}, "RoundingRadius" -> 0]},
-        ImageSizeCache->{{274.83333333333337`, 294.}, {84.7776129771992, 
-         100.30747086957417`}}],
+        ImageSizeCache->{{275.2222222222222, 294.41666666666663`}, {
+         85.67085091753131, 101.22292571799859`}}],
        StatusArea[#, 12.]& ,
        TagBoxNote->"12."],
       StyleBox["12.`", {
@@ -816,8 +831,8 @@ Cell[BoxData[
             AbsoluteThickness[1.5], 
             Opacity[0.66]}], {}, {}], 
          RectangleBox[{0.225, 0.}, {0.23, 4.}, "RoundingRadius" -> 0]},
-        ImageSizeCache->{{293., 312.16666666666674`}, {94.46418490544919, 
-         100.30747086957417`}}],
+        ImageSizeCache->{{293.41666666666663`, 312.6111111111111}, {
+         95.37223411784282, 101.22292571799859`}}],
        StatusArea[#, 4.]& ,
        TagBoxNote->"4."],
       StyleBox["4.`", {
@@ -836,8 +851,8 @@ Cell[BoxData[
             AbsoluteThickness[1.5], 
             Opacity[0.66]}], {}, {}], 
          RectangleBox[{0.23, 0.}, {0.235, 2.}, "RoundingRadius" -> 0]},
-        ImageSizeCache->{{311.16666666666674`, 330.33333333333337`}, {
-         96.88582788751168, 100.30747086957417`}}],
+        ImageSizeCache->{{311.6111111111111, 330.80555555555543`}, {
+         97.79757991792071, 101.22292571799859`}}],
        StatusArea[#, 2.]& ,
        TagBoxNote->"2."],
       StyleBox["2.`", {
@@ -856,8 +871,8 @@ Cell[BoxData[
             AbsoluteThickness[1.5], 
             Opacity[0.66]}], {}, {}], 
          RectangleBox[{0.235, 0.}, {0.24, 1.}, "RoundingRadius" -> 0]},
-        ImageSizeCache->{{329.33333333333337`, 348.5}, {98.09664937854292, 
-         100.30747086957417`}}],
+        ImageSizeCache->{{329.80555555555543`, 348.9999999999999}, {
+         99.01025281795965, 101.22292571799859`}}],
        StatusArea[#, 1.]& ,
        TagBoxNote->"1."],
       StyleBox["1.`", {
@@ -885,8 +900,11 @@ Cell[BoxData[
 
 Cell[CellGroupData[{
 
-Cell["Maximimizes likelihood with StanRunOptimize", "Subsection",
- CellChangeTimes->{{3.682419194475692*^9, 3.6824192177687273`*^9}}],
+Cell["\<\
+Maximimize likelihood with StanRunOptimize\
+\>", "Subsection",
+ CellChangeTimes->{{3.682419194475692*^9, 3.6824192177687273`*^9}, 
+   3.685424505257321*^9}],
 
 Cell[CellGroupData[{
 
@@ -927,16 +945,14 @@ Cell[BoxData[{
   RowBox[{"StanOptionOptimize", "[", "]"}], 
   "                                            ", 
   RowBox[{"(*", " ", 
-   RowBox[{"lists", " ", "current", " ", "options"}], " ", "*)"}]}], "\n", 
+   RowBox[{"list", " ", "current", " ", "options"}], " ", "*)"}]}], "\n", 
  RowBox[{
-  RowBox[{
-   RowBox[{"StanSetOptionOptimize", "[", 
-    RowBox[{"\"\<iter\>\"", ",", "100"}], "]"}], ";"}], 
+  RowBox[{"StanSetOptionOptimize", "[", 
+   RowBox[{"\"\<iter\>\"", ",", "100"}], "]"}], ";", 
   "                              ", 
   RowBox[{"(*", " ", 
-   RowBox[{"modifies", " ", "the", " ", "\"\<iter\>\"", " ", "option"}], " ", 
-   "*)"}]}], "\n", 
- RowBox[{
+   RowBox[{"modify", " ", "the", " ", "\"\<iter\>\"", " ", "option"}], " ", 
+   "*)"}], "\n", 
   RowBox[{"StanSetOptionOptimize", "[", 
    RowBox[{"\"\<output file\>\"", ",", "\"\<output_optimize.csv\>\""}], "]"}],
    ";", "     ", 
@@ -947,7 +963,8 @@ Cell[BoxData[{
  CellChangeTimes->{{3.6824193338455973`*^9, 3.682419420695215*^9}, {
   3.682419453744855*^9, 3.682419498000065*^9}, {3.68241962317931*^9, 
   3.682419624711853*^9}, {3.6824197142101917`*^9, 3.682419757158187*^9}, {
-  3.685379085864436*^9, 3.685379134589333*^9}}],
+  3.685379085864436*^9, 3.685379134589333*^9}, {3.685424524151052*^9, 
+  3.6854245372509937`*^9}}],
 
 Cell[BoxData[
  RowBox[{"{", "}"}]], "Output",
@@ -1002,8 +1019,9 @@ relative gradient magnitude is below tolerance\"\>"], "Output",
 
 Cell[CellGroupData[{
 
-Cell["Overwrites and/or resets option", "Subsubsection",
- CellChangeTimes->{{3.6824195682797337`*^9, 3.6824195992722807`*^9}}],
+Cell["Overwrite and/or reset option", "Subsubsection",
+ CellChangeTimes->{{3.6824195682797337`*^9, 3.6824195992722807`*^9}, {
+  3.6854246648167048`*^9, 3.685424665609723*^9}}],
 
 Cell[CellGroupData[{
 
@@ -1046,10 +1064,10 @@ Cell[BoxData[
 }, Open  ]]
 }, Open  ]]
 },
-WindowSize->{800, 836},
-WindowMargins->{{Automatic, -1}, {Automatic, -1}},
+WindowSize->{1680, 1015},
+WindowMargins->{{0, Automatic}, {Automatic, 3}},
 WindowFrame->"Normal",
-FrontEndVersion->"10.0 for Linux x86 (64-bit) (June 27, 2014)",
+FrontEndVersion->"8.0 for Linux x86 (64-bit) (February 23, 2011)",
 StyleDefinitions->"Default.nb"
 ]
 (* End of Notebook Content *)
@@ -1064,87 +1082,87 @@ CellTagsIndex->{}
 (*NotebookFileOutline
 Notebook[{
 Cell[CellGroupData[{
-Cell[579, 22, 102, 1, 93, "Title"],
+Cell[579, 22, 102, 1, 88, "Title"],
 Cell[CellGroupData[{
-Cell[706, 27, 190, 2, 45, "Subsection"],
+Cell[706, 27, 244, 5, 39, "Subsection"],
 Cell[CellGroupData[{
-Cell[921, 33, 811, 17, 167, "Code"],
-Cell[1735, 52, 327, 5, 32, "Output"]
+Cell[975, 36, 811, 17, 163, "Code"],
+Cell[1789, 55, 327, 5, 30, "Output"]
 }, Open  ]]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[2111, 63, 284, 3, 45, "Subsection"],
+Cell[2165, 66, 338, 6, 39, "Subsection"],
 Cell[CellGroupData[{
-Cell[2420, 70, 981, 21, 375, "Code"],
-Cell[3404, 93, 182, 2, 32, "Output"],
-Cell[3589, 97, 1267, 19, 517, "Output"]
+Cell[2528, 76, 984, 22, 370, "Code"],
+Cell[3515, 100, 182, 2, 30, "Output"],
+Cell[3700, 104, 1267, 19, 240, "Output"]
 }, Open  ]]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[4905, 122, 137, 1, 45, "Subsection"],
-Cell[5045, 125, 862, 25, 109, "Code"]
+Cell[5016, 129, 194, 4, 39, "Subsection"],
+Cell[5213, 135, 862, 25, 104, "Code"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[5944, 155, 115, 1, 45, "Subsection"],
+Cell[6112, 165, 164, 2, 39, "Subsection"],
 Cell[CellGroupData[{
-Cell[6084, 160, 392, 8, 90, "Code"],
-Cell[6479, 170, 2470, 34, 1485, "Output"]
+Cell[6301, 171, 392, 8, 85, "Code"],
+Cell[6696, 181, 2470, 34, 1285, "Output"]
 }, Open  ]]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[8998, 210, 104, 1, 44, "Subsection"],
+Cell[9215, 221, 131, 2, 39, "Subsection"],
 Cell[CellGroupData[{
-Cell[9127, 215, 102, 1, 35, "Subsubsection"],
+Cell[9371, 227, 127, 2, 28, "Subsubsection"],
 Cell[CellGroupData[{
-Cell[9254, 220, 138, 2, 51, "Code"],
-Cell[9395, 224, 823, 21, 32, "Output"]
+Cell[9523, 233, 138, 2, 46, "Code"],
+Cell[9664, 237, 823, 21, 30, "Output"]
 }, Open  ]]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[10267, 251, 110, 1, 35, "Subsubsection"],
+Cell[10536, 264, 134, 2, 28, "Subsubsection"],
 Cell[CellGroupData[{
-Cell[10402, 256, 289, 7, 71, "Code"],
-Cell[10694, 265, 192, 4, 32, "Output"],
-Cell[10889, 271, 739, 17, 55, "Output"]
+Cell[10695, 270, 289, 7, 66, "Code"],
+Cell[10987, 279, 192, 4, 30, "Output"],
+Cell[11182, 285, 739, 17, 30, "Output"]
 }, Open  ]]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[11677, 294, 126, 1, 35, "Subsubsection"],
+Cell[11970, 308, 151, 2, 28, "Subsubsection"],
 Cell[CellGroupData[{
-Cell[11828, 299, 601, 14, 55, "Input"],
-Cell[12432, 315, 10890, 184, 253, "Output"],
-Cell[23325, 501, 12335, 379, 256, "Output"]
+Cell[12146, 314, 601, 14, 50, "Input"],
+Cell[12750, 330, 10890, 184, 251, "Output"],
+Cell[23643, 516, 12462, 379, 254, "Output"]
 }, Open  ]]
 }, Open  ]]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[35721, 887, 133, 1, 45, "Subsection"],
+Cell[36166, 902, 166, 4, 39, "Subsection"],
 Cell[CellGroupData[{
-Cell[35879, 892, 149, 2, 51, "Code"],
-Cell[36031, 896, 1226, 17, 649, "Output"]
+Cell[36357, 910, 149, 2, 46, "Code"],
+Cell[36509, 914, 1226, 17, 563, "Output"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[37294, 918, 141, 2, 35, "Subsubsection"],
+Cell[37772, 936, 141, 2, 28, "Subsubsection"],
 Cell[CellGroupData[{
-Cell[37460, 924, 1085, 25, 110, "Code"],
-Cell[38548, 951, 261, 4, 32, "Output"],
-Cell[38812, 957, 447, 10, 32, "Output"]
+Cell[37938, 942, 1106, 24, 104, "Code"],
+Cell[39047, 968, 261, 4, 30, "Output"],
+Cell[39311, 974, 447, 10, 30, "Output"]
 }, Open  ]]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[39308, 973, 121, 1, 35, "Subsubsection"],
+Cell[39807, 990, 121, 1, 28, "Subsubsection"],
 Cell[CellGroupData[{
-Cell[39454, 978, 125, 2, 51, "Code"],
-Cell[39582, 982, 1190, 16, 649, "Output"]
+Cell[39953, 995, 125, 2, 46, "Code"],
+Cell[40081, 999, 1190, 16, 563, "Output"]
 }, Open  ]]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[40821, 1004, 126, 1, 35, "Subsubsection"],
+Cell[41320, 1021, 175, 2, 28, "Subsubsection"],
 Cell[CellGroupData[{
-Cell[40972, 1009, 327, 6, 90, "Code"],
-Cell[41302, 1017, 351, 9, 32, "Output"],
-Cell[41656, 1028, 350, 9, 32, "Output"],
-Cell[42009, 1039, 163, 3, 32, "Output"]
+Cell[41520, 1027, 327, 6, 85, "Code"],
+Cell[41850, 1035, 351, 9, 30, "Output"],
+Cell[42204, 1046, 350, 9, 30, "Output"],
+Cell[42557, 1057, 163, 3, 30, "Output"]
 }, Open  ]]
 }, Open  ]]
 }, Open  ]]

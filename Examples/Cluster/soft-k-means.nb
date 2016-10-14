@@ -10,10 +10,10 @@
 NotebookFileLineBreakTest
 NotebookFileLineBreakTest
 NotebookDataPosition[       158,          7]
-NotebookDataLength[     20130,        525]
-NotebookOptionsPosition[     18457,        459]
-NotebookOutlinePosition[     18792,        474]
-CellTagsIndexPosition[     18749,        471]
+NotebookDataLength[     20342,        532]
+NotebookOptionsPosition[     18668,        466]
+NotebookOutlinePosition[     19005,        481]
+CellTagsIndexPosition[     18962,        478]
 WindowFrame->Normal*)
 
 (* Beginning of Notebook Content *)
@@ -26,9 +26,9 @@ Cell["Soft-k-means example", "Section",
 
 Cell[CellGroupData[{
 
-Cell["Compiles Stan code", "Subsection",
+Cell["Compile Stan code", "Subsection",
  CellChangeTimes->{{3.6824426843719482`*^9, 3.6824426931373*^9}, 
-   3.682442726638249*^9}],
+   3.682442726638249*^9, 3.685424990617269*^9}],
 
 Cell[CellGroupData[{
 
@@ -75,8 +75,9 @@ date.\"\>"], "Output",
 
 Cell[CellGroupData[{
 
-Cell["Runs generated executable", "Subsection",
- CellChangeTimes->{{3.6824427157104473`*^9, 3.682442741637167*^9}}],
+Cell["Run generated executable", "Subsection",
+ CellChangeTimes->{{3.6824427157104473`*^9, 3.682442741637167*^9}, 
+   3.6854250102506332`*^9}],
 
 Cell[CellGroupData[{
 
@@ -121,10 +122,12 @@ posterior... \\nCOMPLETED.\"\>"], "Output",
 
 Cell[CellGroupData[{
 
-Cell["Imports data and variable manipulations", "Subsection",
+Cell["\<\
+Import data and variable manipulations\
+\>", "Subsection",
  CellChangeTimes->{{3.682442699821391*^9, 3.682442722849662*^9}, {
-  3.682442802034801*^9, 3.682442802951371*^9}, {3.682565493914021*^9, 
-  3.682565509873543*^9}}],
+   3.682442802034801*^9, 3.682442802951371*^9}, {3.682565493914021*^9, 
+   3.682565509873543*^9}, 3.6854250252921743`*^9}],
 
 Cell[BoxData[
  RowBox[{
@@ -135,10 +138,12 @@ Cell[BoxData[
 
 Cell[CellGroupData[{
 
-Cell["Prints header data (20 first variables)", "Subsubsection",
+Cell["\<\
+Print header data (20 first variables)\
+\>", "Subsubsection",
  CellChangeTimes->{{3.682442455109765*^9, 3.682442458081766*^9}, {
-  3.6824428440665817`*^9, 3.6824428582466707`*^9}, {3.682442898966017*^9, 
-  3.682442906011579*^9}}],
+   3.6824428440665817`*^9, 3.6824428582466707`*^9}, {3.682442898966017*^9, 
+   3.682442906011579*^9}, 3.685425026840074*^9}],
 
 Cell[CellGroupData[{
 
@@ -205,10 +210,10 @@ Cell[BoxData[
 
 Cell[CellGroupData[{
 
-Cell["Extracts mu for sample 6", "Subsubsection",
+Cell["Extract mu for sample 6", "Subsubsection",
  CellChangeTimes->{{3.682442936093069*^9, 3.682442944845327*^9}, {
    3.682443060172535*^9, 3.682443107978216*^9}, 3.6824433766827393`*^9, 
-   3.685379700241585*^9}],
+   3.685379700241585*^9, 3.68542502825109*^9}],
 
 Cell[CellGroupData[{
 
@@ -293,10 +298,11 @@ Cell[BoxData[
 Cell[CellGroupData[{
 
 Cell["\<\
-Extracts the whole column of sample for mu.2.3 (only prints the first 10)\
+Extract the whole column of sample for mu.2.3 (only print the first 10)\
 \>", "Subsubsection",
  CellChangeTimes->{{3.6824431996912317`*^9, 3.6824432197402277`*^9}, {
-   3.682443281320071*^9, 3.682443305077283*^9}, 3.682443633593693*^9}],
+   3.682443281320071*^9, 3.682443305077283*^9}, 3.682443633593693*^9, {
+   3.6854250293873787`*^9, 3.685425044529789*^9}}],
 
 Cell[CellGroupData[{
 
@@ -348,11 +354,12 @@ Cell[BoxData[
 
 Cell[CellGroupData[{
 
-Cell["Computes mean and standard deviation for the mu variable", \
-"Subsubsection",
+Cell["\<\
+Compute mean and standard deviation for the mu variable\
+\>", "Subsubsection",
  CellChangeTimes->{{3.682443614685093*^9, 3.682443659159754*^9}, {
-  3.68250988169326*^9, 3.682509883016678*^9}, {3.6853797238081007`*^9, 
-  3.68537973335955*^9}}],
+   3.68250988169326*^9, 3.682509883016678*^9}, {3.6853797238081007`*^9, 
+   3.68537973335955*^9}, 3.685425045722619*^9}],
 
 Cell[CellGroupData[{
 
@@ -457,9 +464,9 @@ Cell[BoxData[
 }, Open  ]]
 }, Open  ]]
 },
-WindowSize->{1600, 836},
-WindowMargins->{{-1, Automatic}, {Automatic, -1}},
-FrontEndVersion->"10.0 for Linux x86 (64-bit) (June 27, 2014)",
+WindowSize->{1680, 1015},
+WindowMargins->{{0, Automatic}, {Automatic, 3}},
+FrontEndVersion->"8.0 for Linux x86 (64-bit) (February 23, 2011)",
 StyleDefinitions->"Default.nb"
 ]
 (* End of Notebook Content *)
@@ -474,55 +481,55 @@ CellTagsIndex->{}
 (*NotebookFileOutline
 Notebook[{
 Cell[CellGroupData[{
-Cell[580, 22, 156, 2, 65, "Section"],
+Cell[580, 22, 156, 2, 74, "Section"],
 Cell[CellGroupData[{
-Cell[761, 28, 132, 2, 45, "Subsection"],
+Cell[761, 28, 153, 2, 39, "Subsection"],
 Cell[CellGroupData[{
-Cell[918, 34, 1020, 24, 186, "Code"],
-Cell[1941, 60, 702, 11, 32, "Output"]
+Cell[939, 34, 1020, 24, 182, "Code"],
+Cell[1962, 60, 702, 11, 30, "Output"]
 }, Open  ]]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[2692, 77, 115, 1, 45, "Subsection"],
+Cell[2713, 77, 142, 2, 39, "Subsection"],
 Cell[CellGroupData[{
-Cell[2832, 82, 159, 2, 51, "Code"],
-Cell[2994, 86, 2299, 31, 1111, "Output"]
+Cell[2880, 83, 159, 2, 46, "Code"],
+Cell[3042, 87, 2299, 31, 962, "Output"]
 }, Open  ]]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[5342, 123, 225, 3, 45, "Subsection"],
-Cell[5570, 128, 243, 5, 51, "Code"],
+Cell[5390, 124, 258, 5, 39, "Subsection"],
+Cell[5651, 131, 243, 5, 46, "Code"],
 Cell[CellGroupData[{
-Cell[5838, 137, 232, 3, 35, "Subsubsection"],
+Cell[5919, 140, 263, 5, 28, "Subsubsection"],
 Cell[CellGroupData[{
-Cell[6095, 144, 200, 5, 51, "Code"],
-Cell[6298, 151, 2078, 50, 55, "Output"]
+Cell[6207, 149, 200, 5, 46, "Code"],
+Cell[6410, 156, 2078, 50, 50, "Output"]
 }, Open  ]]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[8425, 207, 215, 3, 35, "Subsubsection"],
+Cell[8537, 212, 235, 3, 28, "Subsubsection"],
 Cell[CellGroupData[{
-Cell[8665, 214, 274, 6, 32, "Input"],
-Cell[8942, 222, 1804, 44, 92, "Output"]
+Cell[8797, 219, 274, 6, 30, "Input"],
+Cell[9074, 227, 1804, 44, 87, "Output"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[10783, 271, 279, 5, 51, "Code"],
-Cell[11065, 278, 701, 10, 32, "Output"]
+Cell[10915, 276, 279, 5, 46, "Code"],
+Cell[11197, 283, 701, 10, 30, "Output"]
 }, Open  ]]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[11815, 294, 248, 4, 35, "Subsubsection"],
+Cell[11947, 299, 298, 5, 28, "Subsubsection"],
 Cell[CellGroupData[{
-Cell[12088, 302, 435, 9, 32, "Input"],
-Cell[12526, 313, 1126, 31, 172, "Output"]
+Cell[12270, 308, 435, 9, 30, "Input"],
+Cell[12708, 319, 1126, 31, 162, "Output"]
 }, Open  ]]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[13701, 350, 247, 4, 35, "Subsubsection"],
+Cell[13883, 356, 276, 5, 28, "Subsubsection"],
 Cell[CellGroupData[{
-Cell[13973, 358, 513, 11, 55, "Input"],
-Cell[14489, 371, 2102, 46, 92, "Output"],
-Cell[16594, 419, 1811, 34, 92, "Output"]
+Cell[14184, 365, 513, 11, 50, "Input"],
+Cell[14700, 378, 2102, 46, 87, "Output"],
+Cell[16805, 426, 1811, 34, 87, "Output"]
 }, Open  ]]
 }, Open  ]]
 }, Open  ]]
