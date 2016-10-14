@@ -1,0 +1,8 @@
+#+TITLE: TODO  list
+
+* TODO Improve documentation
+  Code snippet examples for each function
+* TODO Maybe use a more recent Matheematica version (10 or 11)
+  - dictionary structure will allow to simplify code related to option management
+  - availability of *RLink* for a smooth integration of R and RObject export (idea from Jeff Patterson)
+* TODO Support forr parallel sampling (multi-cores)

@@ -5,10 +5,12 @@
 
 * Introduction
 
-*MathematicaStan* is a package to ease the interaction with [[http://mc-stan.org/interfaces/cmdstan][CmdStan]]
-from Mathematica. It is developed under *Linux* with *Mathematica
-version >=8.0*.  It works under Windows but you have to be careful
-about the way you enter paths:
+*MathematicaStan* is a package to interact with [[http://mc-stan.org/interfaces/cmdstan][CmdStan]] from
+Mathematica. It is developed under *Linux* and is compatible with
+*Mathematica v8.0*.
+
+It works under Windows but you have to be careful about the way you
+enter paths:
 - under Linux:
 #+BEGIN_EXAMPLE
 StanSetDirectory["YOUR_PATH/cmdstan"];
@@ -174,7 +176,9 @@ StanVariableFunc
 StanVariableToImport
 #+end_example
 
-To get extra information you can use the inline package documentation, for instance:
+To get extra information you can:
+
+- use the inline package documentation, 
 
 #+BEGIN_SRC mathematica :exports both
 Needs["CmdStan`"];
@@ -191,4 +195,5 @@ Needs["CmdStan`"];
 :    {{"MatrixName",{{...}}},{"ScalarName",5.6},{"VectorName",{..}},...}
 :  - if "fileName" has no extension, ".data.R" is automatically added.
 
+- walk through the [[*Complete examples][commented examples]] to see how to use the main functions.
 
