@@ -195,5 +195,5 @@ Needs["CmdStan`"];
 :    {{"MatrixName",{{...}}},{"ScalarName",5.6},{"VectorName",{..}},...}
 :  - if "fileName" has no extension, ".data.R" is automatically added.
 
-- walk through the [[*Complete examples][commented examples]] to see how to use the main functions.
+- walk through the *Complete examples* notebooks and read comments.
 
