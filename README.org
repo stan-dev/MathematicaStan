@@ -24,6 +24,18 @@ StanSetDirectory["C:\\Users\\USER_NAME\\Documents\\R\\cmdstan-2.12.0";
 
 *Windows version:* many thanks to Jeff Patterson for his valuable contribution.
 
+** News
+
+*** 2016-10-20 Thu
+**** Complete refactoring of option management + doc
+See the *How to modify options* section (end of this page).
+**** Parallel Sampling (Linux version only)
+The command
+#+BEGIN_SRC matheematica :exports code
+StanRunSample["bernoulli",4]
+#+END_SRC
+uses 4 jobs for HMC sampling.
+
 * Getting started
 
 ** Installation
@@ -176,24 +188,111 @@ StanVariableFunc
 StanVariableToImport
 #+end_example
 
-To get extra information you can:
+** Individual function documentation
 
-- use the inline package documentation, 
+   To get extra information about a peculiar function you can proceed as usual:
 
-#+BEGIN_SRC mathematica :exports both
+ #+BEGIN_SRC mathematica :exports both
 Needs["CmdStan`"];
 ?RDumpExport
+ #+END_SRC
+
+ #+RESULTS:
+ : RDumpExport[fileNameDataR_?StringQ,listOfNameValue_]
+ : 
+ : Creates a file and dump data in RDump format.
+ : 
+ : Note:
+ :  - input data "listOfNameValue" is of the form 
+ :    {{"MatrixName",{{...}}},{"ScalarName",5.6},{"VectorName",{..}},...}
+ :  - if "fileName" has no extension, ".data.R" is automatically added.
+
+** Selected topics documentation
+
+Waiting for a more complete documentation, this section provides some
+specialized information.
+
+*** How to modify options
+
+    The options are organized in a hierarchical way and you must
+provide this information when you want to modify option values. Options
+organization are described in the [[http://mc-stan.org/interfaces/cmdstan][CmdStan user guide ("Command-Line
+Options" section)]].
+
+In *MathemeticaStan* you have *3* predefined option lists that you can print using:
+
+#+BEGIN_SRC mathematica :exports code
+StanOptionOptimize[]
+StanOptionSample[]
+StanOptionVariational[]
+#+END_SRC
+
+Initial value is an empty list.
+
+If you want to modify option for the *Optimize* method you must
+explictly provide the hierarchical information:
+
+#+NAME: doc_option_optimize_example.m
+#+BEGIN_SRC mathematica :exports code 
+StanSetOptionOptimize["output.file","output_optimize.csv"];  
+StanSetOptionOptimize["method.optimize.iter", 100]; 
+StanSetOptionOptimize["method.optimize.algorithm", "bfgs"];
+StanSetOptionOptimize["method.optimize.algorithm.bfgs.tol_grad", 10.^-5];
+#+END_SRC
+
+You can now view the option list:
+
+#+BEGIN_SRC mathematica :exports code
+StanOptionOptimize[]
+#+END_SRC
+
+#+BEGIN_SRC mathematica :exports results :noweb yes
+Needs["CmdStan`"];
+<<doc_option_optimize_example.m>>
+Print[StanOptionOptimize[]]
 #+END_SRC
 
 #+RESULTS:
-: RDumpExport[fileNameDataR_?StringQ,listOfNameValue_]
-: 
-: Creates a file and dump data in RDump format.
-: 
-: Note:
-:  - input data "listOfNameValue" is of the form 
-:    {{"MatrixName",{{...}}},{"ScalarName",5.6},{"VectorName",{..}},...}
-:  - if "fileName" has no extension, ".data.R" is automatically added.
+| method.optimize.algorithm.bfgs.tol_grad |               1e-05 |
+| method.optimize.algorithm               |                bfgs |
+| method.optimize.iter                    |                 100 |
+| output.file                             | output_optimize.csv |
 
-- walk through the *Complete examples* notebooks and read comments.
+Note that it is possible to overwrite option value
+#+BEGIN_SRC mathematica :exports code 
+StanSetOptionOptimize["method.optimize.iter", 2016]; 
+#+END_SRC
 
+or to remove a peculiar option (given its exact name or a pattern).
+#+BEGIN_SRC mathematica :exports code 
+StanRemoveOptionOptimize["method.optimize.iter"]; (* remove "method.optimize.iter" option *)
+StanRemoveOptionOptimize["method*"]; (* remove ALL method* options *)
+#+END_SRC
+
+You can also remove *all* defined options by:
+#+BEGIN_SRC mathematica :exports code 
+StanResetOptionOptimize[]
+#+END_SRC
+
+These option manipulations are illustrated in the [[Examples/Bernoulli/bernoulli.pdf][Bernoulli example]].
+
+*** Output variable access and manipulation
+
+Output importation and information extractions are illustrated in the [[Examples/Cluster/soft-k-means.pdf][soft-k-means example]].
+
+The involved functions are:
+
+#+BEGIN_SRC mathematica :exports code 
+StanFindVariableColumn[...];
+StanFindVariableIndex[...];
+
+StanVariable[...]
+StanVariableColumn[...];
+
+StanVariableFunc[...];
+#+END_SRC
+
+
+*** Parallel sampling (Linux only)
+
+Illustrated in the [[Examples/Bernoulli/bernoulli.pdf][Bernoulli example]].

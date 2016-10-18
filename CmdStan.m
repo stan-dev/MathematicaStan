@@ -122,9 +122,7 @@ StanCompile[stanCodeFileName_?StringQ]:=
 	];
 
 
-(*
- * Default option values
- *)
+(* *)
 immutableStanOptionVariational={{"method","variational"}};
 immutableStanOptionSample={{"method","sample"}};
 immutableStanOptionOptimize={{"method","optimize"}};
@@ -178,16 +176,9 @@ StanGetOption[name_?StringQ,option_?StanOptionListQ]:=
 			   Return[option[[position,2]]];
 		];
 
+(* name can be a pattern, for instance "method*" *)
 StanRemoveOption[name_?StringQ,option_?StanOptionListQ]:=
-		Module[{position},
-			   position=StanGetOptionPosition[name,option];
-
-			   (* If not found, do nothing *)
-			   If[position===$Failed,
-				  Return[$Failed],
-				  Return[Drop[option,position]];
-			   ];
-		];
+    Return[Select[option, Not[StringMatchQ[#[[1]], name]]&]];
 
 StanSetOption[optionListToAdd_?StanOptionListQ, optionList_?StanOptionListQ] := 
 	Module[{position, completedOptionList, name, value,i},
@@ -195,21 +186,36 @@ StanSetOption[optionListToAdd_?StanOptionListQ, optionList_?StanOptionListQ] :=
 	       If[optionListToAdd == {}, Return[optionList]];
 	       
 	       completedOptionList = optionList;
-	       For[i = 1, i <= Length[optionListToAdd], i++,
+	       For[i = 1, i<=Length[optionListToAdd], i++,
 		   {name, value} = optionListToAdd[[i]];
 		   position = StanGetOptionPosition[name, completedOptionList];
 
 		   (* overwrite value if defined, append otherwise *)
 		   If[NumberQ[position],
 		      completedOptionList[[position, 2]] = value,
-		      completedOptionList = Join[completedOptionList,{{name, value}}]];
+		      
+		      completedOptionList = Join[{{name, value}},completedOptionList]];
 	       ];
 	       
 	       Return[completedOptionList];
 	]
 
-StanOptionListToString[option_?StanOptionListQ]:=
-	Fold[(#1 <> " " <> #2[[1]] <> "=" <> ToString[#2[[2]]]) &, "", option];
+
+StanOptionListToString[option_?StanOptionListQ]:=Module[{buffer},
+
+(* Sort list to respect keyword hierachy *)
+buffer=SortBy[option, #[[1]]&];
+(* Move method.XXX at list head *)
+buffer=Join[Select[buffer, StringMatchQ[#[[1]], "method" ~~ ___] &],
+            Select[buffer, Not[StringMatchQ[#[[1]], "method" ~~ ___]] &]];
+(* Get last item, for instance a.b.c is turned into c *)
+buffer=Map[{StringSplit[#[[1]], "."][[-1]], #[[2]]} &, buffer];
+(* Form key=value string, value="" -> interpreted as a header *)
+buffer=Map[If[#[[2]]=="",#[[1]]<>" ", #[[1]] <> "=" <> ToString[#[[2]]] <> " "]&,buffer];
+buffer=Apply[StringJoin,buffer];
+
+Return[buffer];
+]
 
 (*
 * User interface
@@ -288,65 +294,110 @@ StanOptionOptimize[]:=currentStanOptionOptimize;
 CmdStan`StanResetOptionOptimize::usage=
 "StanResetOptionOptimize[] resets to default and returns complete list of default options for the Optimize method";
 StanResetOptionOptimize[]:=currentStanOptionOptimize={};
-(*
- * Private 
- *)
+(* Private *)
 StanRun::stanExeNotFound="Stan executable \"`1`\" not found.";
 StanRun::stanDataFileNotFound="Stan executable \"`1`\" not found.";
+(* Private *)
+StanRunGenerateExecFilename[stanExeFileName_?StringQ]:=
+  Module[{exeFileNameWithExt,pathExeFileName},
 
+  (* Check that prog(.exe) exists *)
+
+  If[($OperatingSystem=="Windows")&&(FileExtension[stanExeFileName]==""),
+  exeFileNameWithExt=stanExeFileName<>".exe",
+  exeFileNameWithExt=stanExeFileName
+  ];
+
+  pathExeFileName=AbsoluteFileName[exeFileNameWithExt];
+
+  If[pathExeFileName===$Failed,
+  Message[StanRun::stanExeNotFound,exeFileNameWithExt];
+  Return[$Failed]
+  ];
+
+  Return[pathExeFileName];
+  ];
+(* private *)
+(* CAVEAT: pathExeFileName created from StanRunGenerateExecFilename[stanExeFileName_?StringQ]
+*         and NOT stanExeFileName
+*)
+StanRunGenerateDataFilename[pathExeFileName_?StringQ,option_?StanOptionListQ]:=
+	Module[{dataFile,dataFileTmp},
+
+	(* Check if there is a data file name in option, 
+	* if not, try to create one from scratch 
+	*)
+	dataFile=StanGetOption["data.file",option];
+	
+        If[dataFile===$Failed,
+          dataFile=StanRemoveFileNameExt[pathExeFileName]<>".data.R";
+	];
+
+	(* Check if file exists *)
+	dataFileTmp=AbsoluteFileName[dataFile];
+
+	If[dataFileTmp===$Failed,
+          Message[StanRun::stanDataFileNotFound,dataFile];
+          Return[$Failed]
+        ];
+
+    Return[StanSetOption[{{"data",""},{"data.file",dataFileTmp}},option]];
+];
+StanRunGenerateOutputFilename[option_?StanOptionListQ,processId_?IntegerQ]:=
+	Module[{mutableOption,outputFile},
+
+          (* Check for a user output file
+          *)
+          outputFile=StanGetOption["output.file",option];
+          
+          If[outputFile===$Failed,
+            outputFile=FileNameJoin[{Directory[],"output.csv"}];
+          ];
+
+	  (* Force extension 
+	  *)
+          If[FileExtension[outputFile]=="",
+            outputFile=outputFile<>".csv";
+          ]
+
+          (* If required complete with process id 
+          *)
+          If[processId>0,
+            outputFile= StanRemoveFileNameExt[outputFile]<>
+	                "_"<>ToString[processId]<>"."<>
+                        FileExtension[outputFile]; 
+          ];
+
+          (* Return the updated options
+          *)
+          Return[StanSetOption[{{"output",""},{"output.file",outputFile}},option]];
+]
 (*
  * Private interface, for the user one, see: StanRunVariational, StanRunSample...
  *)
-StanRun[stanExeFileName_?StringQ,option_?MatrixQ]:=
-	Module[{exeFileNameWithExt,pathExeFileName,dataFile,outputFile,mutableOption,command,output},
+StanRun[stanExeFileName_?StringQ, option_?StanOptionListQ]:=
+	Module[{pathExeFileName,mutableOption,command,output},
 
-	       (* Check that prog(.exe) exists *)
+	       (* Generate Executable file name (absolute path) 
+	       *)
+	       pathExeFileName=StanRunGenerateExecFilename[stanExeFileName];
+	       If[pathExeFileName===$Failed,Return[$Failed]];
 
-	       If[($OperatingSystem=="Windows")&&(FileExtension[stanExeFileName]==""),
-		  exeFileNameWithExt=stanExeFileName<>".exe",
-		  exeFileNameWithExt=stanExeFileName
-	       ];
+	       (* Generate Data filen ame (absolute path) and add it to option list
+	       *)
+	       mutableOption=StanRunGenerateDataFilename[pathExeFileName,option];
+               If[mutableOption===$Failed,Return[$Failed]];
 
-	       pathExeFileName=AbsoluteFileName[exeFileNameWithExt];
-
-	       If[pathExeFileName===$Failed,
-		  Message[StanRun::stanExeNotFound,exeFileNameWithExt];
-		  Return[$Failed]
-		  ];
-
-	       (* Check if there is a data file in option, 
-		* if not, try to create one from scratch 
-		*)
-	       mutableOption=option;
-               
-	       dataFile=StanGetOption["data file",mutableOption];
-
-	       If[dataFile===$Failed,
-		  dataFile=StanRemoveFileNameExt[pathExeFileName]<>".data.R";
-		  mutableOption=StanSetOption[{{"data file",dataFile}},mutableOption]
-	       ];
-
-	       dataFile=AbsoluteFileName[dataFile];
-
-	       If[dataFile===$Failed,
-		  Message[StanRun::stanDataFileNotFound,
-			  StanGetOption["data file",mutableOption]];
-			  Return[$Failed]
-			  ];
-
-	       (* Check output file *)
-	       
-	       outputFile=StanGetOption["output file",mutableOption];
-
-	       If[outputFile===$Failed,
-		  outputFile=FileNameJoin[{Directory[],"output.csv"}];
-		  mutableOption=StanSetOption[{{"output file",outputFile}},mutableOption]
-	       ];
+	       (* Generat Output file name 
+	       * CAVEAT: reuse mutableOption, because was already completed with
+	       *         the proper Data file name.
+	       *)
+	       mutableOption=StanRunGenerateOutputFilename[mutableOption,0]; (* 0 means -> only ONE output (sequential) *)
 	       
 	       (* Extract options and compute!
 		*)
-	       command=pathExeFileName<>StanOptionListToString[mutableOption];
-	       (*Print["DEBUG ",command];*)
+	       command=pathExeFileName<>" "<>StanOptionListToString[mutableOption];
+
 	       output=Import["!"<>command<>" 2>&1","Text"];
 	       
 	       Return[output];
@@ -359,22 +410,133 @@ CmdStan`StanRunVariational::usage="StanRunVariational[stanExeFileName_?StringQ]"
 (*
  *)
 StanRunVariational[stanExeFileName_?StringQ]:=
-	StanRun[stanExeFileName,Join[immutableStanOptionVariational,StanOptionVariational[]]];
+	StanRun[stanExeFileName,StanSetOption[immutableStanOptionVariational,StanOptionVariational[]]];
 
-CmdStan`StanRunSample::usage="StanRunSample[stanExeFileName_?StringQ] \n\n   TODO: parallel sampling";
+CmdStan`StanRunSample::usage=
+"StanRunSample[stanExeFileName_?StringQ]\nStanRunSample[stanExeFileName_?StringQ,NJobs_/; NumberQ[NJobs] && (NJobs > 0)]"<>
+"\n\nUse sampling method, the second version with NJobs starts NJobs in parallel (only implemented under Linux)";
 (*
  *)
 StanRunSample[stanExeFileName_?StringQ]:=
-	StanRun[stanExeFileName,Join[immutableStanOptionSample,StanOptionSample[]]];
+	StanRun[stanExeFileName,StanSetOption[immutableStanOptionSample,StanOptionSample[]]];
 
 CmdStan`StanRunOptimize::usage="StanRunOptimize[stanExeFileName_?StringQ]"
 (*
  *)
 StanRunOptimize[stanExeFileName_?StringQ]:=
-	StanRun[stanExeFileName,Join[immutableStanOptionOptimize,StanOptionOptimize[]]];
+	StanRun[stanExeFileName,StanSetOption[immutableStanOptionOptimize,StanOptionOptimize[]]];
+  StanRunSample::notImplementedOS="MathematicaStan does not support this OS=`1`"
+  (*
+  *)
+  StanRunSample::optionNotSupported="The option \"`1`\" is not supported in this context"
+  (*
+  *)
+   StanRunSample[stanExeFileName_?StringQ,NJobs_/; NumberQ[NJobs] && (NJobs > 0)]:=
+  Module[{pathExeFileName,mutableOption,bufferMutableOption,shellScript="",finalOutputFilename,finalOutputFilenameID,output},
 
+    (* Initialize with user option  *)
+    mutableOption=Join[immutableStanOptionSample,StanOptionSample[]];
 
+    If[StanGetOptionPosition["id",mutableOption]!={},
+      Message[StanRunSample::optionNotSupported,"id"];
+      Return[$Failed];
+    ];
+            
+  (* Generate Executable file name (absolute path) 
+  *)
+  pathExeFileName=StanRunGenerateExecFilename[stanExeFileName];
+  If[pathExeFileName===$Failed,Return[$Failed]];
 
+  (* Generate Data filen ame (absolute path) and add it to option list
+  *)
+  mutableOption=StanRunGenerateDataFilename[pathExeFileName,mutableOption];
+  If[mutableOption===$Failed,Return[$Failed]];
+
+(* Generate script header
+*)
+ If[$OperatingSystem=="Windows",
+
+      (* OS = Windows 
+      *)
+      Message[StanRunSample::notImplementedOS,$OperatingSystem];
+      Return[$Failed],
+      
+      (* OS = Others (Linux) 
+      *)
+      shellScript=shellScript<>"\n#!/bin/bash";
+    ];
+
+  (* Generate the list of commands: one command per id
+  *  - process id : "id" option
+  *  - output filename : "output file" option
+  *)
+  For[id=1,id<=NJobs,id++,
+    (* Create output_ID.csv filename *)
+    bufferMutableOption=StanRunGenerateOutputFilename[mutableOption,id];
+
+    (* Create the ID=id option *)
+    bufferMutableOption=StanSetOption[{{"id",id}}, bufferMutableOption];
+
+    (* Form a complete shell comand including the executable *)
+    If[$OperatingSystem=="Windows",
+
+      (* OS = Windows 
+      *)
+      Message[StanRunSample::notImplementedOS,$OperatingSystem];
+      Return[$Failed],
+      
+      (* OS = Others (Linux) 
+      *)
+      shellScript=shellScript<>"\n{ ("<>pathExeFileName<>" "<>StanOptionListToString[bufferMutableOption]<>") } &";
+    ];
+  ]; (* For id *)
+
+ (* Wait for jobs
+ *)
+ If[$OperatingSystem=="Windows",
+
+      (* OS = Windows 
+      *)
+      Message[StanRunSample::notImplementedOS,$OperatingSystem];
+      Return[$Failed],
+      
+      (* OS = Others (Linux) 
+      *)
+      shellScript=shellScript<>"\nwait";
+    ];
+
+    (* Recreate the correct output file name (id=0 and id=1)
+    * id=0 generate the final output file name + bash script filename
+    * id=1 generate ths csv header
+    *)
+    finalOutputFilename=StanGetOption["output.file",StanRunGenerateOutputFilename[mutableOption,0]];
+
+    If[$OperatingSystem=="Windows",
+
+      (* OS = Windows 
+      *)
+      Message[StanRunSample::notImplementedOS,$OperatingSystem];
+      Return[$Failed],
+
+      (* OS = Others (Linux) 
+      *)
+      For[id=1,id<=NJobs,id++,
+        finalOutputFilenameID=StanGetOption["output.file",StanRunGenerateOutputFilename[mutableOption,id]];  
+        If[id==1,    
+          (* Create a unique output file *)
+            shellScript=shellScript<>"\ngrep lp__ " <> finalOutputFilenameID <> " > " <> finalOutputFilename;
+        ];
+        shellScript=shellScript<>"\nsed '/^[#l]/d' " <>  finalOutputFilenameID <> " >> " <> finalOutputFilename;
+      ];
+      (* Export the final script *)
+      finalOutputFilenameID=StanRemoveFileNameExt[finalOutputFilename]<>".sh"; (* erase with script file name *)
+      Export[finalOutputFilenameID,shellScript,"Text"];
+      (* Execute it! *)
+      output=Import["!sh "<>finalOutputFilenameID<>" 2>&1","Text"];
+    ];
+  
+    Return[output];
+  ];
 
 
 RDumpToStringHelper[V_?VectorQ]:=
