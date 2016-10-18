@@ -288,31 +288,39 @@ StanOptionOptimize[]:=currentStanOptionOptimize;
 CmdStan`StanResetOptionOptimize::usage=
 "StanResetOptionOptimize[] resets to default and returns complete list of default options for the Optimize method";
 StanResetOptionOptimize[]:=currentStanOptionOptimize={};
-(*
- * Private 
- *)
+(* Private *)
 StanRun::stanExeNotFound="Stan executable \"`1`\" not found.";
 StanRun::stanDataFileNotFound="Stan executable \"`1`\" not found.";
+(* Private *)
+StanRunExecFilename[stanExeFileName_?StringQ]:=
+  Module[{exeFileNameWithExt,pathExeFileName},
 
+  (* Check that prog(.exe) exists *)
+
+  If[($OperatingSystem=="Windows")&&(FileExtension[stanExeFileName]==""),
+  exeFileNameWithExt=stanExeFileName<>".exe",
+  exeFileNameWithExt=stanExeFileName
+  ];
+
+  pathExeFileName=AbsoluteFileName[exeFileNameWithExt];
+
+  If[pathExeFileName===$Failed,
+  Message[StanRun::stanExeNotFound,exeFileNameWithExt];
+  Return[$Failed]
+  ];
+
+  Return[pathExeFileName];
+  ];
 (*
  * Private interface, for the user one, see: StanRunVariational, StanRunSample...
  *)
 StanRun[stanExeFileName_?StringQ,option_?MatrixQ]:=
-	Module[{exeFileNameWithExt,pathExeFileName,dataFile,outputFile,mutableOption,command,output},
+	Module[{pathExeFileName,dataFile,outputFile,mutableOption,command,output},
 
-	       (* Check that prog(.exe) exists *)
-
-	       If[($OperatingSystem=="Windows")&&(FileExtension[stanExeFileName]==""),
-		  exeFileNameWithExt=stanExeFileName<>".exe",
-		  exeFileNameWithExt=stanExeFileName
-	       ];
-
-	       pathExeFileName=AbsoluteFileName[exeFileNameWithExt];
-
-	       If[pathExeFileName===$Failed,
-		  Message[StanRun::stanExeNotFound,exeFileNameWithExt];
-		  Return[$Failed]
-		  ];
+	       (* Generate Executable Filemane (absolute path) 
+	       *)
+	       pathExeFileName=StanRunExecFilename[stanExeFileName];
+	       If[pathExeFileName===$Failed,Return[$Failed]];
 
 	       (* Check if there is a data file in option, 
 		* if not, try to create one from scratch 
