@@ -311,36 +311,47 @@ StanRunExecFilename[stanExeFileName_?StringQ]:=
 
   Return[pathExeFileName];
   ];
+(* private *)
+(* CAVEAT: pathExeFileName created from StanRunExecFilename[stanExeFileName_?StringQ]
+*         and NOT stanExeFileName
+*)
+StanRunDataFilename[pathExeFileName_?StringQ,option_?MatrixQ]:=
+	Module[{dataFile,dataFileTmp},
+
+	(* Check if there is a data file name in option, 
+	* if not, try to create one from scratch 
+	*)
+	dataFile=StanGetOption["data file",option];
+	
+        If[dataFile===$Failed,
+          dataFile=StanRemoveFileNameExt[pathExeFileName]<>".data.R";
+	];
+
+	(* Check if file exists *)
+	dataFileTmp=AbsoluteFileName[dataFile];
+
+	If[dataFileTmp===$Failed,
+          Message[StanRun::stanDataFileNotFound,dataFile];
+          Return[$Failed]
+        ];
+
+    Return[StanSetOption[{{"data file",dataFileTmp}},option]];
+];
 (*
  * Private interface, for the user one, see: StanRunVariational, StanRunSample...
  *)
 StanRun[stanExeFileName_?StringQ,option_?MatrixQ]:=
 	Module[{pathExeFileName,dataFile,outputFile,mutableOption,command,output},
 
-	       (* Generate Executable Filemane (absolute path) 
+	       (* Generate Executable Filename (absolute path) 
 	       *)
 	       pathExeFileName=StanRunExecFilename[stanExeFileName];
 	       If[pathExeFileName===$Failed,Return[$Failed]];
 
-	       (* Check if there is a data file in option, 
-		* if not, try to create one from scratch 
-		*)
-	       mutableOption=option;
-               
-	       dataFile=StanGetOption["data file",mutableOption];
-
-	       If[dataFile===$Failed,
-		  dataFile=StanRemoveFileNameExt[pathExeFileName]<>".data.R";
-		  mutableOption=StanSetOption[{{"data file",dataFile}},mutableOption]
-	       ];
-
-	       dataFile=AbsoluteFileName[dataFile];
-
-	       If[dataFile===$Failed,
-		  Message[StanRun::stanDataFileNotFound,
-			  StanGetOption["data file",mutableOption]];
-			  Return[$Failed]
-			  ];
+	       (* Generate Data Filename (absolute path) and add it to option list
+	       *)
+	       mutableOption=StanRunDataFilename[pathExeFileName,option];
+               If[mutableOption===$Failed,Return[$Failed]];
 
 	       (* Check output file *)
 	       
