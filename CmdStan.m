@@ -337,35 +337,63 @@ StanRunDataFilename[pathExeFileName_?StringQ,option_?MatrixQ]:=
 
     Return[StanSetOption[{{"data file",dataFileTmp}},option]];
 ];
+StanRunOutputFilename[option_?MatrixQ,processId_?IntegerQ]:=
+	Module[{mutableOption,outputFile},
+
+          (* Check for a user output file
+          *)
+          outputFile=StanGetOption["output file",option];
+          
+          If[outputFile===$Failed,
+            outputFile=FileNameJoin[{Directory[],"output.csv"}];
+          ];
+
+	  (* Force extension 
+	  *)
+          If[FileExtension[outputFile]=="",
+            outputFile=outputFile<>".csv";
+          ]
+
+          (* If required complete with process id 
+          *)
+          If[processId>0,
+            outputFile= StanRemoveFileNameExt[outputFile]<>
+	                "_"<>ToString[processId]<>"."<>
+                        FileExtension[outputFile]; 
+          ];
+
+          Print["Debug ",outputFile];
+
+          (* Return the updated options
+          *)
+          Return[StanSetOption[{{"output file",outputFile}},option]];
+]
 (*
  * Private interface, for the user one, see: StanRunVariational, StanRunSample...
  *)
 StanRun[stanExeFileName_?StringQ,option_?MatrixQ]:=
-	Module[{pathExeFileName,dataFile,outputFile,mutableOption,command,output},
+	Module[{pathExeFileName,mutableOption,command,output},
 
-	       (* Generate Executable Filename (absolute path) 
+	       (* Generate Executable file name (absolute path) 
 	       *)
 	       pathExeFileName=StanRunExecFilename[stanExeFileName];
 	       If[pathExeFileName===$Failed,Return[$Failed]];
 
-	       (* Generate Data Filename (absolute path) and add it to option list
+	       (* Generate Data filen ame (absolute path) and add it to option list
 	       *)
 	       mutableOption=StanRunDataFilename[pathExeFileName,option];
                If[mutableOption===$Failed,Return[$Failed]];
 
-	       (* Check output file *)
-	       
-	       outputFile=StanGetOption["output file",mutableOption];
-
-	       If[outputFile===$Failed,
-		  outputFile=FileNameJoin[{Directory[],"output.csv"}];
-		  mutableOption=StanSetOption[{{"output file",outputFile}},mutableOption]
-	       ];
+	       (* Generat Output file name 
+	       * CAVEAT: reuse mutableOption, because was already completed with
+	       *         the proper Data file name.
+	       *)
+	       mutableOption=StanRunOutputFilename[mutableOption,4]; (* 0 means -> only ONE output (sequential) *)
 	       
 	       (* Extract options and compute!
 		*)
 	       command=pathExeFileName<>StanOptionListToString[mutableOption];
-	       (*Print["DEBUG ",command];*)
+	       Print["DEBUG ",command];
 	       output=Import["!"<>command<>" 2>&1","Text"];
 	       
 	       Return[output];
