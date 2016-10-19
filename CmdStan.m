@@ -122,9 +122,7 @@ StanCompile[stanCodeFileName_?StringQ]:=
 	];
 
 
-(*
- * Default option values
- *)
+(* *)
 immutableStanOptionVariational={{"method","variational"}};
 immutableStanOptionSample={{"method","sample"}};
 immutableStanOptionOptimize={{"method","optimize"}};
@@ -184,7 +182,7 @@ StanRemoveOption[name_?StringQ,option_?StanOptionListQ]:=
 
 			   (* If not found, do nothing *)
 			   If[position===$Failed,
-				  Return[$Failed],
+				  Return[option],
 				  Return[Drop[option,position]];
 			   ];
 		];
@@ -195,21 +193,35 @@ StanSetOption[optionListToAdd_?StanOptionListQ, optionList_?StanOptionListQ] :=
 	       If[optionListToAdd == {}, Return[optionList]];
 	       
 	       completedOptionList = optionList;
-	       For[i = 1, i <= Length[optionListToAdd], i++,
+	       For[i = 1, i<=Length[optionListToAdd], i++,
 		   {name, value} = optionListToAdd[[i]];
 		   position = StanGetOptionPosition[name, completedOptionList];
 
 		   (* overwrite value if defined, append otherwise *)
 		   If[NumberQ[position],
 		      completedOptionList[[position, 2]] = value,
-		      completedOptionList = Join[completedOptionList,{{name, value}}]];
+		      
+		      completedOptionList = Join[{{name, value}},completedOptionList]];
 	       ];
 	       
 	       Return[completedOptionList];
 	]
 
-StanOptionListToString[option_?StanOptionListQ]:=
-	Fold[(#1 <> " " <> #2[[1]] <> "=" <> ToString[#2[[2]]]) &, "", option];
+
+StanOptionListToString[option_?StanOptionListQ]:=Module[{buffer},
+Print["\norder before ",option];
+(* Sort list to respect keyword hierachy *)
+buffer=SortBy[option, #[[1]]&];
+(* Move method.XXX at list head *)
+buffer=Join[Select[buffer, StringMatchQ[#[[1]], "method" ~~ ___] &],
+            Select[buffer, Not[StringMatchQ[#[[1]], "method" ~~ ___]] &]];
+(* Get last item, for instance a.b.c is turned into c *)
+buffer=Map[{StringSplit[#[[1]], "."][[-1]], #[[2]]} &, buffer];
+(* Form key=value string *)
+buffer=Fold[(#1 <> " " <> #2[[1]] <> "=" <> ToString[#2[[2]]]) &, "", buffer];
+Print["\norder ffter ",buffer];
+Return[buffer];
+]
 
 (*
 * User interface
@@ -315,7 +327,7 @@ StanRunGenerateExecFilename[stanExeFileName_?StringQ]:=
 (* CAVEAT: pathExeFileName created from StanRunGenerateExecFilename[stanExeFileName_?StringQ]
 *         and NOT stanExeFileName
 *)
-StanRunGenerateDataFilename[pathExeFileName_?StringQ,option_?MatrixQ]:=
+StanRunGenerateDataFilename[pathExeFileName_?StringQ,option_?StanOptionListQ]:=
 	Module[{dataFile,dataFileTmp},
 
 	(* Check if there is a data file name in option, 
@@ -337,7 +349,7 @@ StanRunGenerateDataFilename[pathExeFileName_?StringQ,option_?MatrixQ]:=
 
     Return[StanSetOption[{{"data file",dataFileTmp}},option]];
 ];
-StanRunGenerateOutputFilename[option_?MatrixQ,processId_?IntegerQ]:=
+StanRunGenerateOutputFilename[option_?StanOptionListQ,processId_?IntegerQ]:=
 	Module[{mutableOption,outputFile},
 
           (* Check for a user output file
@@ -362,8 +374,6 @@ StanRunGenerateOutputFilename[option_?MatrixQ,processId_?IntegerQ]:=
                         FileExtension[outputFile]; 
           ];
 
-          Print["Debug ",outputFile];
-
           (* Return the updated options
           *)
           Return[StanSetOption[{{"output file",outputFile}},option]];
@@ -371,7 +381,7 @@ StanRunGenerateOutputFilename[option_?MatrixQ,processId_?IntegerQ]:=
 (*
  * Private interface, for the user one, see: StanRunVariational, StanRunSample...
  *)
-StanRun[stanExeFileName_?StringQ,option_?MatrixQ]:=
+StanRun[stanExeFileName_?StringQ, optionHead_?StanOptionListQ, option_?StanOptionListQ]:=
 	Module[{pathExeFileName,mutableOption,command,output},
 
 	       (* Generate Executable file name (absolute path) 
@@ -390,10 +400,14 @@ StanRun[stanExeFileName_?StringQ,option_?MatrixQ]:=
 	       *)
 	       mutableOption=StanRunGenerateOutputFilename[mutableOption,0]; (* 0 means -> only ONE output (sequential) *)
 	       
+	       (* The LAST step, to insure to be the first options of the list 
+	       *)
+	       mutableOption=StanSetOption[optionHead,mutableOption];
+
 	       (* Extract options and compute!
 		*)
 	       command=pathExeFileName<>StanOptionListToString[mutableOption];
-	       Print["DEBUG ",command];
+Print["\nDEBUG COMM ",command];
 	       output=Import["!"<>command<>" 2>&1","Text"];
 	       
 	       Return[output];
@@ -406,58 +420,82 @@ CmdStan`StanRunVariational::usage="StanRunVariational[stanExeFileName_?StringQ]"
 (*
  *)
 StanRunVariational[stanExeFileName_?StringQ]:=
-	StanRun[stanExeFileName,Join[immutableStanOptionVariational,StanOptionVariational[]]];
+	StanRun[stanExeFileName,immutableStanOptionVariational,StanOptionVariational[]];
 
 CmdStan`StanRunSample::usage="StanRunSample[stanExeFileName_?StringQ] \n\n   TODO: parallel sampling";
 (*
  *)
 StanRunSample[stanExeFileName_?StringQ]:=
-	StanRun[stanExeFileName,Join[immutableStanOptionSample,StanOptionSample[]]];
+	StanRun[stanExeFileName,immutableStanOptionSample,StanOptionSample[]];
 
 CmdStan`StanRunOptimize::usage="StanRunOptimize[stanExeFileName_?StringQ]"
 (*
  *)
 StanRunOptimize[stanExeFileName_?StringQ]:=
-	StanRun[stanExeFileName,Join[immutableStanOptionOptimize,StanOptionOptimize[]]];
-CmdStan`StanRunParallelSample::usage=
-"StanRunParallelSample[stanExeFileName_?StringQ,coreN_/; NumberQ[coreN] && (coreN > 0)]"<>
-"\n\nRuns several sampling processes in parallel."
-(*
-*)
-StanRunParallelSample[stanExeFileName_?StringQ,coreN_/; NumberQ[coreN] && (coreN > 0)]:=
-Module[{pathExeFileName,mutableOption,bufferMutableOption,listMutableOption={},shellScript="",output},
+	StanRun[stanExeFileName,immutableStanOptionOptimize,StanOptionOptimize[]];
+  StanRunParallelSample::notImplementedOS="MathematicaStan does not support this OS=`1`"
+  (*
+  *)
+  StanRunParallelSample::optionNotSupported="The option \"`1`\" is not supported in this context"
+  (*
+  *)
+  CmdStan`StanRunParallelSample::usage=
+  "StanRunParallelSample[stanExeFileName_?StringQ,coreN_/; NumberQ[coreN] && (coreN > 0)]"<>
+  "\n\nRuns several sampling processes in parallel."
+  (*
+  *)
+  StanRunParallelSample[stanExeFileName_?StringQ,coreN_/; NumberQ[coreN] && (coreN > 0)]:=
+  Module[{pathExeFileName,mutableOption,bufferMutableOption,listMutableOption={},shellScript="",output},
 
-(* Initialize with method = sample *)
-mutableOption=immutableStanOptionSample;
+    (* Initialize with user option  *)
+    mutableOption=StanOptionSample[];
 
-(* Generate Executable file name (absolute path) 
-*)
-pathExeFileName=StanRunGenerateExecFilename[stanExeFileName];
-If[pathExeFileName===$Failed,Return[$Failed]];
+    If[StanGetOptionPosition["id",mutableOption]!={},
+      Message[StanRunParallelSample::optionNotSupported,"id"];
+      Return[$Failed];
+    ];
+            
+  (* Generate Executable file name (absolute path) 
+  *)
+  pathExeFileName=StanRunGenerateExecFilename[stanExeFileName];
+  If[pathExeFileName===$Failed,Return[$Failed]];
 
-(* Generate Data filen ame (absolute path) and add it to option list
-*)
-mutableOption=StanRunGenerateDataFilename[pathExeFileName,mutableOption];
-If[mutableOption===$Failed,Return[$Failed]];
+  (* Generate Data filen ame (absolute path) and add it to option list
+  *)
+  mutableOption=StanRunGenerateDataFilename[pathExeFileName,mutableOption];
+  If[mutableOption===$Failed,Return[$Failed]];
 
-(* Generat the list of options
-* variadic parts are:
-*  - process id : "id" option
-*  - output filename : "output file" option
-*)
-For[id=1,id<coreN,id++,
-(* Create output_ID.csv filename *)
-bufferMutableOption=StanRunGenerateOutputFilename[mutableOption,id];
+  (* Generate the list of options, variadic parts are:
+  *  - process id : "id" option
+  *  - output filename : "output file" option
+  *)
+  For[id=1,id<coreN,id++,
+    (* Create output_ID.csv filename *)
+    bufferMutableOption=StanRunGenerateOutputFilename[mutableOption,id];
 
-(* Complete by ID=id option *)
-bufferMutableOption=Join[{{"id",id}}, bufferMutableOption];
+    (* Create the ID=id option *)
+    bufferMutableOption=StanSetOption[{{"id",id}}, bufferMutableOption];
 
-(* Complete the script options *)
-shellScript=shellScript<>"\n"<>pathExeFileName<>StanOptionListToString[bufferMutableOption];
-];
+    (* Form a complete shell comand including the executable *)
+    If[$OperatingSystem=="Windows",
 
-Return[shellScript];
-];
+      (* OS = Windows 
+      *)
+      Message[StanRunParallelSample::notImplementedOS,$OperatingSystem];
+      Return[$Failed],
+      
+      (* OS = Others (Linux) 
+      *)
+      shellScript=shellScript<>"\n{"<>pathExeFileName<>StanOptionListToString[bufferMutableOption]<>"; } &";
+    ];
+  ]; (* For id *)
+
+
+    (* Complete script *)
+    
+  
+  Return[shellScript];
+  ];
 
 
 RDumpToStringHelper[V_?VectorQ]:=
