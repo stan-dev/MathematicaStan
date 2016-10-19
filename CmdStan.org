@@ -480,6 +480,14 @@ StanRunOutputFilename[option_?MatrixQ,processId_?IntegerQ]:=
 ]
 #+END_SRC
 
+*** Putting everything together
+
+The StanRun[] function is used by:
+ - StanRunVariational[]
+ - StanRunSample[]
+ - StanRunOptimize[]
+which are only wrappers that call StanRun[] with the correct *method* option.
+
 #+NAME: cmdStan_run.m
 #+BEGIN_SRC mathematica
 (*
@@ -502,7 +510,7 @@ StanRun[stanExeFileName_?StringQ,option_?MatrixQ]:=
 	       ,* CAVEAT: reuse mutableOption, because was already completed with
 	       ,*         the proper Data file name.
 	       ,*)
-	       mutableOption=StanRunOutputFilename[mutableOption,4]; (* 0 means -> only ONE output (sequential) *)
+	       mutableOption=StanRunOutputFilename[mutableOption,0]; (* 0 means -> only ONE output (sequential) *)
 	       
 	       (* Extract options and compute!
 		,*)
@@ -533,10 +541,32 @@ CmdStan`StanRunOptimize::usage="StanRunOptimize[stanExeFileName_?StringQ]"
  *)
 StanRunOptimize[stanExeFileName_?StringQ]:=
 	StanRun[stanExeFileName,Join[immutableStanOptionOptimize,StanOptionOptimize[]]];
-
-
-
 #+END_SRC 
+
+*** The StanRunParallelSample[] function
+This function is a little bit different because it has to start several jobs in parallel. This can be done by:
+- under Linux
+#+BEGIN_SRC sh :exports code
+{ sleep 2; echo waking up after 2 seconds; } &
+{ sleep 1; echo waking up after 1 second; } &
+wait
+echo all jobs are done!
+#+END_SRC
+
+- under Windows (to check!)
+#+BEGIN_EXAMPLE
+Start-Job -ScriptBlock {sleep 3; echo "waking up after 3 seconds"};
+Start-Job -ScriptBlock {sleep 3; echo "waking up after 3 seconds"};
+Get-Job | Wait-Job;
+echo "all jobs are done!” 
+#+END_EXAMPLE
+
+The StanRunParallelSample[] works by creating a small script that
+starts jobs and create a unique csv file aftwerward. This is described in [[http://mc-stan.org/interfaces/cmdstan][CmdStan doc ("Running a CmdStan Program" section)]]:
+#+BEGIN_SRC sh :exports code
+grep lp__ samples1.csv > combined.csv
+sed '/^[#l]/d' samples*.csv >> combined.csv
+#+END_SRC
 
 * Reading output file
 
