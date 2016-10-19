@@ -386,7 +386,7 @@ StanRun::stanDataFileNotFound="Stan executable \"`1`\" not found.";
 #+NAME: cmdStan_run_execFilename.m
 #+BEGIN_SRC mathematica
 (* Private *)
-StanRunExecFilename[stanExeFileName_?StringQ]:=
+StanRunGenerateExecFilename[stanExeFileName_?StringQ]:=
   Module[{exeFileNameWithExt,pathExeFileName},
 
   (* Check that prog(.exe) exists *)
@@ -414,10 +414,10 @@ This function modifies the current option list and returns it.
 #+NAME: cmdStan_run_dataFilename.m
 #+BEGIN_SRC mathematica
 (* private *)
-(* CAVEAT: pathExeFileName created from StanRunExecFilename[stanExeFileName_?StringQ]
+(* CAVEAT: pathExeFileName created from StanRunGenerateExecFilename[stanExeFileName_?StringQ]
 ,*         and NOT stanExeFileName
 ,*)
-StanRunDataFilename[pathExeFileName_?StringQ,option_?MatrixQ]:=
+StanRunGenerateDataFilename[pathExeFileName_?StringQ,option_?MatrixQ]:=
 	Module[{dataFile,dataFileTmp},
 
 	(* Check if there is a data file name in option, 
@@ -447,7 +447,7 @@ This function must support a process *id*. If *id=0* we do nothing (only one job
 
 #+NAME: cmdStan_run_outputFilename.m
 #+BEGIN_SRC mathematica
-StanRunOutputFilename[option_?MatrixQ,processId_?IntegerQ]:=
+StanRunGenerateOutputFilename[option_?MatrixQ,processId_?IntegerQ]:=
 	Module[{mutableOption,outputFile},
 
           (* Check for a user output file
@@ -498,19 +498,19 @@ StanRun[stanExeFileName_?StringQ,option_?MatrixQ]:=
 
 	       (* Generate Executable file name (absolute path) 
 	       ,*)
-	       pathExeFileName=StanRunExecFilename[stanExeFileName];
+	       pathExeFileName=StanRunGenerateExecFilename[stanExeFileName];
 	       If[pathExeFileName===$Failed,Return[$Failed]];
 
 	       (* Generate Data filen ame (absolute path) and add it to option list
 	       ,*)
-	       mutableOption=StanRunDataFilename[pathExeFileName,option];
+	       mutableOption=StanRunGenerateDataFilename[pathExeFileName,option];
                If[mutableOption===$Failed,Return[$Failed]];
 
 	       (* Generat Output file name 
 	       ,* CAVEAT: reuse mutableOption, because was already completed with
 	       ,*         the proper Data file name.
 	       ,*)
-	       mutableOption=StanRunOutputFilename[mutableOption,0]; (* 0 means -> only ONE output (sequential) *)
+	       mutableOption=StanRunGenerateOutputFilename[mutableOption,0]; (* 0 means -> only ONE output (sequential) *)
 	       
 	       (* Extract options and compute!
 		,*)
@@ -555,8 +555,8 @@ echo all jobs are done!
 
 - under Windows (to check!)
 #+BEGIN_EXAMPLE
-Start-Job -ScriptBlock {sleep 3; echo "waking up after 3 seconds"};
-Start-Job -ScriptBlock {sleep 3; echo "waking up after 3 seconds"};
+Start-Job -ScriptBlock {sleep 2; echo "waking up after 2 seconds"};
+Start-Job -ScriptBlock {sleep 1; echo "waking up after 1 seconds"};
 Get-Job | Wait-Job;
 echo "all jobs are done!” 
 #+END_EXAMPLE
@@ -567,6 +567,59 @@ starts jobs and create a unique csv file aftwerward. This is described in [[http
 grep lp__ samples1.csv > combined.csv
 sed '/^[#l]/d' samples*.csv >> combined.csv
 #+END_SRC
+
+
+
+#+NAME: cmdStan_run_parallelSample.m
+#+BEGIN_SRC mathematica
+CmdStan`StanRunParallelSample::usage=
+"StanRunParallelSample[stanExeFileName_?StringQ,coreN_/; NumberQ[coreN] && (coreN > 0)]"<>
+"\n\nRuns several sampling processes in parallel."
+(*
+,*)
+StanRunParallelSample[stanExeFileName_?StringQ,coreN_/; NumberQ[coreN] && (coreN > 0)]:=
+Module[{pathExeFileName,mutableOption,bufferMutableOption,listMutableOption={},shellScript="",output},
+
+(* Initialize with method = sample *)
+mutableOption=immutableStanOptionSample;
+
+(* Generate Executable file name (absolute path) 
+,*)
+pathExeFileName=StanRunGenerateExecFilename[stanExeFileName];
+If[pathExeFileName===$Failed,Return[$Failed]];
+
+(* Generate Data filen ame (absolute path) and add it to option list
+,*)
+mutableOption=StanRunGenerateDataFilename[pathExeFileName,mutableOption];
+If[mutableOption===$Failed,Return[$Failed]];
+
+(* Generat the list of options
+,* variadic parts are:
+,*  - process id : "id" option
+,*  - output filename : "output file" option
+,*)
+For[id=1,id<coreN,id++,
+(* Create output_ID.csv filename *)
+bufferMutableOption=StanRunGenerateOutputFilename[mutableOption,id];
+
+(* Complete by ID=id option *)
+bufferMutableOption=Join[{{"id",id}}, bufferMutableOption];
+
+(* Complete the script options *)
+shellScript=shellScript<>"\n"<>pathExeFileName<>StanOptionListToString[bufferMutableOption];
+];
+
+Return[shellScript];
+];
+#+END_SRC
+
+
+
+(* TODO Extract options and compute!
+,,* output=Import["!"<>command<>" 2>&1","Text"];
+,,*   Return[output];
+,*)
+Return[shellScript];
 
 * Reading output file
 
@@ -871,6 +924,7 @@ Begin["`Private`"];
 <<cmdStan_run_dataFilename.m>>
 <<cmdStan_run_outputFilename.m>>
 <<cmdStan_run.m>>
+<<cmdStan_run_parallelSample.m>>
 
 <<cmdStan_rdump.m>>
 

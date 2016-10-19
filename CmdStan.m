@@ -292,7 +292,7 @@ StanResetOptionOptimize[]:=currentStanOptionOptimize={};
 StanRun::stanExeNotFound="Stan executable \"`1`\" not found.";
 StanRun::stanDataFileNotFound="Stan executable \"`1`\" not found.";
 (* Private *)
-StanRunExecFilename[stanExeFileName_?StringQ]:=
+StanRunGenerateExecFilename[stanExeFileName_?StringQ]:=
   Module[{exeFileNameWithExt,pathExeFileName},
 
   (* Check that prog(.exe) exists *)
@@ -312,10 +312,10 @@ StanRunExecFilename[stanExeFileName_?StringQ]:=
   Return[pathExeFileName];
   ];
 (* private *)
-(* CAVEAT: pathExeFileName created from StanRunExecFilename[stanExeFileName_?StringQ]
+(* CAVEAT: pathExeFileName created from StanRunGenerateExecFilename[stanExeFileName_?StringQ]
 *         and NOT stanExeFileName
 *)
-StanRunDataFilename[pathExeFileName_?StringQ,option_?MatrixQ]:=
+StanRunGenerateDataFilename[pathExeFileName_?StringQ,option_?MatrixQ]:=
 	Module[{dataFile,dataFileTmp},
 
 	(* Check if there is a data file name in option, 
@@ -337,7 +337,7 @@ StanRunDataFilename[pathExeFileName_?StringQ,option_?MatrixQ]:=
 
     Return[StanSetOption[{{"data file",dataFileTmp}},option]];
 ];
-StanRunOutputFilename[option_?MatrixQ,processId_?IntegerQ]:=
+StanRunGenerateOutputFilename[option_?MatrixQ,processId_?IntegerQ]:=
 	Module[{mutableOption,outputFile},
 
           (* Check for a user output file
@@ -376,19 +376,19 @@ StanRun[stanExeFileName_?StringQ,option_?MatrixQ]:=
 
 	       (* Generate Executable file name (absolute path) 
 	       *)
-	       pathExeFileName=StanRunExecFilename[stanExeFileName];
+	       pathExeFileName=StanRunGenerateExecFilename[stanExeFileName];
 	       If[pathExeFileName===$Failed,Return[$Failed]];
 
 	       (* Generate Data filen ame (absolute path) and add it to option list
 	       *)
-	       mutableOption=StanRunDataFilename[pathExeFileName,option];
+	       mutableOption=StanRunGenerateDataFilename[pathExeFileName,option];
                If[mutableOption===$Failed,Return[$Failed]];
 
 	       (* Generat Output file name 
 	       * CAVEAT: reuse mutableOption, because was already completed with
 	       *         the proper Data file name.
 	       *)
-	       mutableOption=StanRunOutputFilename[mutableOption,4]; (* 0 means -> only ONE output (sequential) *)
+	       mutableOption=StanRunGenerateOutputFilename[mutableOption,0]; (* 0 means -> only ONE output (sequential) *)
 	       
 	       (* Extract options and compute!
 		*)
@@ -419,9 +419,45 @@ CmdStan`StanRunOptimize::usage="StanRunOptimize[stanExeFileName_?StringQ]"
  *)
 StanRunOptimize[stanExeFileName_?StringQ]:=
 	StanRun[stanExeFileName,Join[immutableStanOptionOptimize,StanOptionOptimize[]]];
+CmdStan`StanRunParallelSample::usage=
+"StanRunParallelSample[stanExeFileName_?StringQ,coreN_/; NumberQ[coreN] && (coreN > 0)]"<>
+"\n\nRuns several sampling processes in parallel."
+(*
+*)
+StanRunParallelSample[stanExeFileName_?StringQ,coreN_/; NumberQ[coreN] && (coreN > 0)]:=
+Module[{pathExeFileName,mutableOption,bufferMutableOption,listMutableOption={},shellScript="",output},
 
+(* Initialize with method = sample *)
+mutableOption=immutableStanOptionSample;
 
+(* Generate Executable file name (absolute path) 
+*)
+pathExeFileName=StanRunGenerateExecFilename[stanExeFileName];
+If[pathExeFileName===$Failed,Return[$Failed]];
 
+(* Generate Data filen ame (absolute path) and add it to option list
+*)
+mutableOption=StanRunGenerateDataFilename[pathExeFileName,mutableOption];
+If[mutableOption===$Failed,Return[$Failed]];
+
+(* Generat the list of options
+* variadic parts are:
+*  - process id : "id" option
+*  - output filename : "output file" option
+*)
+For[id=1,id<coreN,id++,
+(* Create output_ID.csv filename *)
+bufferMutableOption=StanRunGenerateOutputFilename[mutableOption,id];
+
+(* Complete by ID=id option *)
+bufferMutableOption=Join[{{"id",id}}, bufferMutableOption];
+
+(* Complete the script options *)
+shellScript=shellScript<>"\n"<>pathExeFileName<>StanOptionListToString[bufferMutableOption];
+];
+
+Return[shellScript];
+];
 
 
 RDumpToStringHelper[V_?VectorQ]:=
