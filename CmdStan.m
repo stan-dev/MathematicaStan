@@ -375,7 +375,7 @@ StanRunGenerateOutputFilename[option_?StanOptionListQ,processId_?IntegerQ]:=
 (*
  * Private interface, for the user one, see: StanRunVariational, StanRunSample...
  *)
-StanRun[stanExeFileName_?StringQ, optionHead_?StanOptionListQ, option_?StanOptionListQ]:=
+StanRun[stanExeFileName_?StringQ, option_?StanOptionListQ]:=
 	Module[{pathExeFileName,mutableOption,command,output},
 
 	       (* Generate Executable file name (absolute path) 
@@ -394,10 +394,6 @@ StanRun[stanExeFileName_?StringQ, optionHead_?StanOptionListQ, option_?StanOptio
 	       *)
 	       mutableOption=StanRunGenerateOutputFilename[mutableOption,0]; (* 0 means -> only ONE output (sequential) *)
 	       
-	       (* The LAST step, to insure to be the first options of the list 
-	       *)
-	       mutableOption=StanSetOption[optionHead,mutableOption];
-
 	       (* Extract options and compute!
 		*)
 	       command=pathExeFileName<>" "<>StanOptionListToString[mutableOption];
@@ -414,19 +410,19 @@ CmdStan`StanRunVariational::usage="StanRunVariational[stanExeFileName_?StringQ]"
 (*
  *)
 StanRunVariational[stanExeFileName_?StringQ]:=
-	StanRun[stanExeFileName,immutableStanOptionVariational,StanOptionVariational[]];
+	StanRun[stanExeFileName,StanSetOption[immutableStanOptionVariational,StanOptionVariational[]]];
 
 CmdStan`StanRunSample::usage="StanRunSample[stanExeFileName_?StringQ] \n\n   TODO: parallel sampling";
 (*
  *)
 StanRunSample[stanExeFileName_?StringQ]:=
-	StanRun[stanExeFileName,immutableStanOptionSample,StanOptionSample[]];
+	StanRun[stanExeFileName,StanSetOption[immutableStanOptionSample,StanOptionSample[]]];
 
 CmdStan`StanRunOptimize::usage="StanRunOptimize[stanExeFileName_?StringQ]"
 (*
  *)
 StanRunOptimize[stanExeFileName_?StringQ]:=
-	StanRun[stanExeFileName,immutableStanOptionOptimize,StanOptionOptimize[]];
+	StanRun[stanExeFileName,StanSetOption[immutableStanOptionOptimize,StanOptionOptimize[]]];
   StanRunParallelSample::notImplementedOS="MathematicaStan does not support this OS=`1`"
   (*
   *)
@@ -439,10 +435,10 @@ StanRunOptimize[stanExeFileName_?StringQ]:=
   (*
   *)
   StanRunParallelSample[stanExeFileName_?StringQ,coreN_/; NumberQ[coreN] && (coreN > 0)]:=
-  Module[{pathExeFileName,mutableOption,bufferMutableOption,listMutableOption={},shellScript="",output},
+  Module[{pathExeFileName,mutableOption,bufferMutableOption,shellScript="",finalOutputFilename,output},
 
     (* Initialize with user option  *)
-    mutableOption=StanOptionSample[];
+    mutableOption=Join[immutableStanOptionSample,StanOptionSample[]];
 
     If[StanGetOptionPosition["id",mutableOption]!={},
       Message[StanRunParallelSample::optionNotSupported,"id"];
@@ -459,11 +455,25 @@ StanRunOptimize[stanExeFileName_?StringQ]:=
   mutableOption=StanRunGenerateDataFilename[pathExeFileName,mutableOption];
   If[mutableOption===$Failed,Return[$Failed]];
 
-  (* Generate the list of options, variadic parts are:
+(* Generate script header
+*)
+ If[$OperatingSystem=="Windows",
+
+      (* OS = Windows 
+      *)
+      Message[StanRunParallelSample::notImplementedOS,$OperatingSystem];
+      Return[$Failed],
+      
+      (* OS = Others (Linux) 
+      *)
+      shellScript=shellScript<>"\n#!/bin/bash";
+    ];
+
+  (* Generate the list of commands: one command per id
   *  - process id : "id" option
   *  - output filename : "output file" option
   *)
-  For[id=1,id<coreN,id++,
+  For[id=1,id<=coreN,id++,
     (* Create output_ID.csv filename *)
     bufferMutableOption=StanRunGenerateOutputFilename[mutableOption,id];
 
@@ -480,13 +490,29 @@ StanRunOptimize[stanExeFileName_?StringQ]:=
       
       (* OS = Others (Linux) 
       *)
-      shellScript=shellScript<>"\n{"<>pathExeFileName<>StanOptionListToString[bufferMutableOption]<>"; } &";
+      shellScript=shellScript<>"\n{ ("<>pathExeFileName<>" "<>StanOptionListToString[bufferMutableOption]<>") } &";
     ];
   ]; (* For id *)
 
+ (* Wait for jobs
+ *)
+ If[$OperatingSystem=="Windows",
 
-    (* Complete script *)
-    
+      (* OS = Windows 
+      *)
+      Message[StanRunParallelSample::notImplementedOS,$OperatingSystem];
+      Return[$Failed],
+      
+      (* OS = Others (Linux) 
+      *)
+      shellScript=shellScript<>"\nwait";
+    ];
+
+(* Recreate the correct output file name (id=0) *)
+finalOutputFilename=StanGetOption["output.file",StanRunGenerateOutputFilename[mutableOption,0]];
+
+    (* Create file script *)
+    Export[StanRemoveFileNameExt[finalOutputFilename]<>".sh",shellScript,"Text"];
   
   Return[shellScript];
   ];
