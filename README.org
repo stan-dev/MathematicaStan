@@ -24,6 +24,12 @@ StanSetDirectory["C:\\Users\\USER_NAME\\Documents\\R\\cmdstan-2.12.0";
 
 *Windows version:* many thanks to Jeff Patterson for his valuable contribution.
 
+** News
+
+*** <2016-10-20 Thu> Complete refactoring of option management
+
+See section [[doc_option]]
+
 * Getting started
 
 ** Installation
@@ -201,7 +207,8 @@ Needs["CmdStan`"];
 Waiting for a more complete documentation, this section provides some
 specialized information.
 
-*** How to modify options
+*** How to modify options <<doc_option>>
+
 
     The options are organized in a hierarchical way and you must
 provide this information when you want to modify option values. Options
