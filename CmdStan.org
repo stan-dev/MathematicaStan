@@ -279,7 +279,7 @@ StanSetOption[optionListToAdd_?StanOptionListQ, optionList_?StanOptionListQ] :=
 
 
 StanOptionListToString[option_?StanOptionListQ]:=Module[{buffer},
-Print["\norder before ",option];
+
 (* Sort list to respect keyword hierachy *)
 buffer=SortBy[option, #[[1]]&];
 (* Move method.XXX at list head *)
@@ -287,10 +287,10 @@ buffer=Join[Select[buffer, StringMatchQ[#[[1]], "method" ~~ ___] &],
             Select[buffer, Not[StringMatchQ[#[[1]], "method" ~~ ___]] &]];
 (* Get last item, for instance a.b.c is turned into c *)
 buffer=Map[{StringSplit[#[[1]], "."][[-1]], #[[2]]} &, buffer];
-(* Form key=value string *)
+(* Form key=value string, value="" -> interpreted as a header *)
 buffer=Map[If[#[[2]]=="",#[[1]]<>" ", #[[1]] <> "=" <> ToString[#[[2]]] <> " "]&,buffer];
 buffer=Apply[StringJoin,buffer];
-Print["\norder ffter ",buffer];
+
 Return[buffer];
 ]
 
@@ -521,7 +521,7 @@ StanRun[stanExeFileName_?StringQ, option_?StanOptionListQ]:=
 	       (* Extract options and compute!
 		,*)
 	       command=pathExeFileName<>" "<>StanOptionListToString[mutableOption];
-Print["\nDEBUG COMM ",command];
+
 	       output=Import["!"<>command<>" 2>&1","Text"];
 	       
 	       Return[output];
@@ -536,7 +536,9 @@ CmdStan`StanRunVariational::usage="StanRunVariational[stanExeFileName_?StringQ]"
 StanRunVariational[stanExeFileName_?StringQ]:=
 	StanRun[stanExeFileName,StanSetOption[immutableStanOptionVariational,StanOptionVariational[]]];
 
-CmdStan`StanRunSample::usage="StanRunSample[stanExeFileName_?StringQ] \n\n   TODO: parallel sampling";
+CmdStan`StanRunSample::usage=
+"StanRunSample[stanExeFileName_?StringQ]\nStanRunSample[stanExeFileName_?StringQ,NJobs_/; NumberQ[NJobs] && (NJobs > 0)]"<>
+"\n\nUse sampling method, the second version with NJobs starts NJobs in parallel (only implemented under Linux)";
 (*
  *)
 StanRunSample[stanExeFileName_?StringQ]:=
@@ -578,25 +580,20 @@ sed '/^[#l]/d' samples*.csv >> combined.csv
 
 #+NAME: cmdStan_run_parallelSample.m
 #+BEGIN_SRC mathematica
-  StanRunParallelSample::notImplementedOS="MathematicaStan does not support this OS=`1`"
+  StanRunSample::notImplementedOS="MathematicaStan does not support this OS=`1`"
   (*
   ,*)
-  StanRunParallelSample::optionNotSupported="The option \"`1`\" is not supported in this context"
+  StanRunSample::optionNotSupported="The option \"`1`\" is not supported in this context"
   (*
   ,*)
-  CmdStan`StanRunParallelSample::usage=
-  "StanRunParallelSample[stanExeFileName_?StringQ,coreN_/; NumberQ[coreN] && (coreN > 0)]"<>
-  "\n\nRuns several sampling processes in parallel."
-  (*
-  ,*)
-  StanRunParallelSample[stanExeFileName_?StringQ,coreN_/; NumberQ[coreN] && (coreN > 0)]:=
+   StanRunSample[stanExeFileName_?StringQ,NJobs_/; NumberQ[NJobs] && (NJobs > 0)]:=
   Module[{pathExeFileName,mutableOption,bufferMutableOption,shellScript="",finalOutputFilename,finalOutputFilenameID,output},
 
     (* Initialize with user option  *)
     mutableOption=Join[immutableStanOptionSample,StanOptionSample[]];
 
     If[StanGetOptionPosition["id",mutableOption]!={},
-      Message[StanRunParallelSample::optionNotSupported,"id"];
+      Message[StanRunSample::optionNotSupported,"id"];
       Return[$Failed];
     ];
             
@@ -616,7 +613,7 @@ sed '/^[#l]/d' samples*.csv >> combined.csv
 
       (* OS = Windows 
       ,*)
-      Message[StanRunParallelSample::notImplementedOS,$OperatingSystem];
+      Message[StanRunSample::notImplementedOS,$OperatingSystem];
       Return[$Failed],
       
       (* OS = Others (Linux) 
@@ -628,7 +625,7 @@ sed '/^[#l]/d' samples*.csv >> combined.csv
   ,*  - process id : "id" option
   ,*  - output filename : "output file" option
   ,*)
-  For[id=1,id<=coreN,id++,
+  For[id=1,id<=NJobs,id++,
     (* Create output_ID.csv filename *)
     bufferMutableOption=StanRunGenerateOutputFilename[mutableOption,id];
 
@@ -640,7 +637,7 @@ sed '/^[#l]/d' samples*.csv >> combined.csv
 
       (* OS = Windows 
       ,*)
-      Message[StanRunParallelSample::notImplementedOS,$OperatingSystem];
+      Message[StanRunSample::notImplementedOS,$OperatingSystem];
       Return[$Failed],
       
       (* OS = Others (Linux) 
@@ -655,7 +652,7 @@ sed '/^[#l]/d' samples*.csv >> combined.csv
 
       (* OS = Windows 
       ,*)
-      Message[StanRunParallelSample::notImplementedOS,$OperatingSystem];
+      Message[StanRunSample::notImplementedOS,$OperatingSystem];
       Return[$Failed],
       
       (* OS = Others (Linux) 
@@ -673,12 +670,12 @@ sed '/^[#l]/d' samples*.csv >> combined.csv
 
       (* OS = Windows 
       ,*)
-      Message[StanRunParallelSample::notImplementedOS,$OperatingSystem];
+      Message[StanRunSample::notImplementedOS,$OperatingSystem];
       Return[$Failed],
 
       (* OS = Others (Linux) 
       ,*)
-      For[id=1,id<=coreN,id++,
+      For[id=1,id<=NJobs,id++,
         finalOutputFilenameID=StanGetOption["output.file",StanRunGenerateOutputFilename[mutableOption,id]];  
         If[id==1,    
           (* Create a unique output file *)
