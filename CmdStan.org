@@ -253,16 +253,9 @@ StanGetOption[name_?StringQ,option_?StanOptionListQ]:=
 			   Return[option[[position,2]]];
 		];
 
+(* name can be a pattern, for instance "method*" *)
 StanRemoveOption[name_?StringQ,option_?StanOptionListQ]:=
-		Module[{position},
-			   position=StanGetOptionPosition[name,option];
-
-			   (* If not found, do nothing *)
-			   If[position===$Failed,
-				  Return[option],
-				  Return[Drop[option,position]];
-			   ];
-		];
+    Return[Select[option, Not[StringMatchQ[#[[1]], name]]&]];
 
 StanSetOption[optionListToAdd_?StanOptionListQ, optionList_?StanOptionListQ] := 
 	Module[{position, completedOptionList, name, value,i},
