@@ -435,7 +435,7 @@ StanRunOptimize[stanExeFileName_?StringQ]:=
   (*
   *)
   StanRunParallelSample[stanExeFileName_?StringQ,coreN_/; NumberQ[coreN] && (coreN > 0)]:=
-  Module[{pathExeFileName,mutableOption,bufferMutableOption,shellScript="",finalOutputFilename,output},
+  Module[{pathExeFileName,mutableOption,bufferMutableOption,shellScript="",finalOutputFilename,finalOutputFilenameID,output},
 
     (* Initialize with user option  *)
     mutableOption=Join[immutableStanOptionSample,StanOptionSample[]];
@@ -508,13 +508,37 @@ StanRunOptimize[stanExeFileName_?StringQ]:=
       shellScript=shellScript<>"\nwait";
     ];
 
-(* Recreate the correct output file name (id=0) *)
-finalOutputFilename=StanGetOption["output.file",StanRunGenerateOutputFilename[mutableOption,0]];
+    (* Recreate the correct output file name (id=0 and id=1)
+    * id=0 generate the final output file name + bash script filename
+    * id=1 generate ths csv header
+    *)
+    finalOutputFilename=StanGetOption["output.file",StanRunGenerateOutputFilename[mutableOption,0]];
 
-    (* Create file script *)
-    Export[StanRemoveFileNameExt[finalOutputFilename]<>".sh",shellScript,"Text"];
+    If[$OperatingSystem=="Windows",
+
+      (* OS = Windows 
+      *)
+      Message[StanRunParallelSample::notImplementedOS,$OperatingSystem];
+      Return[$Failed],
+
+      (* OS = Others (Linux) 
+      *)
+      For[id=1,id<=coreN,id++,
+        finalOutputFilenameID=StanGetOption["output.file",StanRunGenerateOutputFilename[mutableOption,id]];  
+        If[id==1,    
+          (* Create a unique output file *)
+            shellScript=shellScript<>"\ngrep lp__ " <> finalOutputFilenameID <> " > " <> finalOutputFilename;
+        ];
+        shellScript=shellScript<>"\nsed '/^[#l]/d' " <>  finalOutputFilenameID <> " >> " <> finalOutputFilename;
+      ];
+      (* Export the final script *)
+      finalOutputFilenameID=StanRemoveFileNameExt[finalOutputFilename]<>".sh"; (* erase with script file name *)
+      Export[finalOutputFilenameID,shellScript,"Text"];
+      (* Execute it! *)
+      output=Import["!sh "<>finalOutputFilenameID<>" 2>&1","Text"];
+    ];
   
-  Return[shellScript];
+    Return[output];
   ];
 
 
