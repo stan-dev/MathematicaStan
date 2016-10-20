@@ -218,7 +218,8 @@ buffer=Join[Select[buffer, StringMatchQ[#[[1]], "method" ~~ ___] &],
 (* Get last item, for instance a.b.c is turned into c *)
 buffer=Map[{StringSplit[#[[1]], "."][[-1]], #[[2]]} &, buffer];
 (* Form key=value string *)
-buffer=Fold[(#1 <> " " <> #2[[1]] <> "=" <> ToString[#2[[2]]]) &, "", buffer];
+buffer=Map[If[#[[2]]=="",#[[1]]<>" ", #[[1]] <> "=" <> ToString[#[[2]]] <> " "]&,buffer];
+buffer=Apply[StringJoin,buffer];
 Print["\norder ffter ",buffer];
 Return[buffer];
 ]
@@ -406,7 +407,7 @@ StanRun[stanExeFileName_?StringQ, optionHead_?StanOptionListQ, option_?StanOptio
 
 	       (* Extract options and compute!
 		*)
-	       command=pathExeFileName<>StanOptionListToString[mutableOption];
+	       command=pathExeFileName<>" "<>StanOptionListToString[mutableOption];
 Print["\nDEBUG COMM ",command];
 	       output=Import["!"<>command<>" 2>&1","Text"];
 	       
