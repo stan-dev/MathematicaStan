@@ -334,7 +334,7 @@ StanRunGenerateDataFilename[pathExeFileName_?StringQ,option_?StanOptionListQ]:=
 	(* Check if there is a data file name in option, 
 	* if not, try to create one from scratch 
 	*)
-	dataFile=StanGetOption["data file",option];
+	dataFile=StanGetOption["data.file",option];
 	
         If[dataFile===$Failed,
           dataFile=StanRemoveFileNameExt[pathExeFileName]<>".data.R";
@@ -348,14 +348,14 @@ StanRunGenerateDataFilename[pathExeFileName_?StringQ,option_?StanOptionListQ]:=
           Return[$Failed]
         ];
 
-    Return[StanSetOption[{{"data file",dataFileTmp}},option]];
+    Return[StanSetOption[{{"data",""},{"data.file",dataFileTmp}},option]];
 ];
 StanRunGenerateOutputFilename[option_?StanOptionListQ,processId_?IntegerQ]:=
 	Module[{mutableOption,outputFile},
 
           (* Check for a user output file
           *)
-          outputFile=StanGetOption["output file",option];
+          outputFile=StanGetOption["output.file",option];
           
           If[outputFile===$Failed,
             outputFile=FileNameJoin[{Directory[],"output.csv"}];
@@ -377,7 +377,7 @@ StanRunGenerateOutputFilename[option_?StanOptionListQ,processId_?IntegerQ]:=
 
           (* Return the updated options
           *)
-          Return[StanSetOption[{{"output file",outputFile}},option]];
+          Return[StanSetOption[{{"output",""},{"output.file",outputFile}},option]];
 ]
 (*
  * Private interface, for the user one, see: StanRunVariational, StanRunSample...
