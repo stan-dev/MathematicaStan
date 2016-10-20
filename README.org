@@ -26,10 +26,15 @@ StanSetDirectory["C:\\Users\\USER_NAME\\Documents\\R\\cmdstan-2.12.0";
 
 ** News
 
-*** 2016-10-20 Thu Complete refactoring of option management + doc
-
+*** 2016-10-20 Thu
+**** Complete refactoring of option management + doc
 See the *How to modify options* section (end of this page).
-
+**** Parallel Sampling (Linux version only)
+The command
+#+BEGIN_SRC matheematica :exports code
+StanRunSample["bernoulli",4]
+#+END_SRC
+uses 4 jobs for HMC sampling.
 
 * Getting started
 
@@ -170,7 +175,6 @@ StanResetOptionOptimize
 StanResetOptionSample
 StanResetOptionVariational
 StanRunOptimize
-StanRunParallelSample
 StanRunSample
 StanRunVariational
 StanSetDirectory
@@ -289,3 +293,6 @@ StanVariableFunc[...];
 #+END_SRC
 
 
+*** Parallel sampling (Linux only)
+
+Illustrated in the [[Examples/Bernoulli/bernoulli.pdf][Bernoulli example]].
