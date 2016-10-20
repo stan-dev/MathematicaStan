@@ -163,6 +163,7 @@ StanResetOptionOptimize
 StanResetOptionSample
 StanResetOptionVariational
 StanRunOptimize
+StanRunParallelSample
 StanRunSample
 StanRunVariational
 StanSetDirectory
@@ -176,24 +177,98 @@ StanVariableFunc
 StanVariableToImport
 #+end_example
 
-To get extra information you can:
+** Individual function documentation
 
-- use the inline package documentation, 
+   To get extra information about a peculiar function you can proceed as usual:
 
-#+BEGIN_SRC mathematica :exports both
+ #+BEGIN_SRC mathematica :exports both
 Needs["CmdStan`"];
 ?RDumpExport
+ #+END_SRC
+
+ #+RESULTS:
+ : RDumpExport[fileNameDataR_?StringQ,listOfNameValue_]
+ : 
+ : Creates a file and dump data in RDump format.
+ : 
+ : Note:
+ :  - input data "listOfNameValue" is of the form 
+ :    {{"MatrixName",{{...}}},{"ScalarName",5.6},{"VectorName",{..}},...}
+ :  - if "fileName" has no extension, ".data.R" is automatically added.
+
+** Selected topics documentation
+
+Waiting for a more complete documentation, this section provides some
+specialized information.
+
+*** How to modify options
+
+    The options are organized in a hierarchical way and you must
+provide this information when you want to modify option value. Options
+organization are described in the [[http://mc-stan.org/interfaces/cmdstan][CmdStan user guide ("Command-Line
+Options" section)]].
+
+In *MathemeticaStan* you have *3* predefined option lists, you can print using:
+
+#+BEGIN_SRC mathematica :exports code
+StanOptionOptimize[]
+StanOptionSample[]
+StanOptionVariational[]
 #+END_SRC
 
-#+RESULTS:
-: RDumpExport[fileNameDataR_?StringQ,listOfNameValue_]
-: 
-: Creates a file and dump data in RDump format.
-: 
-: Note:
-:  - input data "listOfNameValue" is of the form 
-:    {{"MatrixName",{{...}}},{"ScalarName",5.6},{"VectorName",{..}},...}
-:  - if "fileName" has no extension, ".data.R" is automatically added.
+Initial value is an empty list.
 
-- walk through the *Complete examples* notebooks and read comments.
+If you want to modify option for the *Optimize* method you must
+explictly provide the hierarchical information:
+
+#+NAME doc_option_optimize_example.m
+#+BEGIN_SRC mathematica :exports code 
+StanSetOptionOptimize["output.file","output_optimize.csv"];  
+StanSetOptionOptimize["method.optimize.iter", 100]; 
+StanSetOptionOptimize["method.optimize.algorithm", "bfgs"];
+StanSetOptionOptimize["method.optimize.algorithm.bfgs.tol_grad", 10.^-5];
+#+END_SRC
+
+You can now view the option list:
+
+#+BEGIN_SRC mathematica :exports code
+StanOptionOptimize[]
+#+END_SRC
+
+Note that it is possible to overwrite option value
+#+BEGIN_SRC mathematica :exports code 
+StanSetOptionOptimize["method.optimize.iter", 2016]; 
+#+END_SRC
+
+or to remove a peculiar option:
+#+BEGIN_SRC mathematica :exports code 
+StanRemoveOptionOptimize["method.optimize.iter"]; 
+#+END_SRC
+
+You can also remove *all* defined options by:
+#+BEGIN_SRC mathematica :exports code 
+StanResetOptionOptimize[]
+#+END_SRC
+
+**** TODO
+
+Not yet implemented: remove option matching pattern, for instance:
+#+BEGIN_SRC mathematica :exports code 
+StanRemoveOptionOptimize["method.optimize.*"]; 
+#+END_SRC
+
+*** Output variable access and manipulation
+
+See the *soft-k-means* example, involved functions are:
+
+#+BEGIN_SRC mathematica :exports code 
+StanFindVariableColumn[...];
+StanFindVariableIndex[...];
+
+StanVariable[...]
+StanVariableColumn[...];
+
+StanVariableFunc[...];
+#+END_SRC
+
 
