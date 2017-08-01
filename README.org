@@ -26,6 +26,8 @@ StanSetDirectory["C:\\Users\\USER_NAME\\Documents\\R\\cmdstan-2.12.0";
 
 ** News
 
+*** 2017-08-01 Tue
+**** Some doc, see [[id:235b4629-7d1b-4843-a23f-c639b5980850][Generated =output.csv= file and path]].
 *** 2016-10-20 Thu
 **** Complete refactoring of option management + doc
 See the *How to modify options* section (end of this page).
@@ -42,11 +44,11 @@ uses 4 jobs for HMC sampling.
 
 *** Creation of the CmdStan.m file (*not required*)
 
-*You can skip this step, a [[CmdStan.m][CmdStan.m]] file is already present in this
+*You can skip this step, a [[file:CmdStan.m][CmdStan.m]] file is already present in this
 directory.*
 
-Otherwise you have to know that the [[CmdStan.m][CmdStan.m]] file is automatically
-created from the [[CmdStan.org][CmdStan.org]] file using Emacs + [[http://orgmode.org/][org-mode]]. To generate
+Otherwise you have to know that the [[file:CmdStan.m][CmdStan.m]] file is automatically
+created from the [[file:CmdStan.org][CmdStan.org]] file using Emacs + [[http://orgmode.org/][org-mode]]. To generate
 the *CmdStan.m*, open the *CmdStan.org* file with Emacs and type *c-c
 c-v t* to create the *CmdStan.m* file.
 
@@ -213,6 +215,9 @@ Waiting for a more complete documentation, this section provides some
 specialized information.
 
 *** How to modify options
+    :PROPERTIES:
+    :ID:       34ed6782-8c12-413f-b390-248bef2668cb
+    :END:
 
     The options are organized in a hierarchical way and you must
 provide this information when you want to modify option values. Options
@@ -274,11 +279,34 @@ You can also remove *all* defined options by:
 StanResetOptionOptimize[]
 #+END_SRC
 
-These option manipulations are illustrated in the [[Examples/Bernoulli/bernoulli.pdf][Bernoulli example]].
+These option manipulations are illustrated in the [[file:Examples/Bernoulli/bernoulli.pdf][Bernoulli example]].
+
+*** Generated =output.csv= file and path
+    :PROPERTIES:
+    :ID:       235b4629-7d1b-4843-a23f-c639b5980850
+    :END:
+
+*CAVEAT:* by default the generated =output.csv= file is created into the current directory
+#+BEGIN_SRC mathematica :exports code 
+Directory[]
+#+END_SRC
+
+If you want to modify this output directory you have two choices:
+- Change the current directory of your Mathematica session:
+#+BEGIN_SRC mathematica :exports code 
+SetDirectory["NewPathForOutputCSV/"]
+#+END_SRC
+- Modify the "output.file" option (see [[id:34ed6782-8c12-413f-b390-248bef2668cb][How to modify options]])
+#+BEGIN_SRC mathematica :exports code 
+StanSetOptionOptimize["output.file","NewPathForOutputCSV/output_optimize.csv"];  
+#+END_SRC
 
 *** Output variable access and manipulation
+    :PROPERTIES:
+    :ID:       0ea4dd0f-6504-4cbf-aed6-95c707e2c069
+    :END:
 
-Output importation and information extractions are illustrated in the [[Examples/Cluster/soft-k-means.pdf][soft-k-means example]].
+Output importation and information extractions are illustrated in the [[file:Examples/Cluster/soft-k-means.pdf][soft-k-means example]].
 
 The involved functions are:
 
@@ -295,4 +323,4 @@ StanVariableFunc[...];
 
 *** Parallel sampling (Linux only)
 
-Illustrated in the [[Examples/Bernoulli/bernoulli.pdf][Bernoulli example]].
+Illustrated in the [[file:Examples/Bernoulli/bernoulli.pdf][Bernoulli example]].
