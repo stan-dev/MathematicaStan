@@ -1,6 +1,0 @@
-#+TITLE: TODO  list
-
-* TODO Improve documentation
-* TODO Maybe use a more recent Matheematica version (10 or 11)
-  - availability of *RLink* for a smooth integration of R and RObject export (idea from Jeff Patterson)
-* TODO WINDOWS support fror parallel sampling (with process id, see CmdStan doc)

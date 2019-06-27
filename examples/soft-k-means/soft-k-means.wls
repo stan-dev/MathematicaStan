@@ -1,4 +1,17 @@
-data {
+#!/usr/bin/env wolframscript
+(* ::Package:: *)
+
+(* ::Title:: *)
+(*Demo*)
+
+
+<<CmdStan`
+
+
+SetDirectory["~/Temp"]
+
+
+stanCode="data {
   int<lower=0> N;  // number of data points
   int<lower=1> D;  // number of dimensions
   int<lower=1> K;  // number of clusters
@@ -22,8 +35,17 @@ model {
     mu[k] ~ normal(0,1);  // prior
   for (n in 1:N)
     increment_log_prob(log_sum_exp(soft_z[n])); // likelihood
-}
+}";
+stanCodeFileName=ExportStanCode["soft-k-means.stan",stanCode]
 
 
+stanExeFileName=CompileStanCode[stanCodeFileName,StanVerbose->True]
 
 
+stanResultFileName=RunStan[stanCodeFileName,VariationalDefaultOptions]
+
+
+result=ImportStanResult[stanResultFileName]
+
+
+Histogram[First[result]["data"]["soft_z.125.5"]]
