@@ -312,6 +312,13 @@ Show[Plot[{αe + βe*x, α + β*x}, {x, Min[X],Max[X]}, PlotLegends -> "Expressi
 #+END_SRC
 [[file:figures/linRegEstimate.png][file:~/GitHub/MathematicaStan/figures/linRegEstimate.png]]
 
+
+html
+#+BEGIN_EXPORT html
+<img src="./figures/linRegEstimate.png">
+#+END_EXPORT
+
+
 ** soft-k-means.stan example
 
 This use case is based on the [[https://github.com/stan-dev/example-models/blob/master/misc/cluster/soft-k-means/soft-k-means.stan][soft-k-means]] example. 
