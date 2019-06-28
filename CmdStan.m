@@ -37,7 +37,7 @@ CmdStan::optionSupport="The option \"`1`\" is not supported in this context";
 (*Options*)
 
 
-CmdStanVerbose::usage="A boolean option to define verbosity.";
+StanVerbose::usage="A boolean option to define verbosity.";
 
 
 (* ::Subchapter:: *)
