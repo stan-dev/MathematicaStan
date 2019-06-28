@@ -40,8 +40,6 @@ been completely refactored (caveat: breaking changes!)
 Last MathematicaStan version based on Mathematica v8.0 (this is
 the v1.0 git branch).
 
-* Getting started
-
 * Installation
 
 ** The Stan CmdStan shell interface
@@ -90,7 +88,9 @@ SetCmdStanDirectory["~/GitHub/cmdstan"]
 
 * Tutorial
 
-Import =CmdStan=
+** Introduction
+
+Import the package as usual
 
 #+BEGIN_SRC mathematica :eval never
 <<CmdStan`
@@ -107,21 +107,17 @@ This package defines these functions (and symbols):
 | CompileStanCode | GetStanOption       | MapStanResult         | RunStan                | StanOptionExistsQ   | $CmdStanConfigurationFile |
 | ExportStanCode  | GetStanResult       | MapStanResultMetaData | SampleDefaultOptions   | StanOptions         |                           |
 
-
-** Linear regression example
-
-For this tutorial, we use https://mc-stan.org/docs/2_19/stan-users-guide/linear-regression.html.
-
-We will work in a temporary location:
+To package usage is illustrated using a simple [[https://mc-stan.org/docs/2_19/stan-users-guide/linear-regression.html][linear regression]]
+example. We will work in a temporary location:
 
 #+BEGIN_SRC mathematica :eval never
 SetDirectory[$TemporaryDirectory]
 #+END_SRC
 
-*** Stan file code 
+** Stan file code 
 
- Define the Stan code
- #+BEGIN_SRC mathematica :eval never
+Define the Stan code
+#+BEGIN_SRC mathematica :eval never
 stancode = "data
   {
     int<lower = 0> N;
@@ -137,18 +133,18 @@ stancode = "data
   model {
     y ~normal(alpha + beta * x, sigma);
   }";
- #+END_SRC
+#+END_SRC
 
- and export it
+and export it
 
- #+BEGIN_SRC mathematica :eval never
+#+BEGIN_SRC mathematica :eval never
 stanCodeFile = ExportStanCode["linear_regression.stan", stanCode]
- #+END_SRC
- #+BEGIN_EXAMPLE
+#+END_SRC
+#+BEGIN_EXAMPLE
 /tmp/linear_regression.stan
- #+END_EXAMPLE
+#+END_EXAMPLE
 
-*** Code compilation
+** Code compilation
 
 Stan code compilation is performed by (attention this can take some time):
  #+BEGIN_SRC mathematica :eval never
@@ -177,7 +173,7 @@ make: Leaving directory '/home/picaud/ExternalSoftware/cmdstan-2.19.1'
 stanExeFile = CompileStanCode[stanCodeFile, StanVerbose -> False]
  #+END_SRC
 
-*** Simulate data
+** Simulate data
 
 Let's simulate some data:
  #+BEGIN_SRC mathematica :eval never
@@ -189,9 +185,9 @@ Show[Plot[α + β*x, {x, Min[X], Max[X]}],
      ListPlot[Transpose@{X, Y}, PlotStyle -> Red]]
  #+END_SRC
 
-[[file:figures/linRegData.png][file:~/GitHub/MathematicaStan/figures/linRegData.png]]
+[[file:figures/linRegData.png][file:./figures/linRegData.png]]
 
-*** Create the =data.R= data file 
+** Create the =data.R= data file 
 
 #+BEGIN_SRC mathematica :eval never
 stanData = <|"N" -> n, "x" -> X, "y" -> Y|>;
@@ -212,7 +208,7 @@ any file name:
 ExportStanData["~/tmp/my_custom_filename.data.R",stanData]
 #+END_SRC
 
-*** Run Stan, likelihood maximization
+** Run Stan, likelihood maximization
 
 We are now able to run the =stanExeFile= executable. 
 
@@ -271,7 +267,7 @@ stanResultFile = RunStan[stanExeFile, OptimizeDefaultOptions,StanVerbose->False]
 sampling you must use =RunStan[]= with =VariationalDefaultOptions= or
 =SampleDefaultOptions= instead. We will detail option later.
 
-*** Load the csv result file
+** Load the csv result file
 
 To load the This is performed by 
 
