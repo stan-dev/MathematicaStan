@@ -117,7 +117,7 @@ doTest[CompileStanCode[stanCodeFileName,StanVerbose->True],"/tmp/bernoulli"];
 
 
 doTest[opt=SetStanOption[VariationalDefaultOptions,"method.optimize.iter", 2016],StanOptions[<|"method"->{"variational",<|"optimize"->{Null,<|"iter"->{2016,<||>}|>}|>}|>]];
-doTest[RemoveStanOption[opt,"method.optimize.iter"],StanOptions[<|"method"->{"variational",<|"optimize"->{Null,<||>}|>}|>]];
+doTest[RemoveStanOption[opt,"method.optimize.iter"],StanOptions[<|"method"->{"variational",<||>}|>]];
 
 
 (* ::Subchapter:: *)

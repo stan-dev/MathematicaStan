@@ -378,6 +378,7 @@ removeStanOption[StanOptions[org_Association], {keys__,last_}]:=
 	       buffer=org;
 	       indices=Riffle[{keys},ConstantArray[2,Length[{keys}]]];
 	       KeyDropFrom[buffer[[Apply[Sequence,indices]]],last];
+	       buffer=FixedPoint[DeleteCases[# ,{Null,<||>},-1]&,buffer];
 	       StanOptions[buffer]
 	];
 
