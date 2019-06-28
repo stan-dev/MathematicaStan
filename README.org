@@ -408,7 +408,7 @@ myOpt = SetStanOption[myOpt, "method.adapt.iter", 123]
 #+END_SRC
 which prints
 #+BEGIN_EXAMPLE
-myOpt = SetStanOption[myOpt, "method.adapt.iter", 123]
+method=variational adapt iter=123 output file=/tmp/myOutputFile.csv
 #+END_EXAMPLE
 
 *Note:*
@@ -416,7 +416,7 @@ myOpt = SetStanOption[myOpt, "method.adapt.iter", 123]
   #+BEGIN_SRC mathematica :eval never
   GetStanOption[myOpt, "method.adapt.iter"]
   #+END_SRC
-  prints
+  which prints
   #+BEGIN_EXAMPLE
   123
   #+END_EXAMPLE
@@ -425,162 +425,63 @@ myOpt = SetStanOption[myOpt, "method.adapt.iter", 123]
 
 - to erase an option value (and use default value), use:
   #+BEGIN_SRC mathematica :eval never
-  GetStanOption[myOpt, "method.adapt.iter"]
+  myOpt = RemoveStanOption[myOpt, "method.adapt.iter"]
   #+END_SRC
+  which prints
+  #+BEGIN_EXAMPLE
+  method=variational output file=/tmp/myOutputFile.csv
+  #+END_EXAMPLE
 
+Now the digression about option is finished. 
 
+We can run Stan:
 
 #+BEGIN_SRC mathematica :eval never
-Show[Plot[{αe + βe*x, α + β*x}, {x, Min[X],Max[X]}, PlotLegends -> "Expressions"], 
-     ListPlot[Transpose@{X, Y}, PlotStyle -> Red]]
+myOutputFile=RunStan[stanExeFile, myOpt, StanVerbose -> False]
+#+END_SRC
+which must print:
+#+BEGIN_EXAMPLE
+/tmp/myOutputFile.csv
+#+END_EXAMPLE
+
+Now import this CSV file:
+#+BEGIN_SRC mathematica :eval never
+myResult = ImportStanResult[myOutputFile]
+#+END_SRC
+which prints:
+#+BEGIN_EXAMPLE
+    file: /tmp/myOutputFile.csv
+metaData: lp__ , log_p__ , log_g__ 
+    data: alpha , beta , sigma 
+#+END_EXAMPLE
+
+As before, use:
+#+BEGIN_SRC mathematica :eval never
+GetStanData[myResult,"alpha"]
 #+END_SRC
 
+But now you will get a list of 1000 sample:
+#+BEGIN_EXAMPLE
+{2.03816, 0.90637, ..., ..., 1.22068, 1.66392}
+#+END_EXAMPLE
 
-** soft-k-means.stan example
+Hopefully you can map any function, even =ListLinePlot= or =Histogram=. 
 
-This use case is based on the [[https://github.com/stan-dev/example-models/blob/master/misc/cluster/soft-k-means/soft-k-means.stan][soft-k-means]] example. 
+By example:
 
-You can find the Mathematica notebook [[https://github.com/vincent-picaud/MathematicaStan/blob/master/Examples/Cluster/soft-k-means.nb][soft-k-means.nb]] or directly view
-the associated [[https://github.com/vincent-picaud/MathematicaStan/blob/master/Examples/Cluster/soft-k-means.pdf][soft-k-means.pdf]] file.
-
-* Package documentation
-
-** Complete list of commands
-
-The complete list of commands is:
-
-
-** Individual function documentation
-
-   To get extra information about a peculiar function you can proceed as usual:
-
- #+BEGIN_SRC mathematica :exports both
-Needs["CmdStan`"];
-?RDumpExport
- #+END_SRC
-
- #+RESULTS:
- : RDumpExport[fileNameDataR_?StringQ,listOfNameValue_]
- : 
- : Creates a file and dump data in RDump format.
- : 
- : Note:
- :  - input data "listOfNameValue" is of the form 
- :    {{"MatrixName",{{...}}},{"ScalarName",5.6},{"VectorName",{..}},...}
- :  - if "fileName" has no extension, ".data.R" is automatically added.
-
-** Selected topics documentation
-
-Waiting for a more complete documentation, this section provides some
-specialized information.
-
-*** How to modify options
-    :PROPERTIES:
-    :ID:       34ed6782-8c12-413f-b390-248bef2668cb
-    :END:
-
-    The options are organized in a hierarchical way and you must
-provide this information when you want to modify option values. Options
-organization are described in the [[http://mc-stan.org/interfaces/cmdstan][CmdStan user guide ("Command-Line
-Options" section)]].
-
-In *MathemeticaStan* you have *3* predefined option lists that you can print using:
-
-#+BEGIN_SRC mathematica :exports code
-StanOptionOptimize[]
-StanOptionSample[]
-StanOptionVariational[]
+#+BEGIN_SRC mathematica :eval never
+MapStanResult[Mean, myResult, "alpha"]
+MapStanResult[Variance, myResult, "alpha"]
+MapStanResult[Histogram, myResult, "alpha"]
 #+END_SRC
 
-Initial value is an empty list.
+prints:
 
-If you want to modify option for the *Optimize* method you must
-explictly provide the hierarchical information:
+#+BEGIN_EXAMPLE
+2.0353
+0.317084
+#+END_EXAMPLE
 
-#+NAME: doc_option_optimize_example.m
-#+BEGIN_SRC mathematica :exports code 
-StanSetOptionOptimize["output.file","output_optimize.csv"];  
-StanSetOptionOptimize["method.optimize.iter", 100]; 
-StanSetOptionOptimize["method.optimize.algorithm", "bfgs"];
-StanSetOptionOptimize["method.optimize.algorithm.bfgs.tol_grad", 10.^-5];
-#+END_SRC
-
-You can now view the option list:
-
-#+BEGIN_SRC mathematica :exports code
-StanOptionOptimize[]
-#+END_SRC
-
-#+BEGIN_SRC mathematica :exports results :noweb yes
-Needs["CmdStan`"];
-<<doc_option_optimize_example.m>>
-Print[StanOptionOptimize[]]
-#+END_SRC
-
-#+RESULTS:
-| method.optimize.algorithm.bfgs.tol_grad |               1e-05 |
-| method.optimize.algorithm               |                bfgs |
-| method.optimize.iter                    |                 100 |
-| output.file                             | output_optimize.csv |
-
-Note that it is possible to overwrite option value
-#+BEGIN_SRC mathematica :exports code 
-StanSetOptionOptimize["method.optimize.iter", 2016]; 
-#+END_SRC
-
-or to remove a peculiar option (given its exact name or a pattern).
-#+BEGIN_SRC mathematica :exports code 
-StanRemoveOptionOptimize["method.optimize.iter"]; (* remove "method.optimize.iter" option *)
-StanRemoveOptionOptimize["method*"]; (* remove ALL method* options *)
-#+END_SRC
-
-You can also remove *all* defined options by:
-#+BEGIN_SRC mathematica :exports code 
-StanResetOptionOptimize[]
-#+END_SRC
-
-These option manipulations are illustrated in the [[file:Examples/Bernoulli/bernoulli.pdf][Bernoulli example]].
-
-*** Generated =output.csv= file and path
-    :PROPERTIES:
-    :ID:       235b4629-7d1b-4843-a23f-c639b5980850
-    :END:
-
-*CAVEAT:* by default the generated =output.csv= file is created into the current directory
-#+BEGIN_SRC mathematica :exports code 
-Directory[]
-#+END_SRC
-
-If you want to modify this output directory you have two choices:
-- Change the current directory of your Mathematica session:
-#+BEGIN_SRC mathematica :exports code 
-SetDirectory["NewPathForOutputCSV/"]
-#+END_SRC
-- Modify the "output.file" option (see [[id:34ed6782-8c12-413f-b390-248bef2668cb][How to modify options]])
-#+BEGIN_SRC mathematica :exports code 
-StanSetOptionOptimize["output.file","NewPathForOutputCSV/output_optimize.csv"];  
-#+END_SRC
-
-*** Output variable access and manipulation
-    :PROPERTIES:
-    :ID:       0ea4dd0f-6504-4cbf-aed6-95c707e2c069
-    :END:
-
-Output importation and information extractions are illustrated in the [[file:Examples/Cluster/soft-k-means.pdf][soft-k-means example]].
-
-The involved functions are:
-
-#+BEGIN_SRC mathematica :exports code 
-StanFindVariableColumn[...];
-StanFindVariableIndex[...];
-
-StanVariable[...]
-StanVariableColumn[...];
-
-StanVariableFunc[...];
-#+END_SRC
+[[file:figures/linRegHisto.png][file:~/GitHub/MathematicaStan/figures/linRegHisto.png]]
 
 
-*** Parallel sampling (Linux only)
-
-Illustrated in the [[file:Examples/Bernoulli/bernoulli.pdf][Bernoulli example]].
