@@ -482,6 +482,6 @@ prints:
 0.317084
 #+END_EXAMPLE
 
-[[file:figures/linRegHisto.png][file:~/GitHub/MathematicaStan/figures/linRegHisto.png]]
+[[file:figures/linRegHisto.png][file:./figures/linRegHisto.png]]
 
 
