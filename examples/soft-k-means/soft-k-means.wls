@@ -8,6 +8,9 @@
 <<CmdStan`
 
 
+?CmdStan`*
+
+
 SetDirectory["~/Temp"]
 
 

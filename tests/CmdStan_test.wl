@@ -38,7 +38,7 @@ SetCmdStanDirectory["/home/picaud/ExternalSoftware/cmdstan"]
 ];
 
 
-doTest[DirectoryQ@CmdStanDirectory,True];
+doTest[FileExistsQ@$CmdStanConfigurationFile,True];
 
 
 doTest[CmdStan`Private`generateStanExecFileName["/tmp/bernoulli"], If[$OperatingSystem == "Windows","/tmp/bernoulli.exe","/tmp/bernoulli"]]; 
