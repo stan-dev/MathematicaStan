@@ -310,11 +310,8 @@ You can plot the estimated line:
 Show[Plot[{αe + βe*x, α + β*x}, {x, Min[X],Max[X]}, PlotLegends -> "Expressions"], 
      ListPlot[Transpose@{X, Y}, PlotStyle -> Red]]
 #+END_SRC
-% [[file:figures/linRegEstimate.png][file:~/GitHub/MathematicaStan/figures/linRegEstimate.png]]
 
-Raw link https://github.com/stan-dev/MathematicaStan/blob/NewVersion/figures/linRegData.png?raw=true
-test markdown
-![fdgfdggf](https://github.com/stan-dev/MathematicaStan/blob/NewVersion/figures/linRegData.png?raw=true)
+[[file:./figures/linRegEstimate.png]]
 
 
 ** soft-k-means.stan example
