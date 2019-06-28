@@ -1,58 +1,50 @@
 #+OPTIONS: toc:nil num:nil todo:nil pri:nil tags:nil ^:nil tex:t
-#+TITLE: MathematicaStan
-#+SUBTITLE: A Mathematica package to interact with CmdStan
+#+TITLE: MathematicaStan v2.0
+#+SUBTITLE: A Mathematica (v11+) package to interact with CmdStan
 #+AUTHOR: Picaud Vincent
+
+
+#+RESULTS:
 
 * Introduction
 
+
 *MathematicaStan* is a package to interact with [[http://mc-stan.org/interfaces/cmdstan][CmdStan]] from
 Mathematica. It is developed under *Linux* and is compatible with
-*Mathematica v8.0*.
+*Mathematica v11+*
 
-It works under Windows but you have to be careful about the way you
+It should work under Windows but you have to be careful about the way you
 enter paths:
 - under Linux:
 #+BEGIN_EXAMPLE
-StanSetDirectory["YOUR_PATH/cmdstan"];
+SetCmdStanDirectory["~/GitHub/cmdstan"];
 #+END_EXAMPLE
 - under Windows:
 #+BEGIN_EXAMPLE
-StanSetDirectory["C:\\Users\\USER_NAME\\Documents\\R\\cmdstan-2.12.0"; 
+SetCmdStanDirectory["C:\\Users\\USERNAME\\Documents\\R\\..."; 
 #+END_EXAMPLE
 
 *Author & contact:* picaud.vincent at gmail.com
 
-*Windows version:* many thanks to Jeff Patterson for his valuable contribution.
+*Windows version:* 
+ - Thanks to Jeff Patterson for his contribution
 
 ** News
+*** 2019-06-28 
 
-*** 2017-08-01 Tue
-**** Some doc, see [[id:235b4629-7d1b-4843-a23f-c639b5980850][Generated =output.csv= file and path]].
-*** 2016-10-20 Thu
-**** Complete refactoring of option management + doc
-See the *How to modify options* section (end of this page).
-**** Parallel Sampling (Linux version only)
-The command
-#+BEGIN_SRC matheematica :exports code
-StanRunSample["bernoulli",4]
-#+END_SRC
-uses 4 jobs for HMC sampling.
+*New* MathematicaStan v2.0! This version uses Mathematica v11 and has
+been completely refactored (caveat: breaking changes!) 
+
+*** 2017-08-01 
+
+Last MathematicaStan version based on Mathematica v8.0 (this is
+the v1.0 git branch).
 
 * Getting started
 
-** Installation
+* Installation
 
-*** Creation of the CmdStan.m file (*not required*)
-
-*You can skip this step, a [[file:CmdStan.m][CmdStan.m]] file is already present in this
-directory.*
-
-Otherwise you have to know that the [[file:CmdStan.m][CmdStan.m]] file is automatically
-created from the [[file:CmdStan.org][CmdStan.org]] file using Emacs + [[http://orgmode.org/][org-mode]]. To generate
-the *CmdStan.m*, open the *CmdStan.org* file with Emacs and type *c-c
-c-v t* to create the *CmdStan.m* file.
-
-*** CmdStan installation 
+** The Stan CmdStan shell interface
 
 First you must install [[http://mc-stan.org/interfaces/cmdstan][CmdStan]]. Once this is done you get a directory containing stuff like:
 
@@ -67,72 +59,258 @@ In my case, *CmdStan* is installed there:
 
 For Windows users it is possibly something like:
 #+BEGIN_EXAMPLE
-C:\\Users\\USER_NAME\\Documents\\R\\cmdstan-2.12.0
+C:\\Users\\USER_NAME\\Documents\\R\\cmdstan-?.??.?
 #+END_EXAMPLE
 
-*** CmdStan.m installation
+** The CmdStan Mathematica package
 
-Download the package *CmdStan.m* and open it with *Mathematica*. The
-simplest way to install the package is to go to the Mathematica
-*File->Install* Menu, then follow the instructions.
+Open the *CmdStan.m* package file with *Mathematica*. Then install it
+using the Mathematica Notebook *File->Install* Menu.
 
-*** CmdStan.m configuration
+** First run
 
-There are two possibilities:
-
-- You define where [[http://mc-stan.org/interfaces/cmdstan][CmdStan]] is installed for each Mathematica session:
-#+BEGIN_SRC mathematica :exports code
-Needs["CmdStan`"];
-
-(* Uncomment me for Linux *)
-StanSetDirectory["YOUR_PATH/cmdstan"]; 
-
-(* Uncomment me for Windows *)
-(* StanSetdirectory["C:\\Users\\USER_NAME\\Documents\\R\\cmdstan-2.12.0"]; *)
+The first time you load the package
+#+BEGIN_SRC mathematica :eval never
+<<CmdStan`
+#+END_SRC
+you will get an error message:
+#+BEGIN_EXAMPLE
+CmdStan::cmdStanDirectoryNotDefined: CmdStan directory does not exist, use SetCmdStanDirectory[dir] to define it (with something like SetCmdStanDirectory["~/GitHub/cmdstan"])
+#+END_EXAMPLE
+This is normal as we do not have defined where the shell interface to
+ Stan root directory is.  With my configuration I do
+#+BEGIN_SRC matheematica :eval never
+SetCmdStanDirectory["~/GitHub/cmdstan"]
 #+END_SRC
 
-#+RESULTS:
-: CmdStanError::stanDirNotFound: CmdStan install directory "YOUR_PATH/cmdstan" not found.
+*Note:* this location is recorded in the =$CmdStanConfigurationFile= file
+ and you will not have to redefine it next time you use the
+ MathematicaStan package.
 
-- You define once for all, the *stanDir* variable in the package code source. 
-  Your *CmdStan.m* package, after installation, is generally stored there (at least under Linux):
+
+* Tutorial
+
+Import =CmdStan=
+
+#+BEGIN_SRC mathematica :eval never
+<<CmdStan`
+#+END_SRC
+
+This package defines these functions (and symbols):
+
+#+BEGIN_SRC mathematica :eval never
+?CmdStan`*
+#+END_SRC
+
+| CmdStan         | ExportStanData      | GetStanResultMetaData | OptimizeDefaultOptions | SetCmdStanDirectory | StanResult                |
+| CmdStanVerbose  | GetCmdStanDirectory | ImportStanResult      | RemoveStanOption       | SetStanOption       | VariationalDefaultOptions |
+| CompileStanCode | GetStanOption       | MapStanResult         | RunStan                | StanOptionExistsQ   | $CmdStanConfigurationFile |
+| ExportStanCode  | GetStanResult       | MapStanResultMetaData | SampleDefaultOptions   | StanOptions         |                           |
+
+
+** Linear regression example
+
+For this tutorial, we use https://mc-stan.org/docs/2_19/stan-users-guide/linear-regression.html.
+
+We will work in a temporary location:
+
+#+BEGIN_SRC mathematica :eval never
+SetDirectory[$TemporaryDirectory]
+#+END_SRC
+
+*** Stan file code 
+
+ Define the Stan code
+ #+BEGIN_SRC mathematica :eval never
+stancode = "data
+  {
+    int<lower = 0> N;
+    vector[N] x;
+    vector[N] y;
+  }
+  parameters
+  {
+    real alpha;
+    real beta;
+    real<lower = 0> sigma;
+  }
+  model {
+    y ~normal(alpha + beta * x, sigma);
+  }";
+ #+END_SRC
+
+ and export it
+
+ #+BEGIN_SRC mathematica :eval never
+stanCodeFile = ExportStanCode["linear_regression.stan", stanCode]
+ #+END_SRC
+ #+BEGIN_EXAMPLE
+/tmp/linear_regression.stan
+ #+END_EXAMPLE
+
+*** Code compilation
+
+Stan code compilation is performed by (attention this can take some time):
+ #+BEGIN_SRC mathematica :eval never
+stanExeFile = CompileStanCode[stanCodeFile]
+ #+END_SRC
+
+With my configuration I get:
+ #+BEGIN_EXAMPLE
+make: Entering directory '/home/picaud/ExternalSoftware/cmdstan-2.19.1'
+
+--- Translating Stan model to C++ code ---
+bin/stanc  --o=/tmp/linear_regression.hpp /tmp/linear_regression.stan
+Model name=linear_regression_model
+Input file=/tmp/linear_regression.stan
+Output file=/tmp/linear_regression.hpp
+g++ -std=c++1y -pthread -Wno-sign-compare     -O3 -I src -I stan/src -I stan/lib/stan_math/ -I stan/lib/stan_math/lib/eigen_3.3.3 -I stan/lib/stan_math/lib/boost_1.69.0 -I stan/lib/stan_math/lib/sundials_4.1.0/include    -DBOOST_RESULT_OF_USE_TR1 -DBOOST_NO_DECLTYPE -DBOOST_DISABLE_ASSERTS -DBOOST_PHOENIX_NO_VARIADIC_EXPRESSION     -c -MT /tmp/linear_regression.o -MT /tmp/linear_regression -include /tmp/linear_regression.hpp -include src/cmdstan/main.cpp -MM -E -MG -MP -MF /tmp/linear_regression.d /tmp/linear_regression.hpp
+
+--- Linking C++ model ---
+g++ -std=c++1y -pthread -Wno-sign-compare     -O3 -I src -I stan/src -I stan/lib/stan_math/ -I stan/lib/stan_math/lib/eigen_3.3.3 -I stan/lib/stan_math/lib/boost_1.69.0 -I stan/lib/stan_math/lib/sundials_4.1.0/include    -DBOOST_RESULT_OF_USE_TR1 -DBOOST_NO_DECLTYPE -DBOOST_DISABLE_ASSERTS -DBOOST_PHOENIX_NO_VARIADIC_EXPRESSION             -include /tmp/linear_regression.hpp src/cmdstan/main.cpp        stan/lib/stan_math/lib/sundials_4.1.0/lib/libsundials_nvecserial.a stan/lib/stan_math/lib/sundials_4.1.0/lib/libsundials_cvodes.a stan/lib/stan_math/lib/sundials_4.1.0/lib/libsundials_idas.a  -o /tmp/linear_regression
+make: Leaving directory '/home/picaud/ExternalSoftware/cmdstan-2.19.1'
+ #+END_EXAMPLE
+
+*Note:* if you do not want to have information printed you can use the =StanVerbose= option:
+
+ #+BEGIN_SRC mathematica :eval never
+stanExeFile = CompileStanCode[stanCodeFile, StanVerbose -> False]
+ #+END_SRC
+
+*** Simulate data
+
+Let's simulate some data:
+ #+BEGIN_SRC mathematica :eval never
+σ = 3; α = 1; β = 2;
+n = 20;
+X = Range[n];
+Y = α + β*x + RandomVariate[NormalDistribution[0, σ], n];
+Show[Plot[α + β*x, {x, Min[X], Max[X]}], 
+     ListPlot[Transpose@{X, Y}, PlotStyle -> Red]]
+ #+END_SRC
+
+[[file:figures/linRegData.png][file:~/GitHub/MathematicaStan/figures/linRegData.png]]
+
+*** Create the =data.R= data file 
+
+#+BEGIN_SRC mathematica :eval never
+stanData = <|"N" -> n, "x" -> X, "y" -> Y|>;
+stanDataFile = ExportStanData[stanExeFile, stanData]
+#+END_SRC
+
 #+BEGIN_EXAMPLE
-~/.Mathematica/Applications/CmdStan.m
+/tmp/linear_regression.data.R
 #+END_EXAMPLE
-  edit it and modify the line:
+
+*Note:* this function returns the created file
+name =/tmp/linear_regression.data.R=. Its first argument, =stanExeFile=
+is simply the Stan executable file name with its path. The
+=ExportStanData[]= function modifies the file name extension and
+replace it with ".data.R", but you can use it with
+any file name:
+#+BEGIN_SRC mathematica :eval never
+ExportStanData["~/tmp/my_custom_filename.data.R",stanData]
+#+END_SRC
+
+*** Run Stan, likelihood maximization
+
+We are now able to run the =stanExeFile= executable. 
+
+Let's start by maximizing the likelihood
+#+BEGIN_SRC mathematica :eval never
+stanResultFile = RunStan[stanExeFile, OptimizeDefaultOptions]
+#+END_SRC
+
 #+BEGIN_EXAMPLE
-(* You can modify me (initial configuration) *)
-stanDir="~/GitHub/cmdstan"; 
+Running: /tmp/linear_regression method=optimize data file=/tmp/linear_regression.data.R output file=/tmp/linear_regression.csv
 
-(* or for Windows *)
-(* stanDir="C:\\Users\\USER_NAME\\Documents\\R\\cmdstan-2.12.0"; *)
+method = optimize
+  optimize
+    algorithm = lbfgs (Default)
+      lbfgs
+        init_alpha = 0.001 (Default)
+        tol_obj = 9.9999999999999998e-13 (Default)
+        tol_rel_obj = 10000 (Default)
+        tol_grad = 1e-08 (Default)
+        tol_rel_grad = 10000000 (Default)
+        tol_param = 1e-08 (Default)
+        history_size = 5 (Default)
+    iter = 2000 (Default)
+    save_iterations = 0 (Default)
+id = 0 (Default)
+data
+  file = /tmp/linear_regression.data.R
+init = 2 (Default)
+random
+  seed = 2775739062
+output
+  file = /tmp/linear_regression.csv
+  diagnostic_file =  (Default)
+  refresh = 100 (Default)
+
+Initial log joint probability = -8459.75
+    Iter      log prob        ||dx||      ||grad||       alpha      alpha0  # evals  Notes 
+      19      -32.5116    0.00318011    0.00121546      0.9563      0.9563       52   
+Optimization terminated normally: 
+  Convergence detected: relative gradient magnitude is below tolerance
 #+END_EXAMPLE
-  according to your configuration.
 
+The =stanResultFile= variable contains now the csv result file:
+#+BEGIN_EXAMPLE
+/tmp/linear_regression.csv
+#+END_EXAMPLE
 
-** Complete examples
+*Note:* if you do not want prints, use the =StanVerbose->False= option.
 
-For the moment use cases are illustrated by 3 examples. For these
-examples the *Mathematica notebooks* and the associated *pdf* files
-are available. Note that the *pdf* file are better viewed with an
-external software like evince or okular... for a reason I ignore, the
-GitHub version is not good (type "download" to open the pdf with your
-external pdf viewer).
+#+BEGIN_SRC mathematica :eval never
+stanResultFile = RunStan[stanExeFile, OptimizeDefaultOptions,StanVerbose->False]
+#+END_SRC
 
-** Bernoulli.stan 
+*Note:* the method we chose is defined by the second argument
+=OptimizeDefaultOptions= If you want to use Variational Bayes or HMC
+sampling you must use =RunStan[]= with =VariationalDefaultOptions= or
+=SampleDefaultOptions= instead. We will detail option later.
 
-We use the Examples/Bernoulli/bernoulli.stan example. You can find the
-Mathematica notebook [[https://github.com/vincent-picaud/MathematicaStan/blob/master/Examples/Bernoulli/bernoulli.nb][bernoulli.nb]] or directly view the associated
-[[https://github.com/vincent-picaud/MathematicaStan/blob/master/Examples/Bernoulli/bernoulli.pdf][bernoulli.pdf]] file.
+*** Load the csv result file
 
-** horseShoePrior.stan example
+To load the This is performed by 
 
-This example is a partial reproduction of the blog post [[https://ariddell.org/horseshoe-prior-with-stan.html][Epistemology
-of the corral: regression and variable selection with Stan and the
-Horseshoe prior]]. Also see [[http://andrewgelman.com/2015/02/17/bayesian-survival-analysis-horseshoe-priors/#comment-211738][Bayesian survival analysis with horseshoe priors—in Stan!]]
+#+BEGIN_SRC mathematica :eval never
+stanResult = RunStan[stanResultFile]
+#+END_SRC
 
-You can find the Mathematica notebook [[https://github.com/vincent-picaud/MathematicaStan/blob/master/Examples/HorseShoePrior/horseShoePrior.nb][horseShoePrior.nb]] or directly view
-the associated [[https://github.com/vincent-picaud/MathematicaStan/blob/master/Examples/HorseShoePrior/horseShoePrior.pdf][horseShoePrior.pdf]] file.
+prints
+#+BEGIN_EXAMPLE
+    file: /tmp/linear_regression.csv
+metaData: lp__ 
+    data: alpha , beta , sigma 
+#+END_EXAMPLE
+
+To access estimated variable α, β and σ, simply do:
+#+BEGIN_SRC mathematica :eval never
+
+GetStanResultMetaData[stanResult, "lp__"]
+αe=GetStanResult[stanResult, "alpha"]
+βe=GetStanResult[stanResult, "beta"]
+σe=GetStanResult[stanResult, "sigma"]
+#+END_SRC
+
+which prints:
+
+#+BEGIN_EXAMPLE
+{-32.5116}
+{2.51749}
+{1.83654}
+{3.08191}
+#+END_EXAMPLE
+
+You can plot the estimated line:
+
+#+BEGIN_SRC mathematica :eval never
+Show[Plot[{αe + βe*x, α + β*x}, {x, Min[X],Max[X]}, PlotLegends -> "Expressions"], 
+     ListPlot[Transpose@{X, Y}, PlotStyle -> Red]]
+#+END_SRC
+[[file:figures/linRegEstimate.png][file:~/GitHub/MathematicaStan/figures/linRegEstimate.png]]
 
 ** soft-k-means.stan example
 
@@ -147,48 +325,6 @@ the associated [[https://github.com/vincent-picaud/MathematicaStan/blob/master/E
 
 The complete list of commands is:
 
-#+BEGIN_SRC mathematica :exports both
-Needs["CmdStan`"];
-?CmdStan`*
-#+END_SRC
-
-#+RESULTS:
-#+begin_example
-RDumpExport
-StanCodeExport
-StanCompile
-StanDirectory
-StanFindVariableColumn
-StanFindVariableIndex
-StanGetOptionOptimize
-StanGetOptionSample
-StanGetOptionVariational
-StanImport
-StanImportComment
-StanImportData
-StanImportHeader
-StanOptionOptimize
-StanOptionSample
-StanOptionVariational
-StanRemoveOptionOptimize
-StanRemoveOptionSample
-StanRemoveOptionVariational
-StanResetOptionOptimize
-StanResetOptionSample
-StanResetOptionVariational
-StanRunOptimize
-StanRunSample
-StanRunVariational
-StanSetDirectory
-StanSetOptionOptimize
-StanSetOptionSample
-StanSetOptionVariational
-StanVariable
-StanVariableBoxPlot
-StanVariableColumn
-StanVariableFunc
-StanVariableToImport
-#+end_example
 
 ** Individual function documentation
 

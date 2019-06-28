@@ -23,7 +23,7 @@ ClearAll @@ Names["CmdStan`*"];
 (*Messages*)
 
 
-CmdStan::cmdStanDirectoryNotDefined="CmdStan directory does not exist, use SetCmdStanDirectory[dir] to define it (with something like SetCmdStanDirectory[\"~/GitHub/cmdstan/bin\"]";
+CmdStan::cmdStanDirectoryNotDefined="CmdStan directory does not exist, use SetCmdStanDirectory[dir] to define it. This is something like SetCmdStanDirectory[\"~/GitHub/cmdstan/\"]";
 CmdStan::usage="Reserved symbol for error messages";
 CmdStan::incorrectFileExtension="Expected \".`1`\", got \".`2`\"";
 CmdStan::stanExeNotFound="Stan executable \"`1`\" not found.";
@@ -109,8 +109,8 @@ VariationalDefaultOptions=StanOptions[<|"method"->{"variational",<||>}|>];
 (*Files & Directories*)
 
 
-$CmdStanConfigurationFile="User configuration file name. Mainly used to store CmdStan directory.";
-$CmdStanConfigurationFile=FileNameJoin[{$UserBaseDirectory,"ApplicationData","CmdStanDirectoryLocation.txt"}];
+$CmdStanConfigurationFile::usage="User configuration file name. Mainly used to store CmdStan directory.";
+$CmdStanConfigurationFile=FileNameJoin[{$UserBaseDirectory,"ApplicationData","CmdStanConfigurationFile.txt"}];
 
 
 GetCmdStanDirectoryQ[]:=FileExistsQ[$CmdStanConfigurationFile]&&DirectoryQ[Import[$CmdStanConfigurationFile]]
@@ -121,7 +121,7 @@ GetCmdStanDirectory[]=If[!GetCmdStanDirectoryQ[],Message[CmdStan::cmdStanDirecto
 
 
 SetCmdStanDirectory::usage="SetCmdStanDirectory[directory_String] modifies CmdStanDirectory";
-SetCmdStanDirectory[directory_String]:=Export[$CmdStanConfigurationFile,directory]
+SetCmdStanDirectory[directory_String]:=(Export[$CmdStanConfigurationFile,directory];directory)
 
 
 (* ::Subchapter:: *)
