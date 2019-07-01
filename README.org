@@ -3,8 +3,7 @@
 #+SUBTITLE: A Mathematica (v11+) package to interact with CmdStan
 #+AUTHOR: Picaud Vincent
 
-
-#+RESULTS:
+#+TOC: headlines 2
 
 * Introduction
 
@@ -92,7 +91,7 @@ SetCmdStanDirectory["~/ExternalSoftware/cmdstan-2.19.1"]
  CmdStan package.
 
 
-* Tutorial
+* Tutorial, linear regression
 
 ** Introduction
 
@@ -108,10 +107,11 @@ This package defines these functions (and symbols):
 ?CmdStan`*
 #+END_SRC
 
-| CmdStan         | ExportStanData      | GetStanResultMeta | OptimizeDefaultOptions | SetCmdStanDirectory | StanResult                |
-| CmdStanVerbose  | GetCmdStanDirectory | ImportStanResult  | RemoveStanOption       | SetStanOption       | VariationalDefaultOptions |
-| CompileStanCode | GetStanOption       | MapStanResult     | RunStan                | StanOptionExistsQ   | $CmdStanConfigurationFile |
-| ExportStanCode  | GetStanResult       | MapStanResultMeta | SampleDefaultOptions   | StanOptions         |                           |
+| CmdStan             | GetStanOption          | RemoveStanOption     | StanOptionExistsQ  | StanResultReducedKeys     |
+| CompileStanCode     | GetStanResult          | RunStan              | StanOptions        | StanResultReducedMetaKeys |
+| ExportStanCode      | GetStanResultMeta      | SampleDefaultOptions | StanResult         | StanVerbose               |
+| ExportStanData      | ImportStanResult       | SetCmdStanDirectory  | StanResultKeys     | VariationalDefaultOptions |
+| GetCmdStanDirectory | OptimizeDefaultOptions | SetStanOption        | StanResultMetaKeys | $CmdStanConfigurationFile |
 
 For this tutorial we use a simple [[https://mc-stan.org/docs/2_19/stan-users-guide/linear-regression.html][linear regression]] example and we will work in a temporary location:
 
@@ -181,7 +181,7 @@ make: Leaving directory '/home/picaud/ExternalSoftware/cmdstan-2.19.1'
 stanExeFile = CompileStanCode[stanCodeFile, StanVerbose -> False]
  #+END_SRC
 
-** Simulate data
+** Simulated data
 
 Let's simulate some data:
  #+BEGIN_SRC mathematica :eval never
@@ -292,7 +292,7 @@ RunStan[stanExeFile, SampleDefaultOptions]
 To load CSV result file, do
 
 #+BEGIN_SRC mathematica :eval never
-stanResult = RunStan[stanResultFile]
+stanResult = ImportStanResult[stanResultFile]
 #+END_SRC
 
 which prints
@@ -400,17 +400,17 @@ which prints:
 method=variational output file=/tmp/myOutputFile.csv
 #+END_EXAMPLE
 
-*Note*: for each hierarchy use a "." as separator. For instance if you want to modify ="method adapt iter"=, use:
-#+BEGIN_SRC mathematica :eval never
-myOpt = SetStanOption[myOpt, "method.adapt.iter", 123]
-#+END_SRC
-which prints
-#+BEGIN_EXAMPLE
-method=variational adapt iter=123 output file=/tmp/myOutputFile.csv
-#+END_EXAMPLE
+*Option management digression*:
+- for each hierarchy level use a "." as separator. For instance if you want to modify ="method adapt iter"=, use:
+  #+BEGIN_SRC mathematica :eval never
+  myOpt = SetStanOption[myOpt, "method.adapt.iter", 123]
+  #+END_SRC
+  which prints
+  #+BEGIN_EXAMPLE
+  method=variational adapt iter=123 output file=/tmp/myOutputFile.csv
+  #+END_EXAMPLE
 
-*Note:*
-- to read option value use:
+- to read an option value use:
   #+BEGIN_SRC mathematica :eval never
   GetStanOption[myOpt, "method.adapt.iter"]
   #+END_SRC
@@ -418,10 +418,10 @@ method=variational adapt iter=123 output file=/tmp/myOutputFile.csv
   #+BEGIN_EXAMPLE
   123
   #+END_EXAMPLE
-  *Caveat*: if the was not defined (by =SetStanOption=) the function
+  *Caveat*: if the option was not defined (by =SetStanOption=) the function
   returns =$Failed=.
 
-- to erase an option value (and use default value), use:
+- to erase an option value (and use its default value) use:
   #+BEGIN_SRC mathematica :eval never
   myOpt = RemoveStanOption[myOpt, "method.adapt.iter"]
   #+END_SRC
@@ -429,8 +429,6 @@ method=variational adapt iter=123 output file=/tmp/myOutputFile.csv
   #+BEGIN_EXAMPLE
   method=variational output file=/tmp/myOutputFile.csv
   #+END_EXAMPLE
-
-Now the digression about option is finished. 
 
 We can run Stan:
 
@@ -453,33 +451,234 @@ which prints:
 parameter: alpha , beta , sigma 
 #+END_EXAMPLE
 
-As before, use:
+As before you can use:
 #+BEGIN_SRC mathematica :eval never
 GetStanData[myResult,"alpha"]
 #+END_SRC
 
-But now you will get a list of 1000 sample:
+to get =alpha= parameter value, but now you will get a list of 1000 sample:
 #+BEGIN_EXAMPLE
 {2.03816, 0.90637, ..., ..., 1.22068, 1.66392}
 #+END_EXAMPLE
 
-Hopefully you can map any function, even =ListLinePlot= or =Histogram=. 
-
-By example:
+Instead of the full sample list we are often interested by sample
+mean, variance... You can get these quantities as follows:
 
 #+BEGIN_SRC mathematica :eval never
-MapStanResult[Mean, myResult, "alpha"]
-MapStanResult[Variance, myResult, "alpha"]
-MapStanResult[Histogram, myResult, "alpha"]
+GetStanResult[Mean, myResult, "alpha"]
+GetStanResult[Variance, myResult, "alpha"]
 #+END_SRC
 
-prints:
+which prints:
 
 #+BEGIN_EXAMPLE
 2.0353
 0.317084
 #+END_EXAMPLE
 
+You can also get the sample hstogram as simply as:
+
+#+BEGIN_SRC mathematica :eval never
+GetStanResult[Histogram, myResult, "alpha"]
+#+END_SRC
+
 [[file:figures/linRegHisto.png][file:./figures/linRegHisto.png]]
 
 
+* Tutorial #2, linear regression with more than one predictor
+
+** Parameter arrays
+
+By now the parameters alpha, beta, sigma, were *scalars*. We will see
+how to handle parameters that are vectors or matrices. 
+
+We use second section of the [[https://mc-stan.org/docs/2_19/stan-users-guide/linear-regression.html][linear regression]] example, entitled
+"Matrix notation and Vectorization".
+
+The β parameter is now a vector of size K. 
+
+#+BEGIN_SRC mathematica :eval never 
+stanCode = "data {
+    int<lower=0> N;   // number of data items
+    int<lower=0> K;   // number of predictors
+    matrix[N, K] x;   // predictor matrix
+    vector[N] y;      // outcome vector
+  }
+  parameters {
+    real alpha;           // intercept
+    vector[K] beta;       // coefficients for predictors
+    real<lower=0> sigma;  // error scale
+  }
+  model {
+    y ~ normal(x * beta + alpha, sigma);  // likelihood
+  }";
+
+stanCodeFile = ExportStanCode["linear_regression_vect.stan", stanCode];
+stanExeFile = CompileStanCode[stanCodeFile];
+#+END_SRC
+
+** Simulated data
+
+Here we use {x,x²,x³} as predictors, with their coefficients
+β = {2,0.1,0.01} so that the model is 
+
+y = α + β1 x + β2 x² + β3 x³ + ε
+
+where ε follows a normal distribution.
+
+#+BEGIN_SRC mathematica :eval never 
+σ = 3; α = 1; β1 = 2; β2 = 0.1; β3 = 0.01;
+n = 20;
+X = Range[n];
+Y = α + β1*X + β2*X^2 + β3*X^3 + RandomVariate[NormalDistribution[0, σ], n];
+Show[Plot[α + β1*x + β2*x^2 + β3*x^3, {x, Min[X], Max[X]}],
+     ListPlot[Transpose@{X, Y}, PlotStyle -> Red]]
+#+END_SRC
+
+[[file:figures/linReg2Data.png][file:./figures/linReg2Data.png]]
+
+** Exporting data
+
+The expression 
+
+y = α + β1 x + β2 x² + β3 x³ + ε
+
+is convenient for random variable manipulations. However in practical
+computations where we have to evaluate:
+
+y[i] = α + β1 x[i] + β2 (x[i])² + β3 (x[i])³ + ε[i], for i = 1..N
+
+it is more convenient to rewrite this in a "vectorized form":
+
+*y* = *α* + *X.β* + *ε*
+
+where *X* is a KxN matrix of columns X[:,j] = j th-predictor = (x[:])^j
+and *α* a vector of size N with constant components = α.
+
+Thus data is exported as follows:
+
+#+BEGIN_SRC mathematica :eval never 
+stanData = <|"N" -> n, "K" -> 3, "x" -> Transpose[{X,X^2,X^3}], "y" -> Y|>;
+stanDataFile = ExportStanData[stanExeFile, stanData]
+#+END_SRC
+
+*Note:* as Mathematica stores its matrices rows by rows (the C
+ language convention) we have to transpose ={X,X^2,X^3}= to get the
+ right matrix X.
+
+** Run Stan, HMC sampling
+
+We can now run Stan using the Hamiltonian Monte Carlo (HMC) method:
+
+#+BEGIN_SRC mathematica :eval never 
+stanResultFile = RunStan[stanExeFile, SampleDefaultOptions]
+#+END_SRC
+
+which prints:
+
+#+BEGIN_EXAMPLE
+Running: /tmp/linear_regression_vect method=sample data file=/tmp/linear_regression_vect.data.R output file=/tmp/linear_regression_vect.csv
+
+method = sample (Default)
+  sample
+    num_samples = 1000 (Default)
+    num_warmup = 1000 (Default)
+    save_warmup = 0 (Default)
+    thin = 1 (Default)
+    adapt
+      engaged = 1 (Default)
+      gamma = 0.050000000000000003 (Default)
+      delta = 0.80000000000000004 (Default)
+      kappa = 0.75 (Default)
+      t0 = 10 (Default)
+      init_buffer = 75 (Default)
+      term_buffer = 50 (Default)
+      window = 25 (Default)
+    algorithm = hmc (Default)
+      hmc
+        engine = nuts (Default)
+          nuts
+            max_depth = 10 (Default)
+        metric = diag_e (Default)
+        metric_file =  (Default)
+        stepsize = 1 (Default)
+        stepsize_jitter = 0 (Default)
+id = 0 (Default)
+data
+  file = /tmp/linear_regression_vect.data.R
+init = 2 (Default)
+random
+  seed = 3043713420
+output
+  file = /tmp/linear_regression_vect.csv
+  diagnostic_file =  (Default)
+  refresh = 100 (Default)
+
+
+Gradient evaluation took 4e-05 seconds
+1000 transitions using 10 leapfrog steps per transition would take 0.4 seconds.
+Adjust your expectations accordingly!
+
+
+Iteration:    1 / 2000 [  0%]  (Warmup)
+Iteration:  100 / 2000 [  5%]  (Warmup)
+Iteration:  200 / 2000 [ 10%]  (Warmup)
+Iteration:  300 / 2000 [ 15%]  (Warmup)
+Iteration:  400 / 2000 [ 20%]  (Warmup)
+Iteration:  500 / 2000 [ 25%]  (Warmup)
+Iteration:  600 / 2000 [ 30%]  (Warmup)
+Iteration:  700 / 2000 [ 35%]  (Warmup)
+Iteration:  800 / 2000 [ 40%]  (Warmup)
+Iteration:  900 / 2000 [ 45%]  (Warmup)
+Iteration: 1000 / 2000 [ 50%]  (Warmup)
+Iteration: 1001 / 2000 [ 50%]  (Sampling)
+Iteration: 1100 / 2000 [ 55%]  (Sampling)
+Iteration: 1200 / 2000 [ 60%]  (Sampling)
+Iteration: 1300 / 2000 [ 65%]  (Sampling)
+Iteration: 1400 / 2000 [ 70%]  (Sampling)
+Iteration: 1500 / 2000 [ 75%]  (Sampling)
+Iteration: 1600 / 2000 [ 80%]  (Sampling)
+Iteration: 1700 / 2000 [ 85%]  (Sampling)
+Iteration: 1800 / 2000 [ 90%]  (Sampling)
+Iteration: 1900 / 2000 [ 95%]  (Sampling)
+Iteration: 2000 / 2000 [100%]  (Sampling)
+
+ Elapsed Time: 0.740037 seconds (Warm-up)
+               0.60785 seconds (Sampling)
+               1.34789 seconds (Total)
+#+END_EXAMPLE
+** Load the CSV result file
+
+As before, 
+
+#+BEGIN_SRC mathematica :eval never
+stanResult = ImportStanResult[stanResultFile]
+#+END_SRC
+
+load the generated CSV file and prints:
+
+#+BEGIN_EXAMPLE
+     file: /tmp/linear_regression_vect.csv
+     meta: lp__ , accept_stat__ , stepsize__ , treedepth__ , n_leapfrog__ , divergent__ , energy__ 
+parameter: alpha , beta 3, sigma 
+#+END_EXAMPLE
+
+Compared to the scalar case, the important thing to notice is the =beta 3=. That means that β is not a scalar anymore but a vector of size 3
+
+*Note*: here β is a vector, but if it had been a 3x5 matrix we would
+ have had =β 3x5= printed instead.
+
+A call to 
+#+BEGIN_SRC mathematica :eval never
+GetStanResult[stanResult, "beta"]
+#+END_SRC
+returns a vector of size 3 but where each component is a list of 1000
+sample (for β1, β2 and β3).
+
+As before it generally useful to summarize this sample with function like mean or histogram:
+
+# #+BEGIN_SRC mathematica :eval never
+
+# #+END_SRC
+
+[[file:figures/linReg2Histo.png][file:./figures/linReg2Histo.png]]
