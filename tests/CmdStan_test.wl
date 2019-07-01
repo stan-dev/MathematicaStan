@@ -156,7 +156,7 @@ doTest[outputOptimize=RunStan[stanCodeFileName,OptimizeDefaultOptions],"/tmp/ber
 
 
 res=ImportStanResult[outputOptimize]
-doTest[res // First // Keys,{"filename","metaData","data","internal"}];
+doTest[res // First // Keys,{"filename","meta","parameter","internal"}];
 
 
 doTest[MatchQ[GetStanResult[res,"theta"],{_Real}],True]
@@ -165,8 +165,8 @@ doTest[MatchQ[GetStanResult[res,"theta"],{_Real}],True]
 GetStanResult[res,"theta"]
 
 
-doTest[GetStanResultMetaData[res,"lp_"],$Failed];
-doTest[MatchQ[GetStanResultMetaData[res,"lp__"],{_Real}],True];
+doTest[GetStanResultMeta[res,"lp_"],$Failed];
+doTest[MatchQ[GetStanResultMeta[res,"lp__"],{_Real}],True];
 
 
 (* ::Subchapter:: *)

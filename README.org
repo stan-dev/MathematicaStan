@@ -18,7 +18,7 @@ It should work under MacOS and also under Windows but you have to be careful abo
 enter paths:
 - under Linux:
 #+BEGIN_EXAMPLE
-SetCmdStanDirectory["~/GitHub/cmdstan"];
+SetCmdStanDirectory["~/ExternalSoftware/cmdstan-2.19.1"];
 #+END_EXAMPLE
 - under Windows:
 #+BEGIN_EXAMPLE
@@ -28,7 +28,7 @@ SetCmdStanDirectory["C:\\Users\\USERNAME\\Documents\\R\\...";
 *Author & contact:* picaud.vincent at gmail.com
 
 *Windows version:* 
- - Thanks to Jeff Patterson for his contribution
+ - Thanks to Jeff Patterson for his contribution (for MathematicaStan v1.0)
 
 ** News
 *** 2019-06-28 
@@ -51,12 +51,12 @@ the *v1.0* git branch.
 First you must install [[http://mc-stan.org/interfaces/cmdstan][CmdStan]]. Once this is done you get a directory containing stuff like:
 
 #+BEGIN_EXAMPLE
-bin  examples  LICENSE  make  makefile  README.md  runCmdStanTests.py  src  stan  test-all.sh
+bin  doc  examples  Jenkinsfile  LICENSE  make  makefile  README.md  runCmdStanTests.py  src  stan  test-all.sh
 #+END_EXAMPLE
 
 With my configuration *CmdStan* is installed in:
 #+BEGIN_EXAMPLE
-~/GitHub/cmdstan
+~/ExternalSoftware/cmdstan-2.19.1
 #+END_EXAMPLE
 
 For Windows users it is possibly something like:
@@ -78,13 +78,13 @@ The first time the package is imported
 #+END_SRC
 you will get an error message:
 #+BEGIN_EXAMPLE
-CmdStan::cmdStanDirectoryNotDefined: CmdStan directory does not exist, use SetCmdStanDirectory[dir] to define it (with something like SetCmdStanDirectory["~/GitHub/cmdstan"])
+CmdStan::cmdStanDirectoryNotDefined: CmdStan directory does not exist, use SetCmdStanDirectory[dir] to define it (with something like SetCmdStanDirectory["~/ExternalSoftware/cmdstan-2.19.1"])
 #+END_EXAMPLE
 This is normal as we must define the Stan StanCmd shell interface root directory. 
 
 With my configuration this is:
 #+BEGIN_SRC matheematica :eval never
-SetCmdStanDirectory["~/GitHub/cmdstan"]
+SetCmdStanDirectory["~/ExternalSoftware/cmdstan-2.19.1"]
 #+END_SRC
 
 *Note:* this location is recorded in the =$CmdStanConfigurationFile= file
@@ -108,14 +108,12 @@ This package defines these functions (and symbols):
 ?CmdStan`*
 #+END_SRC
 
-| CmdStan         | ExportStanData      | GetStanResultMetaData | OptimizeDefaultOptions | SetCmdStanDirectory | StanResult                |
-| CmdStanVerbose  | GetCmdStanDirectory | ImportStanResult      | RemoveStanOption       | SetStanOption       | VariationalDefaultOptions |
-| CompileStanCode | GetStanOption       | MapStanResult         | RunStan                | StanOptionExistsQ   | $CmdStanConfigurationFile |
-| ExportStanCode  | GetStanResult       | MapStanResultMetaData | SampleDefaultOptions   | StanOptions         |                           |
+| CmdStan         | ExportStanData      | GetStanResultMeta | OptimizeDefaultOptions | SetCmdStanDirectory | StanResult                |
+| CmdStanVerbose  | GetCmdStanDirectory | ImportStanResult  | RemoveStanOption       | SetStanOption       | VariationalDefaultOptions |
+| CompileStanCode | GetStanOption       | MapStanResult     | RunStan                | StanOptionExistsQ   | $CmdStanConfigurationFile |
+| ExportStanCode  | GetStanResult       | MapStanResultMeta | SampleDefaultOptions   | StanOptions         |                           |
 
-For this tutorial we use a simple [[https://mc-stan.org/docs/2_19/stan-users-guide/linear-regression.html][linear regression]] example.
-
-We will work in a temporary location:
+For this tutorial we use a simple [[https://mc-stan.org/docs/2_19/stan-users-guide/linear-regression.html][linear regression]] example and we will work in a temporary location:
 
 #+BEGIN_SRC mathematica :eval never
 SetDirectory[$TemporaryDirectory]
@@ -287,9 +285,9 @@ or
 RunStan[stanExeFile, SampleDefaultOptions]
 #+END_SRC
 
-*Note*: We will detail option later in this tutorial.
+*Note*: option management will be detailed later in this tutorial.
 
-** Load the csv result file
+** Load the CSV result file
 
 To load CSV result file, do
 
@@ -299,15 +297,15 @@ stanResult = RunStan[stanResultFile]
 
 which prints
 #+BEGIN_EXAMPLE
-    file: /tmp/linear_regression.csv
-metaData: lp__ 
-    data: alpha , beta , sigma 
+     file: /tmp/linear_regression.csv
+     meta: lp__ 
+parameter: alpha , beta , sigma 
 #+END_EXAMPLE
 
 To access estimated variable α, β and σ, simply do:
 #+BEGIN_SRC mathematica :eval never
 
-GetStanResultMetaData[stanResult, "lp__"]
+GetStanResultMeta[stanResult, "lp__"]
 αe=GetStanResult[stanResult, "alpha"]
 βe=GetStanResult[stanResult, "beta"]
 σe=GetStanResult[stanResult, "sigma"]
@@ -450,9 +448,9 @@ myResult = ImportStanResult[myOutputFile]
 #+END_SRC
 which prints:
 #+BEGIN_EXAMPLE
-    file: /tmp/myOutputFile.csv
-metaData: lp__ , log_p__ , log_g__ 
-    data: alpha , beta , sigma 
+     file: /tmp/myOutputFile.csv
+     meta: lp__ , log_p__ , log_g__ 
+parameter: alpha , beta , sigma 
 #+END_EXAMPLE
 
 As before, use:

@@ -76,11 +76,11 @@ ImportStanResult;
 
 
 GetStanResult;
-GetStanResultMetaData;
+GetStanResultMeta;
 
 
 MapStanResult;
-MapStanResultMetaData;
+MapStanResultMeta;
 
 
 (* ::Chapter:: *)
@@ -601,7 +601,7 @@ varNameAsString[data_Association]:=
 	       tmp
 	];
 
-(*varNameAsString[result_StanResult]:=varNameAsString[First[result]["data"]];*)
+(*varNameAsString[result_StanResult]:=varNameAsString[First[result]["parameter"]];*)
 
 
 (* ::Subchapter:: *)
@@ -611,34 +611,34 @@ varNameAsString[data_Association]:=
 ImportStanResult::usage="ImportStanResult[outputCSV_?StringQ] import csv stan output file and return a StanResult structure.";
 
 ImportStanResult[outputCSV_?StringQ]:= 
-	Module[{data,headerData,headerMeta,stringData,numericData,output},
+	Module[{data,headerParameter,headerMeta,stringParameter,numericParameter,output},
 	       If[!CheckFileNameExtensionQ[outputCSV,"csv"],Return[$Failed]];
 	       If[!FileExistsQ[outputCSV],Message[CmdStan::stanOutputFileNotFound,outputCSV];Return[$Failed];];
 
 	       data=Import[outputCSV];
 	       data=GroupBy[data,Head[First[#]]&]; (* split string vs numeric *)
-	       stringData=data[String];
+	       stringParameter=data[String];
 	       data=KeyDrop[data,String];
-	       numericData=Transpose[First[data[]]];
-	       data=GroupBy[stringData,StringTake[First[#],{1}]&]; (* split # vs other (header) *)
+	       numericParameter=Transpose[First[data[]]];
+	       data=GroupBy[stringParameter,StringTake[First[#],{1}]&]; (* split # vs other (header) *)
 	       Assert[Length[Keys[data]]==2]; (* # and other *)
-	       stringData=data["#"]; (* get all strings beginning by # *)
+	       stringParameter=data["#"]; (* get all strings beginning by # *)
 	       data=First[KeyDrop[data,"#"]];(* get other string = one line which is header *)
 	       headerMeta=Select[First[data],(StringTake[#,{-1}]=="_")&];
-	       headerData=Select[First[data],(StringTake[#,{-1}]!="_")&];
+	       headerParameter=Select[First[data],(StringTake[#,{-1}]!="_")&];
 	       output=<||>;
 		     output["filename"]=outputCSV;
-	       output["metaData"]=Association[Thread[headerMeta->numericData[[1;;Length[headerMeta]]]]];
-	       output["data"]=Association[Thread[headerData->numericData[[Length[headerMeta]+1;;-1]]]];
-	       output["internal"]=<|"pretty_print_data"->varNameAsString[output["data"]],
-	       "pretty_print_metaData"->varNameAsString[output["metaData"]],
-	       "comments"->StringJoin[Riffle[Map[ToString,stringData,{2}],"\n"]]|>;
+	       output["meta"]=Association[Thread[headerMeta->numericParameter[[1;;Length[headerMeta]]]]];
+	       output["parameter"]=Association[Thread[headerParameter->numericParameter[[Length[headerMeta]+1;;-1]]]];
+	       output["internal"]=<|"pretty_print_parameter"->varNameAsString[output["parameter"]],
+	       "pretty_print_meta"->varNameAsString[output["meta"]],
+	       "comments"->StringJoin[Riffle[Map[ToString,stringParameter,{2}],"\n"]]|>;
 
 		   StanResult[output]
 	];
 
 
-Format[StanResult[opt_Association]]:="    file: "<>opt["filename"]<>"\nmetaData: "<>opt["internal"]["pretty_print_metaData"]<>"\n    data: "<>opt["internal"]["pretty_print_data"];
+Format[StanResult[opt_Association]]:="     file: "<>opt["filename"]<>"\n     meta: "<>opt["internal"]["pretty_print_meta"]<>"\nparameter: "<>opt["internal"]["pretty_print_parameter"];
 
 
 (* ::Subchapter:: *)
@@ -679,12 +679,12 @@ getStanResult[data_Association,varName_String]:=If[KeyExistsQ[data,varName],data
 
 GetStanResult::usage="GetStanResult[result_StanResult,varName_String] returns the varName variable";
 "GetStanResult[result_StanResult,varName_String,(f_Function|f_Symbol)] returns the varName variable and maps f to each sample, by examples: f=Mean, Variance, ... or Histogram";
-GetStanResult[result_StanResult,varName_String] := getStanResult[First[result]["data"],varName];
-GetStanResult[result_StanResult,varName_String,(f_Function|f_Symbol)] := Map[f,getStanResult[First[result]["data"],varName],{-2}];
+GetStanResult[result_StanResult,varName_String] := getStanResult[First[result]["parameter"],varName];
+GetStanResult[result_StanResult,varName_String,(f_Function|f_Symbol)] := Map[f,getStanResult[First[result]["parameter"],varName],{-2}];
 
 
-GetStanResultMetaData::usage="StanResultMetaData[res_StanResult,metaVarName_String] return meta data";
-GetStanResultMetaData[result_StanResult,metaVarName_String] := getStanResult[First[result]["metaData"],metaVarName];
+GetStanResultMeta::usage="StanResultMeta[res_StanResult,metaVarName_String] return meta data";
+GetStanResultMeta[result_StanResult,metaVarName_String] := getStanResult[First[result]["meta"],metaVarName];
 
 
 (* ::Section:: *)
@@ -694,8 +694,8 @@ GetStanResultMetaData[result_StanResult,metaVarName_String] := getStanResult[Fir
 MapStanResult::usage="MapStanResult[(f_Function|f_Symbol),result_StanResult,varName_String] maps f to each component of the varName variable. Examples: f=Mean, Variance, ... or Histogram";
 MapStanResult[(f_Function|f_Symbol),result_StanResult,varName_String] := Map[f,GetStanResult[result,varName],{-2}];
 
-MapStanResultMetaData::usage="MapStanResultMetaData[(f_Function|f_Symbol),result_StanResult,varName_String] maps f to each component of the meta varName variable. Examples: f=Mean, Variance, ... or Histogram";
-MapStanResultMetaData[(f_Function|f_Symbol),result_StanResult,varName_String] := Map[f,GetStanResultMetaData[result,varName],{-2}];
+MapStanResultMeta::usage="MapStanResultMeta[(f_Function|f_Symbol),result_StanResult,varName_String] maps f to each component of the meta varName variable. Examples: f=Mean, Variance, ... or Histogram";
+MapStanResultMeta[(f_Function|f_Symbol),result_StanResult,varName_String] := Map[f,GetStanResultMeta[result,varName],{-2}];
 
 
 (* ::Subsection:: *)
