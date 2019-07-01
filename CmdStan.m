@@ -79,12 +79,10 @@ GetStanResult;
 GetStanResultMeta;
 
 
-GetStanResultKeys;
-GetStanResultMetaKeys;
-
-
-MapStanResult;
-MapStanResultMeta;
+StanResultKeys;
+StanResultMetaKeys;
+StanResultReducedKeys;
+StanResultReducedMetaKeys;
 
 
 (* ::Chapter:: *)
@@ -682,45 +680,51 @@ getStanResult[data_Association,varName_String]:=If[KeyExistsQ[data,varName],data
 
 
 GetStanResult::usage=
-"GetStanResult[result_StanResult,parameterName_String] returns the parameterName parameter"<>
-"\nGetStanResult[result_StanResult] returns the raw association containing all the parameters";
-GetStanResult[result_StanResult] := First[result]["parameter"];
-GetStanResult[result_StanResult,parameterName_String] := getStanResult[GetStanResult[result],parameterName];
+"GetStanResult[result_StanResult,parameterName_String] returns the parameter from its name"<>
+"\nGetStanResult[(f_Function|f_Symbol),result_StanResult,parameterName_String] returns f[parameter] from its name.";
+GetStanResult[result_StanResult,parameterName_String] := getStanResult[First[result]["parameter"],parameterName];
+GetStanResult[(f_Function|f_Symbol),result_StanResult,parameterName_String] := Map[f,GetStanResult[result,parameterName],{-2}];
 
 
-GetStanResultMeta::usage="StanResultMeta[res_StanResult,metaVarName_String] return meta data";
-GetStanResultMeta[result_StanResult,metaVarName_String] := getStanResult[First[result]["meta"],metaVarName];
+GetStanResultMeta::usage=
+"GetStanResultMeta[res_StanResult,metaName_String] return meta data form its name."<>
+"\nGetStanResultMeta[(f_Function|f_Symbol),result_StanResult,metaName_String] returns the f[meta] form its name.";
+GetStanResultMeta[result_StanResult,metaName_String] := getStanResult[First[result]["meta"],metaName];
+GetStanResultMeta[(f_Function|f_Symbol),result_StanResult,metaName_String] := Map[f,GetStanResultMeta[result,metaName],{-2}];
 
 
 (* ::Subsection:: *)
 (*Get keys: for arrays only return the "main" key without indices*)
 
 
-GetStanResultKeys::usage="GetStanResultKeys[result_StanResult] returns the list of parameters names. Attention for arrays param.X or param.X.X returns only the prefix \"param\"";
-GetStanResultKeys[result_StanResult]:=DeleteDuplicates[Map[First[StringSplit[#,"."]]&,Keys[GetStanResult[result]]]];
+(* ::Subsubsection:: *)
+(*Helper*)
 
 
-GetStanResultMetaKeys::usage="GetStanResultMetaKeys[result_StanResult] returns the list of parameters names. Attention for arrays param.X or param.X.X returns only the prefix \"param\"";
-GetStanResultMetaKeys[result_StanResult]:=DeleteDuplicates[Map[First[StringSplit[#,"."]]&,Keys[GetStanResultMeta[result]]]];
+stanResultKeys[result_StanResult,key_String]:=Keys[First[result][key]]
 
 
-(* ::Section:: *)
-(*Map*)
+stanResultReducedKeys[result_StanResult,key_String]:=DeleteDuplicates[Map[First[StringSplit[#,"."]]&,stanResultKeys[result,key]]];
 
 
-MapStanResult::usage=
-"MapStanResult[(f_Function|f_Symbol),result_StanResult,parameterName_String] maps f to each component of the parameter."<>
-"MapStanResult[(f_Function|f_Symbol),result_StanResult,parameterNames:{___String}] maps f to each component of the {parameterNames...} parameter list.";
+(* ::Subsubsection:: *)
+(*public*)
 
-MapStanResult[(f_Function|f_Symbol),result_StanResult,parameterName_String] := Map[f,GetStanResult[result,parameterName],{-2}];
-MapStanResult[(f_Function|f_Symbol),result_StanResult,parameterNames:{___String}] := Map[Map[f,GetStanResult[result,#],{-2}]&,parameterNames];
 
-MapStanResultMeta::usage=
-"MapStanResultMeta[(f_Function|f_Symbol),result_StanResult,metaParameterName_String] maps f to each component of the meta-parameter."<>
-"\nMapStanResultMeta[(f_Function|f_Symbol),result_StanResult,metaParameterNames:{___String}] maps f to each component of the {metaParameterNames...} meta-parameter list.";
+StanResultKeys::usage="StanResultKeys[result_StanResult] returns the list of parameter names.";
+StanResultKeys[result_StanResult]:=stanResultKeys[result,"parameter"];
 
-MapStanResultMeta[(f_Function|f_Symbol),result_StanResult,metaParameterName_String] := Map[f,GetStanResultMeta[result,metaParameterName],{-2}];
-MapStanResultMeta[(f_Function|f_Symbol),result_StanResult,metaParameterNames:{___String}] := Map[Map[f,GetStanResultMeta[result,#],{-2}]&,metaParameterNames];
+
+StanResultMetaKeys::usage="StanResultMetaKeys[result_StanResult] returns the list of meta parameter names.";
+StanResultMetaKeys[result_StanResult]:=stanResultKeys[result,"meta"];
+
+
+StanResultReducedKeys::usage="StanResultReducedKeys[result_StanResult] returns the list of parameter names. Attention for arrays param.X or param.X.X returns only the prefix \"param\"";
+StanResultReducedKeys[result_StanResult]:=stanResultReducedKeys[result,"parameter"];
+
+
+StanResultReducedMetaKeys::usage="StanResultReducedMetaKeys[result_StanResult] returns the list of meta parameter names. Attention for arrays param.X or param.X.X returns only the prefix \"param\"";
+StanResultReducedMetaKeys[result_StanResult]:=stanResultReducedKeys[result,"meta"];
 
 
 (* ::Subsection:: *)

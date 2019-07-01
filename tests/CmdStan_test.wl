@@ -169,9 +169,6 @@ doTest[GetStanResultMeta[res,"lp_"],$Failed];
 doTest[MatchQ[GetStanResultMeta[res,"lp__"],{_Real}],True];
 
 
-doTest[GetStanResult[res],<|"theta"->{0.202007`}|>]
-
-
 (* ::Subchapter:: *)
 (*More tests with mixture (to test Matrix import instead of scalar)*)
 
@@ -243,6 +240,9 @@ ExportStanData[stanExeFileName,toExport]
 (*Test optimize*)
 
 
+<<CmdStan`
+
+
 doTest[stanOutputFilename=RunStan[stanCodeFileName,OptimizeDefaultOptions,StanVerbose->False],"/tmp/soft-k-means.csv"];
 
 
@@ -250,7 +250,12 @@ result=ImportStanResult[stanOutputFilename]
 doTest[Dimensions[GetStanResult[result,"mu"]],{toExport["K"],Last[Dimensions[y]],1}]
 
 
-doTest[GetStanResult[result] // Keys,{"mu.1.1","mu.2.1","mu.3.1","mu.4.1","mu.5.1","mu.1.2","mu.2.2","mu.3.2","mu.4.2","mu.5.2","mu.1.3","mu.2.3","mu.3.3","mu.4.3","mu.5.3","mu.1.4","mu.2.4","mu.3.4","mu.4.4","mu.5.4","mu.1.5","mu.2.5","mu.3.5","mu.4.5","mu.5.5","mu.1.6","mu.2.6","mu.3.6","mu.4.6","mu.5.6","mu.1.7","mu.2.7","mu.3.7","mu.4.7","mu.5.7","mu.1.8","mu.2.8","mu.3.8","mu.4.8","mu.5.8","soft_z.1.1","soft_z.2.1","soft_z.3.1","soft_z.4.1","soft_z.5.1","soft_z.6.1","soft_z.7.1","soft_z.8.1","soft_z.9.1","soft_z.10.1","soft_z.11.1","soft_z.1.2","soft_z.2.2","soft_z.3.2","soft_z.4.2","soft_z.5.2","soft_z.6.2","soft_z.7.2","soft_z.8.2","soft_z.9.2","soft_z.10.2","soft_z.11.2","soft_z.1.3","soft_z.2.3","soft_z.3.3","soft_z.4.3","soft_z.5.3","soft_z.6.3","soft_z.7.3","soft_z.8.3","soft_z.9.3","soft_z.10.3","soft_z.11.3","soft_z.1.4","soft_z.2.4","soft_z.3.4","soft_z.4.4","soft_z.5.4","soft_z.6.4","soft_z.7.4","soft_z.8.4","soft_z.9.4","soft_z.10.4","soft_z.11.4","soft_z.1.5","soft_z.2.5","soft_z.3.5","soft_z.4.5","soft_z.5.5","soft_z.6.5","soft_z.7.5","soft_z.8.5","soft_z.9.5","soft_z.10.5","soft_z.11.5"}];
+doTest[StanResultKeys[result],{"mu.1.1","mu.2.1","mu.3.1","mu.4.1","mu.5.1","mu.1.2","mu.2.2","mu.3.2","mu.4.2","mu.5.2","mu.1.3","mu.2.3","mu.3.3","mu.4.3","mu.5.3","mu.1.4","mu.2.4","mu.3.4","mu.4.4","mu.5.4","mu.1.5","mu.2.5","mu.3.5","mu.4.5","mu.5.5","mu.1.6","mu.2.6","mu.3.6","mu.4.6","mu.5.6","mu.1.7","mu.2.7","mu.3.7","mu.4.7","mu.5.7","mu.1.8","mu.2.8","mu.3.8","mu.4.8","mu.5.8","soft_z.1.1","soft_z.2.1","soft_z.3.1","soft_z.4.1","soft_z.5.1","soft_z.6.1","soft_z.7.1","soft_z.8.1","soft_z.9.1","soft_z.10.1","soft_z.11.1","soft_z.1.2","soft_z.2.2","soft_z.3.2","soft_z.4.2","soft_z.5.2","soft_z.6.2","soft_z.7.2","soft_z.8.2","soft_z.9.2","soft_z.10.2","soft_z.11.2","soft_z.1.3","soft_z.2.3","soft_z.3.3","soft_z.4.3","soft_z.5.3","soft_z.6.3","soft_z.7.3","soft_z.8.3","soft_z.9.3","soft_z.10.3","soft_z.11.3","soft_z.1.4","soft_z.2.4","soft_z.3.4","soft_z.4.4","soft_z.5.4","soft_z.6.4","soft_z.7.4","soft_z.8.4","soft_z.9.4","soft_z.10.4","soft_z.11.4","soft_z.1.5","soft_z.2.5","soft_z.3.5","soft_z.4.5","soft_z.5.5","soft_z.6.5","soft_z.7.5","soft_z.8.5","soft_z.9.5","soft_z.10.5","soft_z.11.5"}];
+doTest[StanResultReducedKeys[result],{"mu","soft_z"}]
+
+
+doTest[StanResultMetaKeys[result],{"lp__"}];
+doTest[StanResultReducedMetaKeys[result],{"lp__"}]
 
 
 (* ::Subsection:: *)
@@ -262,9 +267,6 @@ doTest[stanOutputFilename=RunStan[stanCodeFileName,VariationalDefaultOptions,Sta
 
 result=ImportStanResult[stanOutputFilename]
 doTest[Dimensions[GetStanResult[result,"mu"]],{toExport["K"],Last[Dimensions[y]],1001}]
-
-
-GetStanResult[result]
 
 
 (* ::Chapter:: *)
