@@ -321,7 +321,7 @@ which prints:
 #+END_EXAMPLE
 
 *Note*: as with likelihood maximization we only have a point estimation,
-the returned values are lists of *one* numbers.
+the returned values are lists of *one* number.
 
 You can plot the estimated line:
 
