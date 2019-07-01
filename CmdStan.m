@@ -79,6 +79,10 @@ GetStanResult;
 GetStanResultMeta;
 
 
+GetStanResultKeys;
+GetStanResultMetaKeys;
+
+
 MapStanResult;
 MapStanResultMeta;
 
@@ -677,25 +681,46 @@ getStanResult[data_Association,varName_String]:=If[KeyExistsQ[data,varName],data
 (*Public*)
 
 
-GetStanResult::usage="GetStanResult[result_StanResult,varName_String] returns the varName variable";
-"GetStanResult[result_StanResult,varName_String,(f_Function|f_Symbol)] returns the varName variable and maps f to each sample, by examples: f=Mean, Variance, ... or Histogram";
-GetStanResult[result_StanResult,varName_String] := getStanResult[First[result]["parameter"],varName];
-GetStanResult[result_StanResult,varName_String,(f_Function|f_Symbol)] := Map[f,getStanResult[First[result]["parameter"],varName],{-2}];
+GetStanResult::usage=
+"GetStanResult[result_StanResult,parameterName_String] returns the parameterName parameter"<>
+"\nGetStanResult[result_StanResult] returns the raw association containing all the parameters";
+GetStanResult[result_StanResult] := First[result]["parameter"];
+GetStanResult[result_StanResult,parameterName_String] := getStanResult[GetStanResult[result],parameterName];
 
 
 GetStanResultMeta::usage="StanResultMeta[res_StanResult,metaVarName_String] return meta data";
 GetStanResultMeta[result_StanResult,metaVarName_String] := getStanResult[First[result]["meta"],metaVarName];
 
 
+(* ::Subsection:: *)
+(*Get keys: for arrays only return the "main" key without indices*)
+
+
+GetStanResultKeys::usage="GetStanResultKeys[result_StanResult] returns the list of parameters names. Attention for arrays param.X or param.X.X returns only the prefix \"param\"";
+GetStanResultKeys[result_StanResult]:=DeleteDuplicates[Map[First[StringSplit[#,"."]]&,Keys[GetStanResult[result]]]];
+
+
+GetStanResultMetaKeys::usage="GetStanResultMetaKeys[result_StanResult] returns the list of parameters names. Attention for arrays param.X or param.X.X returns only the prefix \"param\"";
+GetStanResultMetaKeys[result_StanResult]:=DeleteDuplicates[Map[First[StringSplit[#,"."]]&,Keys[GetStanResultMeta[result]]]];
+
+
 (* ::Section:: *)
 (*Map*)
 
 
-MapStanResult::usage="MapStanResult[(f_Function|f_Symbol),result_StanResult,varName_String] maps f to each component of the varName variable. Examples: f=Mean, Variance, ... or Histogram";
-MapStanResult[(f_Function|f_Symbol),result_StanResult,varName_String] := Map[f,GetStanResult[result,varName],{-2}];
+MapStanResult::usage=
+"MapStanResult[(f_Function|f_Symbol),result_StanResult,parameterName_String] maps f to each component of the parameter."<>
+"MapStanResult[(f_Function|f_Symbol),result_StanResult,parameterNames:{___String}] maps f to each component of the {parameterNames...} parameter list.";
 
-MapStanResultMeta::usage="MapStanResultMeta[(f_Function|f_Symbol),result_StanResult,varName_String] maps f to each component of the meta varName variable. Examples: f=Mean, Variance, ... or Histogram";
-MapStanResultMeta[(f_Function|f_Symbol),result_StanResult,varName_String] := Map[f,GetStanResultMeta[result,varName],{-2}];
+MapStanResult[(f_Function|f_Symbol),result_StanResult,parameterName_String] := Map[f,GetStanResult[result,parameterName],{-2}];
+MapStanResult[(f_Function|f_Symbol),result_StanResult,parameterNames:{___String}] := Map[Map[f,GetStanResult[result,#],{-2}]&,parameterNames];
+
+MapStanResultMeta::usage=
+"MapStanResultMeta[(f_Function|f_Symbol),result_StanResult,metaParameterName_String] maps f to each component of the meta-parameter."<>
+"\nMapStanResultMeta[(f_Function|f_Symbol),result_StanResult,metaParameterNames:{___String}] maps f to each component of the {metaParameterNames...} meta-parameter list.";
+
+MapStanResultMeta[(f_Function|f_Symbol),result_StanResult,metaParameterName_String] := Map[f,GetStanResultMeta[result,metaParameterName],{-2}];
+MapStanResultMeta[(f_Function|f_Symbol),result_StanResult,metaParameterNames:{___String}] := Map[Map[f,GetStanResultMeta[result,#],{-2}]&,metaParameterNames];
 
 
 (* ::Subsection:: *)
