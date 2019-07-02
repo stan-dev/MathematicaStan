@@ -26,6 +26,11 @@ StanSetDirectory["C:\\Users\\USER_NAME\\Documents\\R\\cmdstan-2.12.0";
 
 ** News
 
+*** 2019-07-02 Tue
+**** *New v2 version*
+A new version of the package is available in the [[https://github.com/stan-dev/MathematicaStan/tree/v2][v2 git branch]]. As
+soon as this new version is sufficiently tested, it will replace this
+one (which is archived in the [[https://github.com/stan-dev/MathematicaStan/tree/v1][v1 git branch]]).
 *** 2017-08-01 Tue
 **** Some doc, see [[id:235b4629-7d1b-4843-a23f-c639b5980850][Generated =output.csv= file and path]].
 *** 2016-10-20 Thu
