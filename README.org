@@ -677,8 +677,64 @@ sample (for β1, β2 and β3).
 
 As before it generally useful to summarize this sample with function like mean or histogram:
 
-# #+BEGIN_SRC mathematica :eval never
+#+BEGIN_SRC mathematica :eval never
+GetStanResult[Mean, stanResult, "beta"]
+GetStanResult[Histogram, stanResult, "beta"]
+#+END_SRC
 
-# #+END_SRC
+prints:
+#+BEGIN_EXAMPLE
+{3.30321, -0.010088, 0.0126913}
+#+END_EXAMPLE
+and plots:
 
 [[file:figures/linReg2Histo.png][file:./figures/linReg2Histo.png]]
+
+
+This is the moment to digress about Keys. If you try:
+#+BEGIN_SRC mathematica :eval never
+StanResultKeys[stanResult]
+StanResultMetaKeys[stanResult]
+#+END_SRC
+
+this will print:
+#+BEGIN_EXAMPLE
+{"alpha", "beta.1", "beta.2", "beta.3", "sigma"}
+{"lp__", "accept_stat__", "stepsize__", "treedepth__", "n_leapfrog__", "divergent__", "energy__"}
+#+END_EXAMPLE
+
+These functions are useful to get the complete list of keys. Note
+that, as β is an 1D-array of size 1 we have =beta.1, beta.2, beta.3=. If
+β was a NxM matrix, the list of keys would have been: =beta.1.1,
+beta.1.2,... beta.N.M=.
+
+There is also *reduced keys* functions:
+
+#+BEGIN_SRC mathematica :eval never
+StanResultReducedKeys[stanResult]
+StanResultReducedMetaKeys[stanResult]
+#+END_SRC
+
+which print
+
+#+BEGIN_EXAMPLE
+{"alpha", "beta", "sigma"}
+{"lp__", "accept_stat__", "stepsize__", "treedepth__", "n_leapfrog__", "divergent__", "energy__"}
+#+END_EXAMPLE
+
+As you can see the *reduced keys* functions collect and discard indices
+to keys associated to arrays.
+
+When accessing a parameter you can work at the component level or globally:
+#+BEGIN_SRC mathematica :eval never
+GetStanResult[Mean, stanResult, "beta.2"]
+GetStanResult[Mean, stanResult, "beta"]
+#+END_SRC
+
+which print
+
+#+BEGIN_EXAMPLE
+-0.010088
+{3.30321, -0.010088, 0.0126913}
+#+END_EXAMPLE
+

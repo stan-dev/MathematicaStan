@@ -32,12 +32,6 @@ On[Assert]
 ?"CmdStan`*"
 
 
-host=Import["!hostname 2>&1","Text"];
-If[host=="is231575",
-SetCmdStanDirectory["/home/picaud/ExternalSoftware/cmdstan"]
-];
-
-
 doTest[FileExistsQ@$CmdStanConfigurationFile,True];
 
 
