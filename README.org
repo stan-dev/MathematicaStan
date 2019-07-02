@@ -38,10 +38,8 @@ This version uses Mathematica v11 and has been completely refactored
 
 *Caveat:* breaking changes!
 
-*** 2017-08-01 
-
-The "old" MathematicaStan version based on Mathematica v8.0 is now in
-the *v1.0* git branch.
+*Note*: the "old" MathematicaStan version based on Mathematica v8.0 is now archived in
+the [[https://github.com/stan-dev/MathematicaStan/tree/v1][v1 git branch]]. 
 
 * Installation
 
