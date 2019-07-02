@@ -358,7 +358,7 @@ StanRunGenerateOutputFilename[option_?StanOptionListQ,processId_?IntegerQ]:=
 	  *)
           If[FileExtension[outputFile]=="",
             outputFile=outputFile<>".csv";
-          ]
+          ];
 
           (* If required complete with process id 
           *)
