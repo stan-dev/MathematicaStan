@@ -13,16 +13,7 @@ Mathematica.
 
 It is developed under *Linux* and is compatible with *Mathematica v11+*
 
-It should work under MacOS and also under Windows but you have to be careful about the way you
-enter paths:
-- under Linux:
-#+BEGIN_EXAMPLE
-SetCmdStanDirectory["~/ExternalSoftware/cmdstan-2.19.1"];
-#+END_EXAMPLE
-- under Windows:
-#+BEGIN_EXAMPLE
-SetCmdStanDirectory["C:\\Users\\USERNAME\\Documents\\R\\..."; 
-#+END_EXAMPLE
+It should work under MacOS and also under Windows.
 
 *Author & contact:* picaud.vincent at gmail.com
 
@@ -84,6 +75,11 @@ With my configuration this is:
 SetCmdStanDirectory["~/ExternalSoftware/cmdstan-2.19.1"]
 #+END_SRC
 
+For Windows user this is certainly something like:
+#+BEGIN_SRC matheematica :eval never
+SetCmdStanDirectory["C:\\Users\\USER_NAME\\Documents\\R\\cmdstan-?.??.?"]
+#+END_SRC
+
 *Note:* this location is recorded in the =$CmdStanConfigurationFile= file
  and you will not have to redefine it every time you import the
  CmdStan package.
@@ -92,6 +88,9 @@ SetCmdStanDirectory["~/ExternalSoftware/cmdstan-2.19.1"]
 * Tutorial, linear regression
 
 ** Introduction
+
+You can use the file =tutorial.wls= or manually follow the instruction
+below.
 
 Import the package as usual
 
@@ -729,7 +728,7 @@ GetStanResult[Mean, stanResult, "beta.2"]
 GetStanResult[Mean, stanResult, "beta"]
 #+END_SRC
 
-which print
+which prints
 
 #+BEGIN_EXAMPLE
 -0.010088
