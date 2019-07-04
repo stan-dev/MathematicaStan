@@ -1,8 +1,10 @@
 /README.html
 
-/examples/basic_distributions/*.d
-/examples/basic_distributions/*.csv
-/examples/basic_distributions/*.hpp
+*.d
+*.csv
+*.hpp
 
 /examples/basic_distributions/triangle
 /examples/basic_distributions/wishart2
+
+/examples/time-series/AR/AR1*
