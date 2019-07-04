@@ -4,7 +4,7 @@
 (* :Context: CmdStan` *)
 (* :Author: Vincent Picaud *)
 (* :Date: 2019 *)
-(* :Package Version: 1.0 *)
+(* :Package Version: 2.0 *)
 (* :Mathematica Version: 11+ *)
 (* :Keywords: Stan, CmdStan, Bayesian *)
 
