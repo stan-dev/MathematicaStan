@@ -185,7 +185,7 @@ Let's simulate some data:
 σ = 3; α = 1; β = 2;
 n = 20;
 X = Range[n];
-Y = α + β*x + RandomVariate[NormalDistribution[0, σ], n];
+Y = α + β*X + RandomVariate[NormalDistribution[0, σ], n];
 Show[Plot[α + β*x, {x, Min[X], Max[X]}], 
      ListPlot[Transpose@{X, Y}, PlotStyle -> Red]]
  #+END_SRC
