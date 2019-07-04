@@ -5,3 +5,4 @@
 /examples/basic_distributions/*.hpp
 
 /examples/basic_distributions/triangle
+/examples/basic_distributions/wishart2
