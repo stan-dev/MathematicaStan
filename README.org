@@ -123,7 +123,7 @@ SetDirectory[$TemporaryDirectory]
 
 Define the Stan code
 #+BEGIN_SRC mathematica :eval never
-stancode = "data
+stanCode = "data
   {
     int<lower = 0> N;
     vector[N] x;
