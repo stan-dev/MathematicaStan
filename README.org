@@ -450,7 +450,7 @@ parameter: alpha , beta , sigma
 
 As before you can use:
 #+BEGIN_SRC mathematica :eval never
-GetStanData[myResult,"alpha"]
+GetStanResult[myResult,"alpha"]
 #+END_SRC
 
 to get =alpha= parameter value, but now you will get a list of 1000 sample:
