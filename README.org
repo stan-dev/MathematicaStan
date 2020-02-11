@@ -1,9 +1,32 @@
-#+OPTIONS: toc:nil num:nil todo:nil pri:nil tags:nil ^:nil tex:t
+#+OPTIONS: toc:nil todo:nil pri:nil tags:nil ^:nil tex:t
 #+TITLE: MathematicaStan v2.0
 #+SUBTITLE: A Mathematica (v11+) package to interact with CmdStan
 #+AUTHOR: Picaud Vincent
 
 #+TOC: headlines 2
+
+* Table of contents                                            :TOC:noexport:
+- [[#introduction][Introduction]]
+  - [[#news][News]]
+- [[#installation][Installation]]
+  - [[#the-stan-cmdstan-shell-interface][The Stan CmdStan shell interface]]
+  - [[#the-mathematica-cmdstan-package][The Mathematica CmdStan package]]
+  - [[#first-run][First run]]
+- [[#tutorial-1-linear-regression][Tutorial 1, linear regression]]
+  - [[#introduction-1][Introduction]]
+  - [[#stan-code][Stan code]]
+  - [[#code-compilation][Code compilation]]
+  - [[#simulated-data][Simulated data]]
+  - [[#create-the-datar-data-file][Create the =data.R= data file]]
+  - [[#run-stan-likelihood-maximization][Run Stan, likelihood maximization]]
+  - [[#load-the-csv-result-file][Load the CSV result file]]
+  - [[#run-stan-variational-bayes][Run Stan, Variational Bayes]]
+- [[#tutorial-2-linear-regression-with-more-than-one-predictor][Tutorial 2, linear regression with more than one predictor]]
+  - [[#parameter-arrays][Parameter arrays]]
+  - [[#simulated-data-1][Simulated data]]
+  - [[#exporting-data][Exporting data]]
+  - [[#run-stan-hmc-sampling][Run Stan, HMC sampling]]
+  - [[#load-the-csv-result-file-1][Load the CSV result file]]
 
 * Introduction
 
@@ -85,7 +108,7 @@ SetCmdStanDirectory["C:\\Users\\USER_NAME\\Documents\\R\\cmdstan-?.??.?"]
  CmdStan package.
 
 
-* Tutorial, linear regression
+* Tutorial 1, linear regression
 
 ** Introduction
 
@@ -482,7 +505,7 @@ GetStanResult[Histogram, myResult, "alpha"]
 [[file:figures/linRegHisto.png][file:./figures/linRegHisto.png]]
 
 
-* Tutorial #2, linear regression with more than one predictor
+* Tutorial 2, linear regression with more than one predictor
 
 ** Parameter arrays
 
