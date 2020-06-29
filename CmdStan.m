@@ -194,10 +194,9 @@ ExportStanCode[stanCodeFileName_String, stanCode_String]:=
 		  oldCode=""
 	       ];
 	       If[oldCode!=stanCode,
-		  Export[stanCodeFileName,stanCode,"Text"]
-	       ];
-	       
-	       FileNameJoin[{Directory[],stanCodeFileName}]
+		  Export[stanCodeFileName,stanCode,"Text"],
+		  stanCodeFileName
+	       ]
 	];
 
 
