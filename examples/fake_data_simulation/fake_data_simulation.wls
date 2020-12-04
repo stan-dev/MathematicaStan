@@ -201,6 +201,3 @@ result = ImportStanResult[resultFile]
 
 GraphicsRow@GetStanResult[Histogram,result,"theta"][[2;;-1]]
 thetaGroundTruth[[2;;-1]]
-
-
-
