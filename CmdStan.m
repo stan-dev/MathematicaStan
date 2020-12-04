@@ -149,9 +149,21 @@ CheckFileNameExtensionQ[fileName_String, expectedExt_String] :=
 	       ok];
 
 
+(* Returns DirectoryName[stanFileName] or Directory[] if DirectoryName[stanFileName]=="" 
+,* One must avoid to have Path="" as FileNameJoin[{"","filename"}] returns /filename which is not we want
+,*)
+getDirectory[filename_String] := If[DirectoryName[filename]!="",DirectoryName[filename],Assert[Directory[]!=""]; Directory[]];
+
+(* Get directory/filename.ext *)
+getDirectoryFileName[filename_String] :=FileNameJoin[{getDirectory[filename], FileNameTake[filename]}];
+
+(* Support multiple ext, by example /tmp/filename.data.R returns /tmp/filename *)
+getDirectoryFileNameWithoutExt[filename_String] :=FileNameJoin[{getDirectory[filename], FixedPoint[FileBaseName,filename]}];
+
+
 generateStanExecFileName[stanFileName_String] :=
 	Module[{stanExecFileName},
-     	       stanExecFileName = FileNameJoin[{DirectoryName[stanFileName], FileBaseName[stanFileName]}];
+     	       stanExecFileName = getDirectoryFileNameWithoutExt[stanFileName];
       	       (* Jeff Patterson Windows fix: originaly with StringReplace[stanExecFileName,"\\"->"/"] TODO*)
       	       If[$OperatingSystem == "Windows",stanExecFileName = stanExecFileName <> ".exe"];  
 	       stanExecFileName     	   
@@ -160,14 +172,14 @@ generateStanExecFileName[stanFileName_String] :=
 generateStanDataFileName[stanFileName_String] :=
 	Module[{stanDataFileName},
 	       (* caveat: use FixedPoint beacause of .data.R *)
-     	       stanDataFileName = FileNameJoin[{DirectoryName[stanFileName], FixedPoint[FileBaseName,stanFileName]}];
+     	       stanDataFileName = getDirectoryFileNameWithoutExt[stanFileName];
      	       stanDataFileName = stanDataFileName <> ".data.R";
       	       stanDataFileName     	   
 	];
 
 generateStanOutputFileName[stanFileName_String,processId_Integer?NonNegative] :=
 	Module[{stanOutputFileName},
-     	       stanOutputFileName = FileNameJoin[{DirectoryName[stanFileName], FileBaseName[stanFileName]}];
+     	       stanOutputFileName = getDirectoryFileNameWithoutExt[stanFileName];
      	       If[processId>0,
      	          stanOutputFileName = stanOutputFileName <> "_" <> ToString[processId]
      	       ];
@@ -184,20 +196,20 @@ generateStanOutputFileName[stanFileName_String,processId_Integer?NonNegative] :=
 ExportStanCode::usage="ExportStanCode[stanCodeFileName_String, stanCode_String] exports Stan code, return filename WITH path (MMA export generally only returns the file name)";
 
 ExportStanCode[stanCodeFileName_String, stanCode_String]:=
-	Module[{oldCode},
+	Module[{dirStanCodeFileName, oldCode},
+		(* Check extension *)
+	    If[!CheckFileNameExtensionQ[stanCodeFileName,"stan"],Return[$Failed]];
 
-	       If[!CheckFileNameExtensionQ[stanCodeFileName,"stan"],Return[$Failed]];
-
-	       (* Note: If file content == stanCode -> do nothing *)
-	       If[FileExistsQ[stanCodeFileName],
-		  oldCode=Import[stanCodeFileName,"String"],
-		  oldCode=""
-	       ];
-	       If[oldCode!=stanCode,
-		  Export[stanCodeFileName,stanCode,"Text"],
-		  stanCodeFileName
-	       ]
-	];
+		(* add explicit dir *)
+		dirStanCodeFileName=getDirectoryFileName[stanCodeFileName];
+		
+	    (* Check if code has changed, if not, do not overwrite file (=do nothing) *)
+	    If[FileExistsQ[dirStanCodeFileName],oldCode=Import[dirStanCodeFileName,"String"],oldCode=""];
+	       
+	    If[oldCode!=stanCode,Export[dirStanCodeFileName,stanCode,"Text"]];
+	    
+	    dirStanCodeFileName
+	    ];
 
 
 (* ::Subchapter:: *)
