@@ -56,7 +56,7 @@ SetOptions[ListPlot,LabelStyle->Directive[Bold],ImageSize->400,Frame->True,PlotR
 (*GaussMix: degenerate implementation*)
 
 
-GaussMixFile=FileNameJoin[{NotebookDirectory[],"Gauss_mix.stan"}]
+GaussMixFile=FileNameJoin[{Directory[],"Gauss_mix.stan"}]
 
 
 (* ::Subchapter:: *)
@@ -120,7 +120,7 @@ CompileStanCode[GaussMixFile]
 
 GaussMixResultFile = RunStan[GaussMixFile, mySampleOptions]
 stanResult = ImportStanResult[GaussMixResultFile]
-GraphicsRow[{ListLinePlot[GetStanResult[stanResult,"mu.1"],PlotLabel->"\!\(\*SubscriptBox[\(\[Mu]\), \(1\)]\)"],ListLinePlot[GetStanResult[stanResult,"mu.2"],PlotLabel->"\!\(\*SubscriptBox[\(\[Mu]\), \(2\)]\)"],Histogram[GetStanResult[stanResult,"theta"],PlotLabel->"\[Theta]"]}]
+GraphicsRow[{ListLinePlot[GetStanResult[stanResult,"mu.1"],PlotLabel->"\[Mu]1"],ListLinePlot[GetStanResult[stanResult,"mu.2"],PlotLabel->"\[Mu]2"],Histogram[GetStanResult[stanResult,"theta"],PlotLabel->"\[Theta]"]}]
 
 
 (* ::Section:: *)
@@ -133,14 +133,14 @@ GraphicsRow[{ListLinePlot[GetStanResult[stanResult,"mu.1"],PlotLabel->"\!\(\*Sub
 
 GaussMixResultFile = RunStan[GaussMixFile, myVariationalOptions]
 stanResult = ImportStanResult[GaussMixResultFile]
-GraphicsRow[{ListLinePlot[GetStanResult[stanResult,"mu.1"],PlotLabel->"\!\(\*SubscriptBox[\(\[Mu]\), \(1\)]\)"],ListLinePlot[GetStanResult[stanResult,"mu.2"],PlotLabel->"\!\(\*SubscriptBox[\(\[Mu]\), \(2\)]\)"],Histogram[GetStanResult[stanResult,"theta"],PlotLabel->"\[Theta]"]}]
+GraphicsRow[{ListLinePlot[GetStanResult[stanResult,"mu.1"],PlotLabel->"\[Mu]1"],ListLinePlot[GetStanResult[stanResult,"mu.2"],PlotLabel->"\[Mu]2"],Histogram[GetStanResult[stanResult,"theta"],PlotLabel->"\[Theta]"]}]
 
 
 (* ::Chapter:: *)
 (*GaussMix: breaking symmetries*)
 
 
-GaussMixNonExchangeableFile=FileNameJoin[{NotebookDirectory[],"Gauss_mix_nonexchangeable.stan"}]
+GaussMixNonExchangeableFile=FileNameJoin[{Directory[],"Gauss_mix_nonexchangeable.stan"}]
 
 
 (* ::Subchapter:: *)
@@ -196,7 +196,7 @@ CompileStanCode[GaussMixNonExchangeableFile]
 
 GaussMixNonExchangeableResultFile = RunStan[GaussMixNonExchangeableFile, mySampleOptions]
 stanResult = ImportStanResult[GaussMixNonExchangeableResultFile]
-GraphicsRow[{ListLinePlot[GetStanResult[stanResult,"mu.1"],PlotLabel->"\!\(\*SubscriptBox[\(\[Mu]\), \(1\)]\)"],ListLinePlot[GetStanResult[stanResult,"mu.2"],PlotLabel->"\!\(\*SubscriptBox[\(\[Mu]\), \(2\)]\)"],Histogram[GetStanResult[stanResult,"theta"],PlotLabel->"\[Theta]"]}]
+GraphicsRow[{ListLinePlot[GetStanResult[stanResult,"mu.1"],PlotLabel->"\[Mu]1"],ListLinePlot[GetStanResult[stanResult,"mu.2"],PlotLabel->"\[Mu]2"],Histogram[GetStanResult[stanResult,"theta"],PlotLabel->"\[Theta]"]}]
 
 
 (* ::Section:: *)
@@ -209,7 +209,7 @@ GraphicsRow[{ListLinePlot[GetStanResult[stanResult,"mu.1"],PlotLabel->"\!\(\*Sub
 
 GaussMixNonExchangeableResultFile = RunStan[GaussMixNonExchangeableFile, myVariationalOptions]
 stanResult = ImportStanResult[GaussMixNonExchangeableResultFile]
-GraphicsRow[{ListLinePlot[GetStanResult[stanResult,"mu.1"],PlotLabel->"\!\(\*SubscriptBox[\(\[Mu]\), \(1\)]\)"],ListLinePlot[GetStanResult[stanResult,"mu.2"],PlotLabel->"\!\(\*SubscriptBox[\(\[Mu]\), \(2\)]\)"],Histogram[GetStanResult[stanResult,"theta"],PlotLabel->"\[Theta]"]}]
+GraphicsRow[{ListLinePlot[GetStanResult[stanResult,"mu.1"],PlotLabel->"\[Mu]1"],ListLinePlot[GetStanResult[stanResult,"mu.2"],PlotLabel->"\[Mu]2"],Histogram[GetStanResult[stanResult,"theta"],PlotLabel->"\[Theta]"]}]
 
 
 (* ::Input:: *)
@@ -220,7 +220,7 @@ GraphicsRow[{ListLinePlot[GetStanResult[stanResult,"mu.1"],PlotLabel->"\!\(\*Sub
 (*GaussMix: forcing an ordering*)
 
 
-GaussMixOrderedFile=FileNameJoin[{NotebookDirectory[],"Gauss_mix_ordered.stan"}]
+GaussMixOrderedFile=FileNameJoin[{Directory[],"Gauss_mix_ordered.stan"}]
 
 
 (* ::Subchapter:: *)
@@ -275,7 +275,7 @@ CompileStanCode[GaussMixOrderedFile]
 
 GaussMixOrderedResultFile = RunStan[GaussMixOrderedFile, mySampleOptions]
 stanResult = ImportStanResult[GaussMixOrderedResultFile]
-GraphicsRow[{ListLinePlot[GetStanResult[stanResult,"mu.1"],PlotLabel->"\!\(\*SubscriptBox[\(\[Mu]\), \(1\)]\)"],ListLinePlot[GetStanResult[stanResult,"mu.2"],PlotLabel->"\!\(\*SubscriptBox[\(\[Mu]\), \(2\)]\)"],Histogram[GetStanResult[stanResult,"theta"],PlotLabel->"\[Theta]"]}]
+GraphicsRow[{ListLinePlot[GetStanResult[stanResult,"mu.1"],PlotLabel->"\[Mu]1"],ListLinePlot[GetStanResult[stanResult,"mu.2"],PlotLabel->"\[Mu]2"],Histogram[GetStanResult[stanResult,"theta"],PlotLabel->"\[Theta]"]}]
 
 
 (* ::Section:: *)
@@ -284,14 +284,14 @@ GraphicsRow[{ListLinePlot[GetStanResult[stanResult,"mu.1"],PlotLabel->"\!\(\*Sub
 
 GaussMixOrderedResultFile = RunStan[GaussMixOrderedFile, myVariationalOptions]
 stanResult = ImportStanResult[GaussMixOrderedResultFile]
-GraphicsRow[{ListLinePlot[GetStanResult[stanResult,"mu.1"],PlotLabel->"\!\(\*SubscriptBox[\(\[Mu]\), \(1\)]\)"],ListLinePlot[GetStanResult[stanResult,"mu.2"],PlotLabel->"\!\(\*SubscriptBox[\(\[Mu]\), \(2\)]\)"],Histogram[GetStanResult[stanResult,"theta"],PlotLabel->"\[Theta]"]}]
+GraphicsRow[{ListLinePlot[GetStanResult[stanResult,"mu.1"],PlotLabel->"\[Mu]1"],ListLinePlot[GetStanResult[stanResult,"mu.2"],PlotLabel->"\[Mu]2"],Histogram[GetStanResult[stanResult,"theta"],PlotLabel->"\[Theta]"]}]
 
 
 (* ::Chapter:: *)
 (*GaussMix: degenerate + overlaping*)
 
 
-GaussMixOverlapFile=FileNameJoin[{NotebookDirectory[],"Gauss_mix_overlap.stan"}]
+GaussMixOverlapFile=FileNameJoin[{Directory[],"Gauss_mix_overlap.stan"}]
 
 
 (* ::Subchapter:: *)
@@ -356,7 +356,7 @@ CompileStanCode[GaussMixOverlapFile]
 GaussMixOverlapResultFile = RunStan[GaussMixOverlapFile, mySampleOptions]
 stanResult = ImportStanResult[GaussMixOverlapResultFile]
 GraphicsRow[{
-ListLinePlot[GetStanResult[stanResult,"mu.1"],PlotLabel->"\!\(\*SubscriptBox[\(\[Mu]\), \(1\)]\)"],ListLinePlot[GetStanResult[stanResult,"mu.2"],PlotLabel->"\!\(\*SubscriptBox[\(\[Mu]\), \(2\)]\)"],
+ListLinePlot[GetStanResult[stanResult,"mu.1"],PlotLabel->"\[Mu]1"],ListLinePlot[GetStanResult[stanResult,"mu.2"],PlotLabel->"\[Mu]2"],
 Histogram[GetStanResult[stanResult,"theta"],PlotLabel->"\[Theta]"],
 ListPlot[Transpose@{GetStanResult[stanResult,"mu.1"],GetStanResult[stanResult,"mu.2"]}]}]
 
@@ -367,7 +367,10 @@ ListPlot[Transpose@{GetStanResult[stanResult,"mu.1"],GetStanResult[stanResult,"m
 
 GaussMixOverlapResultFile = RunStan[GaussMixOverlapFile, myVariationalOptions]
 stanResult = ImportStanResult[GaussMixOverlapResultFile]
-GraphicsRow[{ListLinePlot[GetStanResult[stanResult,"mu.1"],PlotLabel->"\!\(\*SubscriptBox[\(\[Mu]\), \(1\)]\)"],ListLinePlot[GetStanResult[stanResult,"mu.2"],PlotLabel->"\!\(\*SubscriptBox[\(\[Mu]\), \(2\)]\)"],Histogram[GetStanResult[stanResult,"theta"],PlotLabel->"\[Theta]"]}]
+GraphicsRow[{ListLinePlot[GetStanResult[stanResult,"mu.1"],PlotLabel->"\[Mu]1"],ListLinePlot[GetStanResult[stanResult,"mu.2"],PlotLabel->"\[Mu]2"],Histogram[GetStanResult[stanResult,"theta"],PlotLabel->"\[Theta]"]}]
+
+
+
 
 
 

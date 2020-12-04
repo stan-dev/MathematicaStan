@@ -56,7 +56,7 @@ generated quantities {
     y_sim[i] = categorical_rng(softmax(theta));
   }
 }";
-codeFile=FileNameJoin[{NotebookDirectory[],FileBaseName[NotebookFileName[]]<>".stan"}]
+codeFile=FileNameJoin[{Directory[],FileBaseName[NotebookFileName[]]<>".stan"}]
 
 
 (* ::Text:: *)
@@ -74,14 +74,14 @@ codeFile=FileNameJoin[{NotebookDirectory[],FileBaseName[NotebookFileName[]]<>".s
 (*Write code file*)
 
 
-ExportStanCode[codeFile,code]
+code=ExportStanCode[codeFile,code]
 
 
 (* ::Subchapter:: *)
 (*Compile it!*)
 
 
-CompileStanCode[f]
+CompileStanCode[code]
 
 
 (* ::Subchapter:: *)
@@ -201,3 +201,6 @@ result = ImportStanResult[resultFile]
 
 GraphicsRow@GetStanResult[Histogram,result,"theta"][[2;;-1]]
 thetaGroundTruth[[2;;-1]]
+
+
+
