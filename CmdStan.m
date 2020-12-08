@@ -160,21 +160,25 @@ getDirectoryFileName[filename_String] :=FileNameJoin[{getDirectory[filename], Fi
 (* Support multiple ext, by example /tmp/filename.data.R returns /tmp/filename *)
 getDirectoryFileNameWithoutExt[filename_String] :=FileNameJoin[{getDirectory[filename], FixedPoint[FileBaseName,filename]}];
 
+(* modify \\ \[Rule] / in case of Windows OS (because of cygwin that needs / despite running under Windows) *)
+jeffPatterson[filename_String] := If[$OperatingSystem == "Windows", StringReplace[filename,"\\"->"/"],filename];
+
 
 generateStanExecFileName[stanFileName_String] :=
-	Module[{stanExecFileName},
-     	       stanExecFileName = getDirectoryFileNameWithoutExt[stanFileName];
-      	       (* Jeff Patterson Windows fix: originaly with StringReplace[stanExecFileName,"\\"->"/"] TODO*)
-      	       If[$OperatingSystem == "Windows",stanExecFileName = stanExecFileName <> ".exe"];  
-	       stanExecFileName     	   
-	];
+Module[{stanExecFileName},
+	stanExecFileName = getDirectoryFileNameWithoutExt[stanFileName];
+    stanExecFileName = jeffPatterson[stanExecFileName];
+    If[$OperatingSystem == "Windows",stanExecFileName = stanExecFileName <> ".exe"];  
+	stanExecFileName     	   
+];
 
 generateStanDataFileName[stanFileName_String] :=
 	Module[{stanDataFileName},
 	       (* caveat: use FixedPoint beacause of .data.R *)
      	       stanDataFileName = getDirectoryFileNameWithoutExt[stanFileName];
+     	       stanDataFileName = jeffPatterson[stanDataFileName]; (* not sure: to check *)
      	       stanDataFileName = stanDataFileName <> ".data.R";
-      	       stanDataFileName     	   
+     	       stanDataFileName     	   
 	];
 
 generateStanOutputFileName[stanFileName_String,processId_Integer?NonNegative] :=
@@ -183,6 +187,7 @@ generateStanOutputFileName[stanFileName_String,processId_Integer?NonNegative] :=
      	       If[processId>0,
      	          stanOutputFileName = stanOutputFileName <> "_" <> ToString[processId]
      	       ];
+     	       stanOutputFileName = jeffPatterson[stanOutputFileName]; (* not sure: to check *)
      	       stanOutputFileName = stanOutputFileName <> ".csv";
       	       
 	       stanOutputFileName     	   
