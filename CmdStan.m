@@ -3,8 +3,8 @@
 (* :Title: MathematicaStan, a MMA interface to CmdStan *)
 (* :Context: CmdStan` *)
 (* :Author: Vincent Picaud *)
-(* :Date: 2019 *)
-(* :Package Version: 2.0 *)
+(* :Date: 2020 *)
+(* :Package Version: 2.1 *)
 (* :Mathematica Version: 11+ *)
 (* :Keywords: Stan, CmdStan, Bayesian *)
 
