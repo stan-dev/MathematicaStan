@@ -195,6 +195,15 @@ generateStanOutputFileName[stanFileName_String,processId_Integer?NonNegative] :=
         ];
 
 
+(* ::Text:: *)
+(*A helper that escape space*)
+(*A priori mandatory to support spaces in path/filename when completing shell command*)
+(*However this is certainly useless as AFAIK Make does not support space anyway: https://stackoverflow.com/a/9838604/2001017*)
+
+
+escapeSpace[s_String]:=StringReplace[s,{"\\ "->"\\ "," "->"\\ "}];
+
+
 (* ::Subchapter:: *)
 (*Stan code*)
 
@@ -237,7 +246,7 @@ CompileStanCode[stanCodeFileName_String, opts : OptionsPattern[]] :=
                
                stanExecFileName = generateStanExecFileName[stanCodeFileName];
                (* Maybe useful for Windows https://mathematica.stackexchange.com/q/140700/42847 *)
-               command = {"make","-C",GetCmdStanDirectory[],stanExecFileName};
+               command = {"make","-C",escapeSpace[GetCmdStanDirectory[]],escapeSpace[stanExecFileName]};
                
                verbose = OptionValue[StanVerbose];
                If[verbose,Print["Running: ",StringRiffle[command," "]]];
@@ -427,7 +436,7 @@ completeStanOptionWithDataFileName[stanFileName_String, stanOption_StanOptions] 
                ];
                Assert[CheckFileNameExtensionQ[stanDataFileName, "data.R"]];
                
-               SetStanOption[stanOption,"data.file", stanDataFileName]
+               SetStanOption[stanOption,"data.file", escapeSpace[stanDataFileName]]
         ];
 
 completeStanOptionWithOutputFileName[stanFileName_String, stanOption_StanOptions, processId_?IntegerQ] :=
@@ -444,7 +453,7 @@ completeStanOptionWithOutputFileName[stanFileName_String, stanOption_StanOptions
                ];
                Assert[CheckFileNameExtensionQ[stanOutputFileName, "csv"]];
                
-               SetStanOption[stanOption,"output.file", stanOutputFileName]
+               SetStanOption[stanOption,"output.file", escapeSpace[stanOutputFileName]]
         ];
 
 
@@ -544,7 +553,7 @@ RunStanSample[stanFileName_String,NJobs_/; NumberQ[NJobs] && (NJobs > 0)]:=
                       
                       (* OS = Others (Linux) 
                        *)
-                      shellScript=shellScript<>"\n{ ("<>pathExecFileName<>" "<>stanOptionToCommandLineString[bufferMutableOption]<>") } &";
+                      shellScript=shellScript<>"\n{ ("<>quoted[pathExecFileName]<>" "<>stanOptionToCommandLineString[bufferMutableOption]<>") } &";
                    ];
                ]; (* For id *)
 
@@ -585,7 +594,7 @@ RunStanSample[stanFileName_String,NJobs_/; NumberQ[NJobs] && (NJobs > 0)]:=
                       ];
                       shellScript=shellScript<>"\nsed '/^[#l]/d' " <>  finalOutputFileNameID <> " >> " <> finalOutputFileName;
                   ];
-                  (* Export the final script *)
+                  (* Export the final script, TODO: escape space *)
                   finalOutputFileNameID=StanRemoveFileNameExt[finalOutputFileName]<>".sh"; (* erase with script file name *)
                   Export[finalOutputFileNameID,shellScript,"Text"];
                   (* Execute it! *)
