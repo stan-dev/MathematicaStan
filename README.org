@@ -1,5 +1,5 @@
 #+OPTIONS: toc:nil todo:nil pri:nil tags:nil ^:nil tex:t
-#+TITLE: MathematicaStan v2.0
+#+TITLE: MathematicaStan v2.1
 #+SUBTITLE: A Mathematica (v11+) package to interact with CmdStan
 #+AUTHOR: Picaud Vincent
 
@@ -44,6 +44,23 @@ It should work under MacOS and also under Windows.
  - Thanks to Jeff Patterson for his contribution (for MathematicaStan v1.0)
 
 ** News
+   
+*** 2020-12-21
+    
+New MathematicaStan version 2.1!
+
+This version has been fixed and should now run under Windows.
+
+I would like to thank Ali Ghaderi who had the patience to help me to
+debug the Windows version (I do not have access to this OS). Nothing
+would have been possible without him. All possibly remaining bugs are
+mine.
+
+As a remainder also note that one should not use path/filename with
+spaces (=Make= really does not like that). This consign is also true
+under Linux or MacOS. See [[https://stackoverflow.com/questions/9838384/can-gnu-make-handle-filenames-with-spaces][SO:can-gnu-make-handle-filenames-with-spaces]]
+by example.
+
 *** 2019-06-28 
 
 New MathematicaStan version 2.0!
