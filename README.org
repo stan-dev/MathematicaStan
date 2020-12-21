@@ -48,7 +48,7 @@ It should work under *MacOS* and also under *Windows*.
 
 This version has been fixed and should now run under Windows.
 
-I would like to thank _Ali Ghaderi_ who had the patience to help me to
+I would like to thank *Ali Ghaderi* who had the patience to help me to
 debug the Windows version (I do not have access to this OS). Nothing
 would have been possible without him. All possibly remaining bugs are
 mine.
