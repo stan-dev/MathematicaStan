@@ -36,22 +36,19 @@ Mathematica.
 
 It is developed under *Linux* and is compatible with *Mathematica v11+*
 
-It should work under MacOS and also under Windows.
+It should work under *MacOS* and also under *Windows*.
 
 *Author & contact:* picaud.vincent at gmail.com
-
-*Windows version:* 
- - Thanks to Jeff Patterson for his contribution (for MathematicaStan v1.0)
 
 ** News
    
 *** 2020-12-21
     
-New MathematicaStan version 2.1!
+*New MathematicaStan version 2.1!*
 
 This version has been fixed and should now run under Windows.
 
-I would like to thank Ali Ghaderi who had the patience to help me to
+I would like to thank _Ali Ghaderi_ who had the patience to help me to
 debug the Windows version (I do not have access to this OS). Nothing
 would have been possible without him. All possibly remaining bugs are
 mine.
@@ -63,7 +60,7 @@ by example.
 
 *** 2019-06-28 
 
-New MathematicaStan version 2.0!
+*New MathematicaStan version 2.0!*
 
 This version uses Mathematica v11 and has been completely refactored
 
