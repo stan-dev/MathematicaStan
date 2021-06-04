@@ -6,10 +6,26 @@
 * Table of contents                                            :TOC_3:noexport:
 - [[#tutorials][Tutorials]]
   - [[#option-management][Option management]]
+- [[#misc][Misc]]
+  - [[#replication-of-an-easy-way-to-simulate-fake-data-from-your-stan-model][Replication of "An easy way to simulate fake data from your Stan model"]]
+  - [[#replication-of-identifying-bayesian-mixture-models][Replication of "Identifying Bayesian Mixture Models"]]
 
 * Tutorials
 
 ** Option management
 
-The [[file:mcmc_option_example.nb][file:mcmc_option_example.nb]] notebook reuses the Tutorial part 1 and
+The [[file:mcmc_option_example.nb][mcmc_option_example.nb]] notebook reuses the Tutorial part 1 and
 shows how to modify MCMC sample option values.
+
+* Misc
+
+** Replication of "An easy way to simulate fake data from your Stan model"
+
+The file [[file:fake_data_simulation/fake_data_simulation.wls][fake_data_simulation/fake_data_simulation.wls]] contains
+replication of [[http://modernstatisticalworkflow.blogspot.com/2017/04/an-easy-way-to-simulate-fake-data-from.html][this blog post]].
+
+** Replication of "Identifying Bayesian Mixture Models"
+
+The file [[file:identifying_mixture_models/identitying_mixture_models.wls][identifying_mixture_models/identitying_mixture_models.wls]]
+contains replication of [[https://mc-stan.org/users/documentation/case-studies/identifying_mixture_models.html][this blog post]].
+
