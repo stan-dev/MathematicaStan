@@ -3,11 +3,13 @@
 #+SUBTITLE: A Mathematica (v11+) package to interact with CmdStan
 #+AUTHOR: Picaud Vincent
 
-#+TOC: headlines 2
+# +TOC: headlines 3
 
-* Table of contents                                            :TOC:noexport:
+* Table of contents                                            :TOC_3:noexport:
 - [[#introduction][Introduction]]
   - [[#news][News]]
+    - [[#2020-12-21][2020-12-21]]
+    - [[#2019-06-28][2019-06-28]]
 - [[#installation][Installation]]
   - [[#the-stan-cmdstan-shell-interface][The Stan CmdStan shell interface]]
   - [[#the-mathematica-cmdstan-package][The Mathematica CmdStan package]]
@@ -21,6 +23,10 @@
   - [[#run-stan-likelihood-maximization][Run Stan, likelihood maximization]]
   - [[#load-the-csv-result-file][Load the CSV result file]]
   - [[#run-stan-variational-bayes][Run Stan, Variational Bayes]]
+  - [[#more-about-option-management][More about Option management]]
+    - [[#overwriting-default-values][Overwriting default values]]
+    - [[#reading-customized-values][Reading customized values]]
+    - [[#erasing-customized-option-values][Erasing customized option values]]
 - [[#tutorial-2-linear-regression-with-more-than-one-predictor][Tutorial 2, linear regression with more than one predictor]]
   - [[#parameter-arrays][Parameter arrays]]
   - [[#simulated-data-1][Simulated data]]
@@ -51,7 +57,7 @@ I would like to thank *Ali Ghaderi* who had the patience to help me to
 debug the Windows version (I do not have access to this OS). Nothing
 would have been possible without him. All possibly remaining bugs are
 mine.
-
+ 
 As a remainder also note that one should not use path/filename with
 spaces (=Make= really does not like that). This consign is also true
 under Linux or MacOS. See [[https://stackoverflow.com/questions/9838384/can-gnu-make-handle-filenames-with-spaces][SO:can-gnu-make-handle-filenames-with-spaces]]
@@ -378,22 +384,24 @@ instead of
 stanResultFile = RunStan[stanExeFile, OptimizeDefaultOptions]
 #+END_SRC
 
-Like we do not want to erase our previous result file =stanResultFile=
-this is the opportunity to see how options work.
+However, please note that running this command will erase
+=stanResultFile= which is the file where result are exported. To avoid
+this we can modify the output file name by modifying option values.
 
-The default options are stored in (the protected) =VariationalDefaultOptions= variable. 
+The default option values are stored in the write-protected
+=VariationalDefaultOptions= variable.
 
 To modify them we must first copy this protected symbol:
 
 #+BEGIN_SRC mathematica :eval never
 myOpt=VariationalDefaultOptions
 #+END_SRC
-prints
+which prints
 #+BEGIN_EXAMPLE
 method=variational
 #+END_EXAMPLE
 
-For your convenience I remember here the default option values:
+The option values are printed when you run the =RunStan= command:
 
 #+BEGIN_EXAMPLE
 method = variational
@@ -422,9 +430,7 @@ output
   refresh = 100 (Default)
 #+END_EXAMPLE
 
-we have to modify =output file= option.
-
-This can be done by:
+We have to modify the =output file= option value. This can be done by:
 #+BEGIN_SRC mathematica :eval never
 myOpt = SetStanOption[myOpt, "output.file", FileNameJoin[{Directory[], "myOutputFile.csv"}]]
 #+END_SRC
@@ -433,38 +439,7 @@ which prints:
 method=variational output file=/tmp/myOutputFile.csv
 #+END_EXAMPLE
 
-*Option management digression*:
-- for each hierarchy level use a "." as separator. For instance if you
-  want to modify =method adapt iter=, use:
-  #+BEGIN_SRC mathematica :eval never
-  myOpt = SetStanOption[myOpt, "method.adapt.iter", 123]
-  #+END_SRC
-  which prints
-  #+BEGIN_EXAMPLE
-  method=variational adapt iter=123 output file=/tmp/myOutputFile.csv
-  #+END_EXAMPLE
-
-- to read an option value use:
-  #+BEGIN_SRC mathematica :eval never
-  GetStanOption[myOpt, "method.adapt.iter"]
-  #+END_SRC
-  which prints
-  #+BEGIN_EXAMPLE
-  123
-  #+END_EXAMPLE
-  *Caveat*: if the option was not defined (by =SetStanOption=) the function
-  returns =$Failed=.
-
-- to erase an option value (and use its default value) use:
-  #+BEGIN_SRC mathematica :eval never
-  myOpt = RemoveStanOption[myOpt, "method.adapt.iter"]
-  #+END_SRC
-  which prints
-  #+BEGIN_EXAMPLE
-  method=variational output file=/tmp/myOutputFile.csv
-  #+END_EXAMPLE
-
-We can run Stan:
+Now we can run Stan:
 
 #+BEGIN_SRC mathematica :eval never
 myOutputFile=RunStan[stanExeFile, myOpt, StanVerbose -> False]
@@ -518,6 +493,217 @@ GetStanResult[Histogram, myResult, "alpha"]
 
 [[file:figures/linRegHisto.png][file:./figures/linRegHisto.png]]
 
+** More about Option management
+
+*** Overwriting default values
+
+We provide further details concerning option related functions.
+
+To recap the first step is to perform a copy of the write-protected
+default option values. By example to modify default MCMC option values
+the first step is:
+
+#+BEGIN_SRC mathematica :eval never
+  myOpt = SampleDefaultOptions
+#+END_SRC
+
+The available option are:
+#+begin_example
+method = sample (Default)
+  sample
+    num_samples = 1000 (Default)
+    num_warmup = 1000 (Default)
+    save_warmup = 0 (Default)
+    thin = 1 (Default)
+    adapt
+      engaged = 1 (Default)
+      gamma = 0.050000000000000003 (Default)
+      delta = 0.80000000000000004 (Default)
+      kappa = 0.75 (Default)
+      t0 = 10 (Default)
+      init_buffer = 75 (Default)
+      term_buffer = 50 (Default)
+      window = 25 (Default)
+    algorithm = hmc (Default)
+      hmc
+        engine = nuts (Default)
+          nuts
+            max_depth = 10 (Default)
+        metric = diag_e (Default)
+        metric_file =  (Default)
+        stepsize = 1 (Default)
+        stepsize_jitter = 0 (Default)
+id = 0 (Default)
+data
+  file = /tmp/linear_regression.data.R
+init = 2 (Default)
+random
+  seed = 3714706817 (Default)
+output
+  file = /tmp/linear_regression.csv
+  diagnostic_file =  (Default)
+  refresh = 100 (Default)
+  sig_figs = -1 (Default)
+#+end_example
+
+If we want to modify:
+#+begin_example
+method = sample (Default)
+  sample
+    num_samples = 1000 (Default)
+    num_warmup = 1000 (Default)
+#+end_example
+and
+#+begin_example
+method = sample (Default)
+  sample
+    algorithm = hmc (Default)
+      hmc
+        engine = nuts (Default)
+          nuts
+            max_depth = 10 (Default)
+#+end_example
+you must proceed as follows. For each hierarchy level use a "." as
+separator and do not forget to rewrite "=" with the associated
+value. With our example this gives:
+
+#+BEGIN_SRC mathematica :eval never
+myOpt = SetStanOption[myOpt, "adapt.num_samples", 2000]
+myOpt = SetStanOption[myOpt, "adapt.num_warmup", 1500]
+myOpt = SetStanOption[myOpt, "algorithm=hmc.engine=nuts.max_depth", 5]
+#+END_SRC
+
+Now you can run the sampler with these new option values:
+#+BEGIN_SRC mathematica :eval never
+stanResultFile = RunStan[stanExeFile, myOpt]
+#+END_SRC
+which should print:
+#+begin_example
+method = sample (Default)
+  sample
+    num_samples = 2000
+    num_warmup = 1500
+    save_warmup = 0 (Default)
+    thin = 1 (Default)
+    adapt
+      engaged = 1 (Default)
+      gamma = 0.050000000000000003 (Default)
+      delta = 0.80000000000000004 (Default)
+      kappa = 0.75 (Default)
+      t0 = 10 (Default)
+      init_buffer = 75 (Default)
+      term_buffer = 50 (Default)
+      window = 25 (Default)
+    algorithm = hmc (Default)
+      hmc
+        engine = nuts (Default)
+          nuts
+            max_depth = 5
+        metric = diag_e (Default)
+        metric_file =  (Default)
+        stepsize = 1 (Default)
+        stepsize_jitter = 0 (Default)
+id = 0 (Default)
+data
+  file = /tmp/linear_regression.data.R
+init = 2 (Default)
+random
+  seed = 3720771451 (Default)
+output
+  file = /tmp/linear_regression.csv
+  diagnostic_file =  (Default)
+  refresh = 100 (Default)
+  sig_figs = -1 (Default)
+stanc_version = stanc3 b25c0b64
+stancflags = 
+
+
+Gradient evaluation took 1.3e-05 seconds
+1000 transitions using 10 leapfrog steps per transition would take 0.13 seconds.
+Adjust your expectations accordingly!
+
+
+Iteration:    1 / 3500 [  0%]  (Warmup)
+Iteration:  100 / 3500 [  2%]  (Warmup)
+Iteration:  200 / 3500 [  5%]  (Warmup)
+Iteration:  300 / 3500 [  8%]  (Warmup)
+Iteration:  400 / 3500 [ 11%]  (Warmup)
+Iteration:  500 / 3500 [ 14%]  (Warmup)
+Iteration:  600 / 3500 [ 17%]  (Warmup)
+Iteration:  700 / 3500 [ 20%]  (Warmup)
+Iteration:  800 / 3500 [ 22%]  (Warmup)
+Iteration:  900 / 3500 [ 25%]  (Warmup)
+Iteration: 1000 / 3500 [ 28%]  (Warmup)
+Iteration: 1100 / 3500 [ 31%]  (Warmup)
+Iteration: 1200 / 3500 [ 34%]  (Warmup)
+Iteration: 1300 / 3500 [ 37%]  (Warmup)
+Iteration: 1400 / 3500 [ 40%]  (Warmup)
+Iteration: 1500 / 3500 [ 42%]  (Warmup)
+Iteration: 1501 / 3500 [ 42%]  (Sampling)
+Iteration: 1600 / 3500 [ 45%]  (Sampling)
+Iteration: 1700 / 3500 [ 48%]  (Sampling)
+Iteration: 1800 / 3500 [ 51%]  (Sampling)
+Iteration: 1900 / 3500 [ 54%]  (Sampling)
+Iteration: 2000 / 3500 [ 57%]  (Sampling)
+Iteration: 2100 / 3500 [ 60%]  (Sampling)
+Iteration: 2200 / 3500 [ 62%]  (Sampling)
+Iteration: 2300 / 3500 [ 65%]  (Sampling)
+Iteration: 2400 / 3500 [ 68%]  (Sampling)
+Iteration: 2500 / 3500 [ 71%]  (Sampling)
+Iteration: 2600 / 3500 [ 74%]  (Sampling)
+Iteration: 2700 / 3500 [ 77%]  (Sampling)
+Iteration: 2800 / 3500 [ 80%]  (Sampling)
+Iteration: 2900 / 3500 [ 82%]  (Sampling)
+Iteration: 3000 / 3500 [ 85%]  (Sampling)
+Iteration: 3100 / 3500 [ 88%]  (Sampling)
+Iteration: 3200 / 3500 [ 91%]  (Sampling)
+Iteration: 3300 / 3500 [ 94%]  (Sampling)
+Iteration: 3400 / 3500 [ 97%]  (Sampling)
+Iteration: 3500 / 3500 [100%]  (Sampling)
+
+ Elapsed Time: 0.053 seconds (Warm-up)
+               0.094 seconds (Sampling)
+               0.147 seconds (Total)
+#+end_example
+
+You can check than the new option values have been taken into account:
+#+begin_example
+    num_samples = 2000
+    num_warmup = 1500
+
+    algorithm = hmc (Default)
+      hmc
+        engine = nuts (Default)
+          nuts
+            max_depth = 5
+#+end_example
+
+*** Reading customized values
+
+You can get back the modified values as follows:
+
+  #+BEGIN_SRC mathematica :eval never
+GetStanOption[myOpt, "adapt.num_warmup"]
+GetStanOption[myOpt, "algorithm=hmc.engine=nuts.max_depth"]
+  #+END_SRC
+  which prints
+  #+BEGIN_EXAMPLE
+  1500
+  5
+  #+END_EXAMPLE
+  *Caveat*: if the option was not defined (by =SetStanOption=) the function
+  returns =$Failed=.
+
+*** Erasing customized option values
+
+To erase an option value (and use its default value) use:
+  #+BEGIN_SRC mathematica :eval never
+  myOpt = RemoveStanOption[myOpt, "algorithm=hmc.engine=nuts.max_depth"]
+  #+END_SRC
+  which prints
+  #+BEGIN_EXAMPLE
+  method=sample adapt num_samples=2000 num_warmup=1500 
+  #+END_EXAMPLE
 
 * Tutorial 2, linear regression with more than one predictor
 
