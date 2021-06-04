@@ -30,7 +30,6 @@
 
 * Introduction
 
-
 *MathematicaStan* is a package to interact with [[http://mc-stan.org/interfaces/cmdstan][CmdStan]] from
 Mathematica. 
 
@@ -423,7 +422,7 @@ output
   refresh = 100 (Default)
 #+END_EXAMPLE
 
-we have to modify ="output file"= option.
+we have to modify =output file= option.
 
 This can be done by:
 #+BEGIN_SRC mathematica :eval never
@@ -435,7 +434,8 @@ method=variational output file=/tmp/myOutputFile.csv
 #+END_EXAMPLE
 
 *Option management digression*:
-- for each hierarchy level use a "." as separator. For instance if you want to modify ="method adapt iter"=, use:
+- for each hierarchy level use a "." as separator. For instance if you
+  want to modify =method adapt iter=, use:
   #+BEGIN_SRC mathematica :eval never
   myOpt = SetStanOption[myOpt, "method.adapt.iter", 123]
   #+END_SRC
