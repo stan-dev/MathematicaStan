@@ -1,0 +1,15 @@
+#+OPTIONS: toc:nil todo:nil pri:nil tags:nil ^:nil tex:t
+#+TITLE: Examples
+
+# +TOC: headlines 3
+
+* Table of contents                                            :TOC_3:noexport:
+- [[#tutorials][Tutorials]]
+  - [[#option-management][Option management]]
+
+* Tutorials
+
+** Option management
+
+The [[file:mcmc_option_example.nb][file:mcmc_option_example.nb]] notebook reuses the Tutorial part 1 and
+shows how to modify MCMC sample option values.

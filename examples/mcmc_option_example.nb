@@ -1,0 +1,678 @@
+(* Content-type: application/vnd.wolfram.mathematica *)
+
+(*** Wolfram Notebook File ***)
+(* http://www.wolfram.com/nb *)
+
+(* CreatedBy='Mathematica 11.2' *)
+
+(*CacheID: 234*)
+(* Internal cache information:
+NotebookFileLineBreakTest
+NotebookFileLineBreakTest
+NotebookDataPosition[       158,          7]
+NotebookDataLength[     27038,        670]
+NotebookOptionsPosition[     22210,        573]
+NotebookOutlinePosition[     22548,        588]
+CellTagsIndexPosition[     22505,        585]
+WindowFrame->Normal*)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+
+Cell[CellGroupData[{
+Cell["Sample Option Example", "Title",
+ CellChangeTimes->{{3.831785820560658*^9, 
+  3.8317858279042873`*^9}},ExpressionUUID->"6c9df950-effd-4a75-98b9-\
+594765b3cb9a"],
+
+Cell["\<\
+This example reuses Tutorial part 1. At the end we show how to modify the \
+\[OpenCurlyDoubleQuote]Sample\[CloseCurlyDoubleQuote] method options\
+\>", "Text",
+ CellChangeTimes->{{3.83179129350803*^9, 3.831791315164875*^9}, {
+  3.831791360166697*^9, 
+  3.831791365222356*^9}},ExpressionUUID->"063e36e8-b776-4eb3-9a48-\
+3064ac7f329d"],
+
+Cell[CellGroupData[{
+
+Cell["Unmodified beginning of the Tutorial 1", "Chapter",
+ CellChangeTimes->{{3.831785842073092*^9, 3.831785848857202*^9}, {
+  3.831791331045677*^9, 
+  3.8317913510298853`*^9}},ExpressionUUID->"6f510c45-11cb-4e2f-be32-\
+dcaf37cc5878"],
+
+Cell[BoxData[
+ RowBox[{"<<", " ", "CmdStan`"}]], "Input",ExpressionUUID->"ce3eec43-69af-4ed0-92b8-45fd278972bc"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"SetDirectory", "[", "$TemporaryDirectory", "]"}]], "Input",Expressio\
+nUUID->"51cf99c6-20ba-4b00-92d3-c480b1206b66"],
+
+Cell[BoxData["\<\"/tmp\"\>"], "Output",
+ CellChangeTimes->{
+  3.831785872297336*^9},ExpressionUUID->"12252d16-870f-4aa0-8ccf-\
+7b1762d12a9d"]
+}, Open  ]],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{
+   RowBox[{
+   "stanCode", "=", 
+    "\"\<data\n{\n  int<lower = 0> N;\n  vector[N] x;\n  vector[N] y;\n}\n\
+parameters\n{\n  real alpha;\n  real beta;\n  real<lower = 0> sigma;\n}\n\
+model {\n  y ~normal(alpha + beta * x, sigma);\n}\>\""}], ";"}], 
+  "\n"}]], "Input",ExpressionUUID->"42fde992-f78f-4ae6-926b-edbc102ae5fa"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"stanExeFile", " ", "=", " ", 
+  RowBox[{"CompileStanCode", "[", 
+   RowBox[{"stanCodeFile", ",", 
+    RowBox[{"StanVerbose", "->", "False"}]}], "]"}]}]], "Input",ExpressionUUID\
+->"0904a970-98bb-4c54-a784-5d25c80699d1"],
+
+Cell[BoxData["\<\"/tmp/linear_regression\"\>"], "Output",
+ CellChangeTimes->{
+  3.8317858834817133`*^9},ExpressionUUID->"737d01b9-8e04-49e5-9f26-\
+6e02c847ea43"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"\[Sigma]", "=", "3"}], ";", 
+  RowBox[{"\[Alpha]", "=", "1"}], ";", 
+  RowBox[{"\[Beta]", "=", "2"}], ";"}], "\n", 
+ RowBox[{
+  RowBox[{"n", "=", "20"}], ";"}], "\n", 
+ RowBox[{
+  RowBox[{"X", "=", 
+   RowBox[{"Range", "[", "n", "]"}]}], ";"}], "\n", 
+ RowBox[{
+  RowBox[{"Y", "=", 
+   RowBox[{"\[Alpha]", "+", 
+    RowBox[{"\[Beta]", "*", "X"}], "+", 
+    RowBox[{"RandomVariate", "[", 
+     RowBox[{
+      RowBox[{"NormalDistribution", "[", 
+       RowBox[{"0", ",", "\[Sigma]"}], "]"}], ",", "n"}], "]"}]}]}], 
+  ";"}], "\n", 
+ RowBox[{"p", "=", 
+  RowBox[{"Show", "[", 
+   RowBox[{
+    RowBox[{"Plot", "[", 
+     RowBox[{
+      RowBox[{"\[Alpha]", "+", 
+       RowBox[{"\[Beta]", "*", "x"}]}], ",", 
+      RowBox[{"{", 
+       RowBox[{"x", ",", 
+        RowBox[{"Min", "[", "X", "]"}], ",", 
+        RowBox[{"Max", "[", "X", "]"}]}], "}"}]}], "]"}], ",", 
+    RowBox[{"ListPlot", "[", 
+     RowBox[{
+      RowBox[{"Transpose", "@", 
+       RowBox[{"{", 
+        RowBox[{"X", ",", "Y"}], "}"}]}], ",", 
+      RowBox[{"PlotStyle", "->", "Red"}]}], "]"}]}], "]"}]}]}], "Input",Expres\
+sionUUID->"a2142860-3bba-4ca2-9652-742ebe54be57"],
+
+Cell[BoxData[
+ GraphicsBox[{{{{}, {}, 
+     TagBox[
+      {RGBColor[0.368417, 0.506779, 0.709798], AbsoluteThickness[1.6], 
+       Opacity[1.], LineBox[CompressedData["
+1:eJwtzX9M1GUAx/FD3Thv3OAyCLviDvAORLkfPMidd8j3AzxlkJx0cZNZFITH
+TstocJr8jkBkusEtERVkNjccLkNDkrlmTlgSTHMkGZUxrcBDbV6XeKcHEu15
+/vjs9c9ne0e/V2q1LxGJRDmL+9+pNyMcIpFHYIqhU9guTL7gEZhiVN47KLmo
+9QhMMcLqZV9WvOsRmGKYekO83m89AlOMFvHS6qmafwTmcqRcfNg6GvAKTAma
+1CMDbb5ZgSlFyLWN7pOlc0LTdKzzhuE5DBzerZ1PDeKGQ/NJjnUuaRk3Eu3W
+/XbT9mCuHH9/+qv8qEPCjYKhyzWY0iPFMctrRfJxJYo/trvzPgjjxiB6c8jl
+qBkZNxYT8mmZuGkFV4V9h7P664PDuXGY0JRKSuojuPGI+WZ4Yrs8kpuAbY9P
++eePruSuwXH1JddXRjk3EdVl7beuX3+Jq0HuTl9F7etR6DkfSL2k0iGq4EDr
+prsKtPZ+t/Hkvzp4a/Kqfjqn5Orx4/Dcjucbo7lJaFA09TfnxnAJzljG1a+E
+xnKTke8322STsdxk1FQ4TquOr+KuQ7l4d0Hp2ypuCqZkXaPfr1ZzDbjhbS7c
+MaPmGpBmaemTX4jjGlE54Hxnyd547nro/Qqiz1zNNcF+7q+hUlkC14zwVz+s
+eTyWwDWjfXrC1deyhpuKtqCCwtq31nI3QPqoO/+zFxO5aVhaJJaen0nkpsHZ
+rb0X/YWGK2DAZ4gecmhxK9DpKkoGzH+slZjkOmYnkJ+sPJJSpWMGgP5M5TLz
+nzpmcTr8v4S9vDVLzxxJx9PfirO7evTM+AyYOods7tAkZmsGjFf27tryURLT
+kwHFHmPGnR+SmJZM0Lu+B2XrCPPrTMQNrjwdf4gwwyn22zYvH28nzAiKB+7G
+krojhBlJcTbUo7zZSZhyClPBlUMNJwgzhsLiL6ubPEOYWgqn5qq1bZQwsylu
+Xg46K1wlzE0U620G6f1rhJlD8azqxHD6GGG+QdE8sif14c+EuYWic5tKnT1F
+mPbFv29rw+w0YZZQFB5w3f7cTZgOilV9gQ7ffcJ8n6J3YSy020uYZRRhB4N3
+5j4iTCdFuXrDaGCWMHdRGHN6Gq1PCLOCouP273fmnxJmJcV8+Qrh1BxhVi/2
+g7OO5T0jzFqKwY7aJwsLhFlH8R86ohrn
+        "]]},
+      Annotation[#, "Charting`Private`Tag$8832#1"]& ]}, {}, {}}, {{}, {{}, 
+     {RGBColor[1, 0, 0], PointSize[0.012833333333333334`], AbsoluteThickness[
+      1.6], PointBox[CompressedData["
+1:eJxTTMoPSmViYGAQAWIQDQEf7OOelchvdOR1gAo4GGSU750o/dwewuVweKe1
+Y6pknhZUXsDh62MNxvcztKF8EYc5VyrK82SloHwJhxOz/v8u8FKF8mUcZH82
+ff6UbwjlKzjU37tos3iRDpSv5BC0yGYe8x89KF/FoZRLbN2hEAMoX81BT6TV
+ZEqaOZSv4ZDkK7V26VEzKF/LYWLnyYmtTpZQvo5D8hG9e8EGNlC+nkPlpYos
+N0kY38AhjsPv1ect9lC+ocNRgWndi744QPlGDk9cIidWZ8H4xg4rNH9tSj7p
+DOWbOOyrSldM2OviAAAkJlD/
+       "]]}, {}}, {}, {}, {}, {}}},
+  AspectRatio->NCache[GoldenRatio^(-1), 0.6180339887498948],
+  Axes->{True, True},
+  AxesLabel->{None, None},
+  AxesOrigin->{1, 0},
+  DisplayFunction->Identity,
+  Frame->{{False, False}, {False, False}},
+  FrameLabel->{{None, None}, {None, None}},
+  FrameTicks->{{Automatic, 
+     Charting`ScaledFrameTicks[{Identity, Identity}]}, {Automatic, 
+     Charting`ScaledFrameTicks[{Identity, Identity}]}},
+  GridLines->{None, None},
+  GridLinesStyle->Directive[
+    GrayLevel[0.5, 0.4]],
+  ImagePadding->All,
+  Method->{
+   "DefaultBoundaryStyle" -> Automatic, "DefaultMeshStyle" -> 
+    AbsolutePointSize[6], "ScalingFunctions" -> None, 
+    "CoordinatesToolOptions" -> {"DisplayFunction" -> ({
+        (Identity[#]& )[
+         Part[#, 1]], 
+        (Identity[#]& )[
+         Part[#, 2]]}& ), "CopiedValueFunction" -> ({
+        (Identity[#]& )[
+         Part[#, 1]], 
+        (Identity[#]& )[
+         Part[#, 2]]}& )}},
+  PlotRange->{{1, 20}, {0., 40.9999992244898}},
+  PlotRangeClipping->True,
+  PlotRangePadding->{{
+     Scaled[0.02], 
+     Scaled[0.02]}, {
+     Scaled[0.05], 
+     Scaled[0.05]}},
+  Ticks->{Automatic, Automatic}]], "Output",
+ CellChangeTimes->{
+  3.831785895936925*^9},ExpressionUUID->"f73911b1-5268-489e-a577-\
+615042bceeec"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"stanData", "=", 
+   RowBox[{"<|", 
+    RowBox[{
+     RowBox[{"\"\<N\>\"", "->", "n"}], ",", 
+     RowBox[{"\"\<x\>\"", "->", "X"}], ",", 
+     RowBox[{"\"\<y\>\"", "->", "Y"}]}], "|>"}]}], ";"}], "\n", 
+ RowBox[{"stanDataFile", "=", 
+  RowBox[{"ExportStanData", "[", 
+   RowBox[{"stanExeFile", ",", "stanData"}], "]"}]}]}], "Input",ExpressionUUID\
+->"27cd088e-faf8-444b-907b-9e9e08bb0198"],
+
+Cell[BoxData["\<\"/tmp/linear_regression.data.R\"\>"], "Output",
+ CellChangeTimes->{
+  3.831785930642892*^9},ExpressionUUID->"cc1c819c-cfec-4124-8155-\
+7d29d3e71db5"]
+}, Open  ]]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Option modification example", "Chapter",
+ CellChangeTimes->{{3.8317859541009912`*^9, 3.831785956420439*^9}, {
+  3.831791386567368*^9, 
+  3.831791389447465*^9}},ExpressionUUID->"38906749-4dd4-4dbf-a5f1-\
+04434d86abbb"],
+
+Cell[CellGroupData[{
+
+Cell["A run with sample default options", "Subchapter",
+ CellChangeTimes->{{3.831785965125164*^9, 
+  3.831785979485395*^9}},ExpressionUUID->"a8c5e0e9-43e0-468e-90f2-\
+0be61ab05be1"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"stanResultFile", "=", 
+  RowBox[{"RunStan", "[", 
+   RowBox[{"stanExeFile", ",", "SampleDefaultOptions"}], "]"}]}]], "Input",
+ CellChangeTimes->{{3.831786010778351*^9, 
+  3.831786012374572*^9}},ExpressionUUID->"598fa5f8-79c7-4551-bc78-\
+a95fa6250481"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ InterpretationBox[
+  RowBox[{"\<\"Running: \"\>", 
+   "\[InvisibleSpace]", "\<\"/tmp/linear_regression method=sample data \
+file=/tmp/linear_regression.data.R output \
+file=/tmp/linear_regression.csv\"\>"}],
+  SequenceForm[
+  "Running: ", 
+   "/tmp/linear_regression method=sample data \
+file=/tmp/linear_regression.data.R output file=/tmp/linear_regression.csv"],
+  Editable->False]], "Print",
+ CellChangeTimes->{
+  3.831786013097611*^9},ExpressionUUID->"0514d094-2305-48a8-a15e-\
+f98a969412d0"],
+
+Cell[BoxData["\<\"method = sample (Default)\\n  sample\\n    num_samples = \
+1000 (Default)\\n    num_warmup = 1000 (Default)\\n    save_warmup = 0 \
+(Default)\\n    thin = 1 (Default)\\n    adapt\\n      engaged = 1 \
+(Default)\\n      gamma = 0.050000000000000003 (Default)\\n      delta = \
+0.80000000000000004 (Default)\\n      kappa = 0.75 (Default)\\n      t0 = 10 \
+(Default)\\n      init_buffer = 75 (Default)\\n      term_buffer = 50 \
+(Default)\\n      window = 25 (Default)\\n    algorithm = hmc (Default)\\n    \
+  hmc\\n        engine = nuts (Default)\\n          nuts\\n            \
+max_depth = 10 (Default)\\n        metric = diag_e (Default)\\n        \
+metric_file =  (Default)\\n        stepsize = 1 (Default)\\n        \
+stepsize_jitter = 0 (Default)\\nid = 0 (Default)\\ndata\\n  file = \
+/tmp/linear_regression.data.R\\ninit = 2 (Default)\\nrandom\\n  seed = \
+3714706817 (Default)\\noutput\\n  file = /tmp/linear_regression.csv\\n  \
+diagnostic_file =  (Default)\\n  refresh = 100 (Default)\\n  sig_figs = -1 \
+(Default)\\nstanc_version = stanc3 b25c0b64\\nstancflags = \\n\\n\\nGradient \
+evaluation took 1.2e-05 seconds\\n1000 transitions using 10 leapfrog steps \
+per transition would take 0.12 seconds.\\nAdjust your expectations \
+accordingly!\\n\\n\\nIteration:    1 / 2000 [  0%]  (Warmup)\\nIteration:  \
+100 / 2000 [  5%]  (Warmup)\\nIteration:  200 / 2000 [ 10%]  \
+(Warmup)\\nIteration:  300 / 2000 [ 15%]  (Warmup)\\nIteration:  400 / 2000 [ \
+20%]  (Warmup)\\nIteration:  500 / 2000 [ 25%]  (Warmup)\\nIteration:  600 / \
+2000 [ 30%]  (Warmup)\\nIteration:  700 / 2000 [ 35%]  (Warmup)\\nIteration:  \
+800 / 2000 [ 40%]  (Warmup)\\nIteration:  900 / 2000 [ 45%]  \
+(Warmup)\\nIteration: 1000 / 2000 [ 50%]  (Warmup)\\nIteration: 1001 / 2000 [ \
+50%]  (Sampling)\\nIteration: 1100 / 2000 [ 55%]  (Sampling)\\nIteration: \
+1200 / 2000 [ 60%]  (Sampling)\\nIteration: 1300 / 2000 [ 65%]  \
+(Sampling)\\nIteration: 1400 / 2000 [ 70%]  (Sampling)\\nIteration: 1500 / \
+2000 [ 75%]  (Sampling)\\nIteration: 1600 / 2000 [ 80%]  \
+(Sampling)\\nIteration: 1700 / 2000 [ 85%]  (Sampling)\\nIteration: 1800 / \
+2000 [ 90%]  (Sampling)\\nIteration: 1900 / 2000 [ 95%]  \
+(Sampling)\\nIteration: 2000 / 2000 [100%]  (Sampling)\\n\\n Elapsed Time: \
+0.045 seconds (Warm-up)\\n               0.057 seconds (Sampling)\\n          \
+     0.102 seconds (Total)\\n\\n\"\>"], "Print",
+ CellChangeTimes->{
+  3.831786013169392*^9},ExpressionUUID->"d21179ef-abd3-439d-9a30-\
+d18be0ca7bf4"]
+}, Open  ]],
+
+Cell[BoxData["\<\"/tmp/linear_regression.csv\"\>"], "Output",
+ CellChangeTimes->{
+  3.831786013171788*^9},ExpressionUUID->"1af89ad7-883b-485d-bbe2-\
+6d01b5d31676"]
+}, Open  ]]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Now with customized option values", "Subchapter",
+ CellChangeTimes->{{3.83178602843119*^9, 
+  3.831786042247155*^9}},ExpressionUUID->"b4c0447e-acc5-4313-ac3a-\
+a6126e79b74e"],
+
+Cell["\<\
+Note: 
+
+you can see available options looking at previous command output or by \
+reading CmdStan manual
+https://mc-stan.org/docs/2_24/cmdstan-guide-2_24.pdf
+
+by example we will modify MCMC options:
+    num_samples = 1000 (Default)
+    num_warmup = 1000 (Default) 
+    
+  and
+  
+   algorithm = hmc (Default)
+      hmc
+        engine = nuts (Default)
+          nuts
+            max_depth = 10 (Default)\
+\>", "Text",
+ CellChangeTimes->{{3.831786060520108*^9, 3.831786204732481*^9}, {
+   3.8317863861232147`*^9, 3.8317864097150927`*^9}, {3.83178644486896*^9, 
+   3.831786450397414*^9}, {3.831791205108165*^9, 3.831791209426579*^9}, 
+   3.831791415448629*^9},ExpressionUUID->"e9ff3f7f-5805-4b32-8588-\
+89c650e83760"],
+
+Cell[CellGroupData[{
+
+Cell["Copy default Sample option", "Subsubsection",
+ CellChangeTimes->{{3.831791456026843*^9, 
+  3.831791472577626*^9}},ExpressionUUID->"c2c4825f-6f39-4a5c-84ba-\
+f599e98400b8"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"myOpt", "=", "SampleDefaultOptions"}]], "Input",
+ CellChangeTimes->{
+  3.8317861805170317`*^9, {3.8317862112224083`*^9, 3.831786229805153*^9}, 
+   3.831791245882015*^9, {3.831791482402768*^9, 
+   3.831791482818211*^9}},ExpressionUUID->"0bd09745-72ef-41cf-846b-\
+fffe33e1b4ea"],
+
+Cell[BoxData["\<\"method=sample \"\>"], "Output",
+ CellChangeTimes->{3.8317862310754538`*^9, 3.831787077828847*^9, 
+  3.8317912808757753`*^9, 3.831791485125471*^9, 
+  3.831791986732547*^9},ExpressionUUID->"8ccc9535-e8bc-4305-8f79-\
+44e2b636c927"]
+}, Open  ]]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Modify some values", "Subsubsection",
+ CellChangeTimes->{{3.831791491026187*^9, 
+  3.831791497370562*^9}},ExpressionUUID->"65397619-55fe-4db8-9fd7-\
+55613f200b45"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[{
+ RowBox[{"myOpt", "=", 
+  RowBox[{"SetStanOption", "[", 
+   RowBox[{"myOpt", ",", "\"\<adapt.num_samples\>\"", ",", "2000"}], 
+   "]"}]}], "\[IndentingNewLine]", 
+ RowBox[{"myOpt", "=", 
+  RowBox[{"SetStanOption", "[", 
+   RowBox[{"myOpt", ",", "\"\<adapt.num_warmup\>\"", ",", "1500"}], 
+   "]"}]}], "\[IndentingNewLine]", 
+ RowBox[{"myOpt", "=", 
+  RowBox[{"SetStanOption", "[", 
+   RowBox[{
+   "myOpt", ",", "\"\<algorithm=hmc.engine=nuts.max_depth\>\"", ",", "5"}], 
+   "]"}]}], "\[IndentingNewLine]"}], "Input",
+ CellChangeTimes->{{3.831786232870936*^9, 3.831786262286579*^9}, {
+  3.8317864593513823`*^9, 3.83178652925736*^9}, {3.8317870734885883`*^9, 
+  3.8317870751529627`*^9}, {3.8317912474827623`*^9, 3.831791250825214*^9}, {
+  3.8317914874347563`*^9, 
+  3.831791488050886*^9}},ExpressionUUID->"06358e83-262a-412c-834d-\
+8257aa1bc1ab"],
+
+Cell[BoxData["\<\"method=sample adapt num_samples=2000 num_warmup=1500 \
+algorithm=hmc engine=nuts max_depth=5 \"\>"], "Output",
+ CellChangeTimes->{3.831786263790722*^9, 3.83178650542877*^9, 
+  3.831787078635294*^9, 3.831791508694509*^9, 3.831791989081615*^9, 
+  3.83179207552927*^9},ExpressionUUID->"9ede94de-2ec4-4e75-8341-9fc2b2857870"],
+
+Cell[BoxData["\<\"method=sample adapt num_samples=2000 num_warmup=1500 \
+algorithm=hmc engine=nuts max_depth=5 \"\>"], "Output",
+ CellChangeTimes->{3.831786263790722*^9, 3.83178650542877*^9, 
+  3.831787078635294*^9, 3.831791508694509*^9, 3.831791989081615*^9, 
+  3.831792075531848*^9},ExpressionUUID->"c0c34719-4aa9-45ef-b4b4-\
+fc86381372c7"],
+
+Cell[BoxData["\<\"method=sample adapt num_samples=2000 num_warmup=1500 \
+algorithm=hmc engine=nuts max_depth=5 \"\>"], "Output",
+ CellChangeTimes->{3.831786263790722*^9, 3.83178650542877*^9, 
+  3.831787078635294*^9, 3.831791508694509*^9, 3.831791989081615*^9, 
+  3.83179207553358*^9},ExpressionUUID->"bb7c8ad8-0f2f-4052-83d4-438748fa010d"]
+}, Open  ]]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Perform a new run with these options", "Subsubsection",
+ CellChangeTimes->{{3.831791515923255*^9, 
+  3.83179152464325*^9}},ExpressionUUID->"26f2eb13-50bd-457d-95ff-\
+40104ba9b45f"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"stanResultFile", "=", 
+  RowBox[{"RunStan", "[", 
+   RowBox[{"stanExeFile", ",", "myOpt"}], "]"}]}]], "Input",
+ CellChangeTimes->{{3.831786268912915*^9, 3.8317863116099586`*^9}, 
+   3.831791255225955*^9, {3.8317915283241587`*^9, 
+   3.8317915287400827`*^9}},ExpressionUUID->"ba89db0f-22f3-46b8-9f90-\
+3b20a0bd4f99"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ InterpretationBox[
+  RowBox[{"\<\"Running: \"\>", 
+   "\[InvisibleSpace]", "\<\"/tmp/linear_regression method=sample adapt \
+num_samples=2000 num_warmup=1500 algorithm=hmc engine=nuts max_depth=5 data \
+file=/tmp/linear_regression.data.R output \
+file=/tmp/linear_regression.csv\"\>"}],
+  SequenceForm[
+  "Running: ", 
+   "/tmp/linear_regression method=sample adapt num_samples=2000 \
+num_warmup=1500 algorithm=hmc engine=nuts max_depth=5 data \
+file=/tmp/linear_regression.data.R output file=/tmp/linear_regression.csv"],
+  Editable->False]], "Print",
+ CellChangeTimes->{3.831786312421329*^9, 3.831786508583704*^9, 
+  3.831787150759328*^9, 
+  3.8317920777685337`*^9},ExpressionUUID->"a3492ec0-40a9-47f7-b026-\
+5aa69baadfaf"],
+
+Cell[BoxData["\<\"method = sample (Default)\\n  sample\\n    num_samples = \
+2000\\n    num_warmup = 1500\\n    save_warmup = 0 (Default)\\n    thin = 1 \
+(Default)\\n    adapt\\n      engaged = 1 (Default)\\n      gamma = \
+0.050000000000000003 (Default)\\n      delta = 0.80000000000000004 \
+(Default)\\n      kappa = 0.75 (Default)\\n      t0 = 10 (Default)\\n      \
+init_buffer = 75 (Default)\\n      term_buffer = 50 (Default)\\n      window \
+= 25 (Default)\\n    algorithm = hmc (Default)\\n      hmc\\n        engine = \
+nuts (Default)\\n          nuts\\n            max_depth = 5\\n        metric \
+= diag_e (Default)\\n        metric_file =  (Default)\\n        stepsize = 1 \
+(Default)\\n        stepsize_jitter = 0 (Default)\\nid = 0 \
+(Default)\\ndata\\n  file = /tmp/linear_regression.data.R\\ninit = 2 \
+(Default)\\nrandom\\n  seed = 3720771451 (Default)\\noutput\\n  file = \
+/tmp/linear_regression.csv\\n  diagnostic_file =  (Default)\\n  refresh = 100 \
+(Default)\\n  sig_figs = -1 (Default)\\nstanc_version = stanc3 \
+b25c0b64\\nstancflags = \\n\\n\\nGradient evaluation took 1.3e-05 \
+seconds\\n1000 transitions using 10 leapfrog steps per transition would take \
+0.13 seconds.\\nAdjust your expectations accordingly!\\n\\n\\nIteration:    1 \
+/ 3500 [  0%]  (Warmup)\\nIteration:  100 / 3500 [  2%]  \
+(Warmup)\\nIteration:  200 / 3500 [  5%]  (Warmup)\\nIteration:  300 / 3500 [ \
+ 8%]  (Warmup)\\nIteration:  400 / 3500 [ 11%]  (Warmup)\\nIteration:  500 / \
+3500 [ 14%]  (Warmup)\\nIteration:  600 / 3500 [ 17%]  (Warmup)\\nIteration:  \
+700 / 3500 [ 20%]  (Warmup)\\nIteration:  800 / 3500 [ 22%]  \
+(Warmup)\\nIteration:  900 / 3500 [ 25%]  (Warmup)\\nIteration: 1000 / 3500 [ \
+28%]  (Warmup)\\nIteration: 1100 / 3500 [ 31%]  (Warmup)\\nIteration: 1200 / \
+3500 [ 34%]  (Warmup)\\nIteration: 1300 / 3500 [ 37%]  (Warmup)\\nIteration: \
+1400 / 3500 [ 40%]  (Warmup)\\nIteration: 1500 / 3500 [ 42%]  \
+(Warmup)\\nIteration: 1501 / 3500 [ 42%]  (Sampling)\\nIteration: 1600 / 3500 \
+[ 45%]  (Sampling)\\nIteration: 1700 / 3500 [ 48%]  (Sampling)\\nIteration: \
+1800 / 3500 [ 51%]  (Sampling)\\nIteration: 1900 / 3500 [ 54%]  \
+(Sampling)\\nIteration: 2000 / 3500 [ 57%]  (Sampling)\\nIteration: 2100 / \
+3500 [ 60%]  (Sampling)\\nIteration: 2200 / 3500 [ 62%]  \
+(Sampling)\\nIteration: 2300 / 3500 [ 65%]  (Sampling)\\nIteration: 2400 / \
+3500 [ 68%]  (Sampling)\\nIteration: 2500 / 3500 [ 71%]  \
+(Sampling)\\nIteration: 2600 / 3500 [ 74%]  (Sampling)\\nIteration: 2700 / \
+3500 [ 77%]  (Sampling)\\nIteration: 2800 / 3500 [ 80%]  \
+(Sampling)\\nIteration: 2900 / 3500 [ 82%]  (Sampling)\\nIteration: 3000 / \
+3500 [ 85%]  (Sampling)\\nIteration: 3100 / 3500 [ 88%]  \
+(Sampling)\\nIteration: 3200 / 3500 [ 91%]  (Sampling)\\nIteration: 3300 / \
+3500 [ 94%]  (Sampling)\\nIteration: 3400 / 3500 [ 97%]  \
+(Sampling)\\nIteration: 3500 / 3500 [100%]  (Sampling)\\n\\n Elapsed Time: \
+0.053 seconds (Warm-up)\\n               0.094 seconds (Sampling)\\n          \
+     0.147 seconds (Total)\\n\\n\"\>"], "Print",
+ CellChangeTimes->{3.831786312421329*^9, 3.831786508583704*^9, 
+  3.831787150759328*^9, 
+  3.831792077848501*^9},ExpressionUUID->"7c952644-0fe4-4a12-9a22-\
+f8c0ff9c8f28"]
+}, Open  ]],
+
+Cell[BoxData["\<\"/tmp/linear_regression.csv\"\>"], "Output",
+ CellChangeTimes->{3.8317863125587397`*^9, 3.831786508589686*^9, 
+  3.831787150928133*^9, 
+  3.831792077850565*^9},ExpressionUUID->"d8b12aee-2a57-4ff4-88ee-\
+bab419c16e85"]
+}, Open  ]]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Read back option values", "Subsection",
+ CellChangeTimes->{{3.831792317772191*^9, 
+  3.831792322020649*^9}},ExpressionUUID->"ea9e4e8a-492c-4f01-bf89-\
+582887fc0890"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[{
+ RowBox[{"GetStanOption", "[", 
+  RowBox[{"myOpt", ",", "\"\<adapt.num_warmup\>\""}], 
+  "]"}], "\[IndentingNewLine]", 
+ RowBox[{"GetStanOption", "[", 
+  RowBox[{"myOpt", ",", "\"\<algorithm=hmc.engine=nuts.max_depth\>\""}], 
+  "]"}], "\[IndentingNewLine]"}], "Input",
+ CellChangeTimes->{{3.8317923275172243`*^9, 
+  3.8317923446215982`*^9}},ExpressionUUID->"ed1b181b-9329-4f10-9304-\
+f09ef7c9ef84"],
+
+Cell[BoxData["1500"], "Output",
+ CellChangeTimes->{
+  3.831792345979162*^9},ExpressionUUID->"fcf8e589-70e5-45f8-9caf-\
+04b1ee8246aa"],
+
+Cell[BoxData["5"], "Output",
+ CellChangeTimes->{
+  3.831792345980885*^9},ExpressionUUID->"760e397a-fb34-443d-a21b-\
+437acb500580"]
+}, Open  ]]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Remove the preivously customized \[OpenCurlyDoubleQuote]max_depth\
+\[CloseCurlyDoubleQuote] value", "Subsection",
+ CellChangeTimes->{{3.8317915409880877`*^9, 
+  3.831791566181119*^9}},ExpressionUUID->"b63b677e-17a9-4d05-a9e2-\
+57201c1cc6de"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"myOpt", "=", 
+  RowBox[{"RemoveStanOption", "[", 
+   RowBox[{"myOpt", ",", "\"\<algorithm=hmc.engine=nuts.max_depth\>\""}], 
+   "]"}]}]], "Input",
+ CellChangeTimes->{{3.831787153812202*^9, 3.831787175875298*^9}, {
+  3.8317912564178877`*^9, 3.8317912572810163`*^9}, {3.831791568157092*^9, 
+  3.831791569253112*^9}},ExpressionUUID->"03111ad7-653a-48aa-8aee-\
+37bde2ec297b"],
+
+Cell[BoxData["\<\"method=sample adapt num_samples=2000 num_warmup=1500 \
+\"\>"], "Output",
+ CellChangeTimes->{3.831787176566696*^9, 
+  3.831791570647738*^9},ExpressionUUID->"2db273e4-68fb-4852-8829-\
+42605f455471"]
+}, Open  ]]
+}, Open  ]]
+}, Open  ]]
+}, Open  ]]
+}, Open  ]]
+},
+WindowSize->{950, 1166},
+WindowMargins->{{Automatic, 5}, {5, Automatic}},
+FrontEndVersion->"11.2 for Linux x86 (64-bit) (September 10, 2017)",
+StyleDefinitions->"Default.nb"
+]
+(* End of Notebook Content *)
+
+(* Internal cache information *)
+(*CellTagsOutline
+CellTagsIndex->{}
+*)
+(*CellTagsIndex
+CellTagsIndex->{}
+*)
+(*NotebookFileOutline
+Notebook[{
+Cell[CellGroupData[{
+Cell[580, 22, 166, 3, 99, "Title",ExpressionUUID->"6c9df950-effd-4a75-98b9-594765b3cb9a"],
+Cell[749, 27, 342, 7, 36, "Text",ExpressionUUID->"063e36e8-b776-4eb3-9a48-3064ac7f329d"],
+Cell[CellGroupData[{
+Cell[1116, 38, 234, 4, 70, "Chapter",ExpressionUUID->"6f510c45-11cb-4e2f-be32-dcaf37cc5878"],
+Cell[1353, 44, 112, 1, 31, "Input",ExpressionUUID->"ce3eec43-69af-4ed0-92b8-45fd278972bc"],
+Cell[CellGroupData[{
+Cell[1490, 49, 140, 2, 31, "Input",ExpressionUUID->"51cf99c6-20ba-4b00-92d3-c480b1206b66"],
+Cell[1633, 53, 141, 3, 35, "Output",ExpressionUUID->"12252d16-870f-4aa0-8ccf-7b1762d12a9d"]
+}, Open  ]],
+Cell[1789, 59, 359, 8, 377, "Input",ExpressionUUID->"42fde992-f78f-4ae6-926b-edbc102ae5fa"],
+Cell[CellGroupData[{
+Cell[2173, 71, 243, 5, 31, "Input",ExpressionUUID->"0904a970-98bb-4c54-a784-5d25c80699d1"],
+Cell[2419, 78, 161, 3, 35, "Output",ExpressionUUID->"737d01b9-8e04-49e5-9f26-6e02c847ea43"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[2617, 86, 1171, 36, 124, "Input",ExpressionUUID->"a2142860-3bba-4ca2-9652-742ebe54be57"],
+Cell[3791, 124, 3182, 72, 242, "Output",ExpressionUUID->"f73911b1-5268-489e-a577-615042bceeec"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[7010, 201, 425, 11, 55, "Input",ExpressionUUID->"27cd088e-faf8-444b-907b-9e9e08bb0198"],
+Cell[7438, 214, 166, 3, 35, "Output",ExpressionUUID->"cc1c819c-cfec-4124-8155-7d29d3e71db5"]
+}, Open  ]]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[7653, 223, 223, 4, 70, "Chapter",ExpressionUUID->"38906749-4dd4-4dbf-a5f1-04434d86abbb"],
+Cell[CellGroupData[{
+Cell[7901, 231, 181, 3, 65, "Subchapter",ExpressionUUID->"a8c5e0e9-43e0-468e-90f2-0be61ab05be1"],
+Cell[CellGroupData[{
+Cell[8107, 238, 275, 6, 31, "Input",ExpressionUUID->"598fa5f8-79c7-4551-bc78-a95fa6250481"],
+Cell[CellGroupData[{
+Cell[8407, 248, 511, 13, 48, "Print",ExpressionUUID->"0514d094-2305-48a8-a15e-f98a969412d0"],
+Cell[8921, 263, 2502, 35, 1588, "Print",ExpressionUUID->"d21179ef-abd3-439d-9a30-d18be0ca7bf4"]
+}, Open  ]],
+Cell[11438, 301, 163, 3, 35, "Output",ExpressionUUID->"1af89ad7-883b-485d-bbe2-6d01b5d31676"]
+}, Open  ]]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[11650, 310, 180, 3, 65, "Subchapter",ExpressionUUID->"b4c0447e-acc5-4313-ac3a-a6126e79b74e"],
+Cell[11833, 315, 722, 23, 396, "Text",ExpressionUUID->"e9ff3f7f-5805-4b32-8588-89c650e83760"],
+Cell[CellGroupData[{
+Cell[12580, 342, 177, 3, 46, "Subsubsection",ExpressionUUID->"c2c4825f-6f39-4a5c-84ba-f599e98400b8"],
+Cell[CellGroupData[{
+Cell[12782, 349, 300, 6, 31, "Input",ExpressionUUID->"0bd09745-72ef-41cf-846b-fffe33e1b4ea"],
+Cell[13085, 357, 246, 4, 35, "Output",ExpressionUUID->"8ccc9535-e8bc-4305-8f79-44e2b636c927"]
+}, Open  ]]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[13380, 367, 169, 3, 46, "Subsubsection",ExpressionUUID->"65397619-55fe-4db8-9fd7-55613f200b45"],
+Cell[CellGroupData[{
+Cell[13574, 374, 859, 19, 101, "Input",ExpressionUUID->"06358e83-262a-412c-834d-8257aa1bc1ab"],
+Cell[14436, 395, 339, 4, 35, "Output",ExpressionUUID->"9ede94de-2ec4-4e75-8341-9fc2b2857870"],
+Cell[14778, 401, 342, 5, 35, "Output",ExpressionUUID->"c0c34719-4aa9-45ef-b4b4-fc86381372c7"],
+Cell[15123, 408, 339, 4, 35, "Output",ExpressionUUID->"bb7c8ad8-0f2f-4052-83d4-438748fa010d"]
+}, Open  ]]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[15511, 418, 186, 3, 46, "Subsubsection",ExpressionUUID->"26f2eb13-50bd-457d-95ff-40104ba9b45f"],
+Cell[CellGroupData[{
+Cell[15722, 425, 339, 7, 31, "Input",ExpressionUUID->"ba89db0f-22f3-46b8-9f90-3b20a0bd4f99"],
+Cell[CellGroupData[{
+Cell[16086, 436, 740, 16, 70, "Print",ExpressionUUID->"a3492ec0-40a9-47f7-b026-5aa69baadfaf"],
+Cell[16829, 454, 3208, 45, 1918, "Print",ExpressionUUID->"7c952644-0fe4-4a12-9a22-f8c0ff9c8f28"]
+}, Open  ]],
+Cell[20052, 502, 234, 4, 35, "Output",ExpressionUUID->"d8b12aee-2a57-4ff4-88ee-bab419c16e85"]
+}, Open  ]]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[20335, 512, 171, 3, 55, "Subsection",ExpressionUUID->"ea9e4e8a-492c-4f01-bf89-582887fc0890"],
+Cell[CellGroupData[{
+Cell[20531, 519, 413, 9, 78, "Input",ExpressionUUID->"ed1b181b-9329-4f10-9304-f09ef7c9ef84"],
+Cell[20947, 530, 133, 3, 35, "Output",ExpressionUUID->"fcf8e589-70e5-45f8-9caf-04b1ee8246aa"],
+Cell[21083, 535, 130, 3, 35, "Output",ExpressionUUID->"760e397a-fb34-443d-a21b-437acb500580"]
+}, Open  ]]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[21262, 544, 247, 4, 55, "Subsection",ExpressionUUID->"b63b677e-17a9-4d05-a9e2-57201c1cc6de"],
+Cell[CellGroupData[{
+Cell[21534, 552, 395, 8, 31, "Input",ExpressionUUID->"03111ad7-653a-48aa-8aee-37bde2ec297b"],
+Cell[21932, 562, 214, 4, 35, "Output",ExpressionUUID->"2db273e4-68fb-4852-8829-42605f455471"]
+}, Open  ]]
+}, Open  ]]
+}, Open  ]]
+}, Open  ]]
+}, Open  ]]
+}
+]
+*)
+
