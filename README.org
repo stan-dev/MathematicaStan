@@ -34,6 +34,7 @@
   - [[#exporting-data][Exporting data]]
   - [[#run-stan-hmc-sampling][Run Stan, HMC sampling]]
   - [[#load-the-csv-result-file-1][Load the CSV result file]]
+- [[#unit-tests][Unit tests]]
 
 * Introduction
 
@@ -50,9 +51,22 @@ It should work under *MacOS* and also under *Windows*.
    
 *** 2024-08-13
 
+*New MathematicaStan version 2.2!*
+
 *Package test with last CmdStan v2.35.0, Mathematica 11.2, Linux*
 
-Everything works.
+- Add some screenshots to the install procedure section
+  
+- CmdStan syntax changes have been included :
+  |----------------------------+-----------------------------------|
+  | old                        | current                           |
+  |----------------------------+-----------------------------------|
+  | <-                         | =                                 |
+  | increment_log_prob(...)    | target += ...                     |
+  | int<lower=0,upper=1> y[N]; | array[N] int<lower=0, upper=1> y; |
+  |----------------------------+-----------------------------------|
+
+- Check that unit tests and examples work.
 
 *** 2020-12-21
     
