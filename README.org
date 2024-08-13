@@ -106,6 +106,9 @@ To install the Mathematica CmdStan package:
 - open the =CmdStan.m= file with Mathematica.
 - install it using the Mathematica Notebook *File->Install* menu.
 
+Fill in the pop-up windows as follows:
+[[file:figures/install.png]]
+
 ** First run
 
 The first time the package is imported
@@ -116,6 +119,7 @@ you will get an error message:
 #+BEGIN_EXAMPLE
 CmdStan::cmdStanDirectoryNotDefined: CmdStan directory does not exist, use SetCmdStanDirectory[dir] to define it (with something like SetCmdStanDirectory["~/ExternalSoftware/cmdstan-2.35.0"])
 #+END_EXAMPLE
+
 This is normal as we must define the Stan StanCmd shell interface root directory. 
 
 With my configuration this is:
@@ -127,6 +131,8 @@ For Windows user this is certainly something like:
 #+BEGIN_SRC matheematica :eval never
 SetCmdStanDirectory["C:\\Users\\USER_NAME\\Documents\\R\\cmdstan-?.??.?"]
 #+END_SRC
+
+[[file:figures/Install_SetDir.png]]
 
 *Note:* this location is recorded in the =$CmdStanConfigurationFile= file
  and you will not have to redefine it every time you import the
