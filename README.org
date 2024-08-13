@@ -47,6 +47,12 @@ It should work under *MacOS* and also under *Windows*.
 
 ** News
    
+*** 2024-08-13
+
+*Package test with last CmdStan v2.35.0, Mathematica 11.2, Linux*
+
+Everything works.
+
 *** 2020-12-21
     
 *New MathematicaStan version 2.1!*
