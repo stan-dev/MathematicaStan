@@ -255,7 +255,7 @@ is simply the Stan executable file name with its path. The
 replace it with ".data.R", but you can use it with
 any file name:
 #+BEGIN_SRC mathematica :eval never
-ExportStanData["~/tmp/my_custom_filename.data.R",stanData]
+ExportStanData["my_custom_path/my_custom_filename.data.R",stanData]
 #+END_SRC
 
 ** Run Stan, likelihood maximization
