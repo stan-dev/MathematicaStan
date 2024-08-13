@@ -1,5 +1,5 @@
 #+OPTIONS: toc:nil todo:nil pri:nil tags:nil ^:nil tex:t
-#+TITLE: MathematicaStan v2.1
+#+TITLE: MathematicaStan v2.2
 #+SUBTITLE: A Mathematica (v11+) package to interact with CmdStan
 #+AUTHOR: Picaud Vincent
 
