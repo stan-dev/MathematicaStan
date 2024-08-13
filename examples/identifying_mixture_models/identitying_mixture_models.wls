@@ -96,7 +96,7 @@ data {
 
 parameters {
   vector[2] mu;
-  real<lower=0> sigma[2];
+  array[2] real<lower=0> sigma;
   real<lower=0, upper=1> theta;
 }
 
@@ -175,7 +175,7 @@ data {
 
 parameters {
   vector[2] mu;
-  real<lower=0> sigma[2];
+  array[2] real<lower=0> sigma;
   real<lower=0, upper=1> theta;
 }
 
@@ -255,7 +255,7 @@ data {
 
 parameters {
   ordered[2] mu;           // <-- Here
-  real<lower=0> sigma[2];
+  array[2] real<lower=0> sigma;
   real<lower=0, upper=1> theta;
 }
 
@@ -331,7 +331,7 @@ data {
 
 parameters {
   vector[2] mu;
-  real<lower=0> sigma[2];
+  array[2] real<lower=0> sigma;
   real<lower=0, upper=1> theta;
 }
 
@@ -368,9 +368,6 @@ ListPlot[Transpose@{GetStanResult[stanResult,"mu.1"],GetStanResult[stanResult,"m
 GaussMixOverlapResultFile = RunStan[GaussMixOverlapFile, myVariationalOptions]
 stanResult = ImportStanResult[GaussMixOverlapResultFile]
 GraphicsRow[{ListLinePlot[GetStanResult[stanResult,"mu.1"],PlotLabel->"\[Mu]1"],ListLinePlot[GetStanResult[stanResult,"mu.2"],PlotLabel->"\[Mu]2"],Histogram[GetStanResult[stanResult,"theta"],PlotLabel->"\[Theta]"]}]
-
-
-
 
 
 
