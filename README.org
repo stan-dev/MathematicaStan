@@ -3,8 +3,8 @@
 #+SUBTITLE: A Mathematica (v11+) package to interact with CmdStan
 #+AUTHOR: Picaud Vincent
 
-# +TOC: headlines 3
-
+[[https://zenodo.org/doi/10.5281/zenodo.10810144][file:https://zenodo.org/badge/66637604.svg]]
+ 
 * Table of contents                                            :TOC_3:noexport:
 - [[#introduction][Introduction]]
   - [[#news][News]]
