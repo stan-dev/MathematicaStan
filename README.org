@@ -970,4 +970,6 @@ which prints
 -0.010088
 {3.30321, -0.010088, 0.0126913}
 #+END_EXAMPLE
-
+* Unit tests
+You can run [[file:tests/CmdStan_test.wl]] to check that everything works
+as expected.
