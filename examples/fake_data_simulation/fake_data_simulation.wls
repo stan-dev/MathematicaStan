@@ -29,7 +29,7 @@ code="
 data {
   int N;
   int P; // number of categories to be estimated
-  int y[N]; // outcomes
+  array[N] int y; // outcomes
   int<lower = 0, upper = 1> run_estimation; // a switch to evaluate the likelihood
   real<lower = 0> prior_sd; // standard deviation of the prior on theta
 }
